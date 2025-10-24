@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+*.log
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+
+# Environment variables / secrets
+.env
+*.env
+*.pem
+
+# IDE settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Migrations cache
+*/migrations/__pycache__/
+
+# Backup / temporary
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# If you manually copy your theme into static, keep this
+# but make sure to not ignore your actual static source folder
+# Example: staticfiles/ (Django collects here on deploy)
+staticfiles/
