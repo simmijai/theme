@@ -25,6 +25,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='home'),  # homepage
+    # path('', include('store.urls')),
+
+    path('products/', include('products.urls')),
+    path('accounts/', include('accounts.urls')),  # <- include the accounts app
+
 
 ]
 if settings.DEBUG:

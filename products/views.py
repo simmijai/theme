@@ -1,7 +1,33 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 from .models import Category, Product
 
 def category_products(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    products = Product.objects.filter(category=category)
-    return render(request, 'category_products.html', {'category': category, 'products': products})
+    categories = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
+    subcategories = category.subcategories.all()
+    products = Product.objects.filter(category__in=[category, *subcategories])
+    return render(request, 'store/index.html', {
+        'category': category,
+        'categories': categories,
+        'products': products,
+        'selected_category': category,
+    })
+
+def filter_products_ajax(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    subcategories = Category.objects.filter(parent=category)
+    products = Product.objects.filter(category__in=[category, *subcategories])
+    data = [
+        {
+            "name": product.name,
+            "price": product.price,
+            "image": product.image.url if product.image else "",
+            "category": product.category.category_name,
+        }
+        for product in products
+    ]
+    return JsonResponse({"products": data})
+
+def product_detail(request):
+    return render 

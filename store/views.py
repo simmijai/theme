@@ -1,6 +1,21 @@
 from django.shortcuts import render
 from products.models import Product
 
+
 def index(request):
-    products = Product.objects.all()  # get all products
-    return render(request, 'store/index.html', {'products': products})
+    category_slug = request.GET.get('category')
+    products = Product.objects.all()
+
+    if category_slug:
+        try:
+            category = Category.objects.get(slug=category_slug)
+            subcats = category.subcategories.all()
+            products = products.filter(category__in=[category, *subcats])
+        except Category.DoesNotExist:
+            pass
+
+    categories = Category.objects.filter(parent=None)  # top-level only
+    return render(request, 'store/index.html', {
+        'products': products,
+        'categories': categories
+    })

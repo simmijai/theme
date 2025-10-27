@@ -28,7 +28,7 @@
                 <span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
                 <ul class="customer-links list-inline">
                     <li><a href="login.html">Login</a></li>
-                    <li><a href="register.html">Create Account</a></li>
+                    <li><a href="{% url 'register' %}">Create Account</a></li>
                     <li><a href="wishlist.html">Wishlist</a></li>
                 </ul>
             </div>
@@ -65,11 +65,11 @@
                                 {% if categories %}
                                     {% for category in categories %}
                                         <li class="lvl2 parent">
-                                            <a href="javascript:void(0);">{{ category.category_name }} <i class="anm anm-angle-right-l"></i></a>
+                                        <a href="{% url 'filter_products_ajax' category.slug %}" class="category-link" data-slug="{{ category.slug }}">{{ category.category_name }} <i class="anm anm-angle-right-l"></i></a>
                                             {% if category.subcategories.all %}
                                                 <ul class="dropdown">
                                                     {% for subcat in category.subcategories.all %}
-                                                        <li><a href="javascript:void(0);" class="site-nav">{{ subcat.category_name }}</a></li>
+                                                    <li><a href="{% url 'filter_products_ajax' subcat.slug %}" class="subcategory-link" data-slug="{{ subcat.slug }}">{{ subcat.category_name }}</a></li>
                                                     {% endfor %}
                                                 </ul>
                                             {% endif %}
@@ -81,6 +81,7 @@
                             </ul>
                         </li>
                         <li class="lvl1 parent megamenu"><a href="#">Shop <i class="anm anm-angle-down-l"></i></a></li> 
+                                   
                         <li class="lvl1 parent megamenu"><a href="#">Product <i class="anm anm-angle-down-l"></i></a></li>
                         <li class="lvl1 parent dropdown"><a href="#">Pages <i class="anm anm-angle-down-l"></i></a>
                             <ul class="dropdown">
@@ -195,23 +196,60 @@
                             <ul class="dropdown">
                                 {% if categories %}
                                     {% for category in categories %}
-                                        <li class="lvl2 parent">
-                                            <a href="javascript:void(0);">{{ category.category_name }} <i class="anm anm-angle-right-l"></i></a>
-                                            {% if category.subcategories.all %}
-                                                <ul class="dropdown">
-                                                    {% for subcat in category.subcategories.all %}
-                                                        <li><a href="javascript:void(0);" class="site-nav">{{ subcat.category_name }}</a></li>
-                                                    {% endfor %}
-                                                </ul>
-                                            {% endif %}
-                                        </li>
-                                    {% endfor %}
+    <li class="lvl2 parent">
+<a href="">{{ category.category_name }}</a>
+{% if category.subcategories.all %}
+    <ul class="dropdown">
+        {% for subcat in category.subcategories.all %}
+<a href="">{{ subcat.category_name }}</a>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+    </li>
+{% endfor %}
+
                                 {% else %}
                                     <li><a href="#" class="site-nav">No categories found</a></li>
                                 {% endif %}
                             </ul>
                         </li>
         <li class="lvl1 parent megamenu"><a href="#">Shop <i class="anm anm-plus-l"></i></a></li>
+        <li class="lvl1 parent megamenu"><a href="#">Shop <i class="anm anm-angle-down-l"></i></a>
+                            	<div class="megamenu style4">
+                                    <ul class="grid grid--uniform mmWrapper">
+                                    	<li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Shop Pages</a>
+                                            <ul class="subLinks">
+                                                <li class="lvl-2"><a href="shop-left-sidebar.html" class="site-nav lvl-2">Left Sidebar</a></li>
+                                                <li class="lvl-2"><a href="shop-right-sidebar.html" class="site-nav lvl-2">Right Sidebar</a></li>
+                                                <li class="lvl-2"><a href="shop-fullwidth.html" class="site-nav lvl-2">Fullwidth</a></li>
+                                                <li class="lvl-2"><a href="shop-grid-3.html" class="site-nav lvl-2">3 items per row</a></li>
+                                                <li class="lvl-2"><a href="shop-grid-4.html" class="site-nav lvl-2">4 items per row</a></li>
+                                                <li class="lvl-2"><a href="shop-grid-5.html" class="site-nav lvl-2">5 items per row</a></li>
+                                                <li class="lvl-2"><a href="shop-grid-6.html" class="site-nav lvl-2">6 items per row</a></li>
+                                                <li class="lvl-2"><a href="shop-grid-7.html" class="site-nav lvl-2">7 items per row</a></li>
+                                                <li class="lvl-2"><a href="shop-listview.html" class="site-nav lvl-2">Product Listview</a></li>
+                                            </ul>
+                                      	</li>
+                                      	<li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Shop Features</a>
+                                            <ul class="subLinks">
+                                                <li class="lvl-2"><a href="shop-left-sidebar.html" class="site-nav lvl-2">Product Countdown <span class="lbl nm_label3">Hot</span></a></li>
+                                                <li class="lvl-2"><a href="shop-right-sidebar.html" class="site-nav lvl-2">Infinite Scrolling</a></li>
+                                                <li class="lvl-2"><a href="shop-grid-3.html" class="site-nav lvl-2">Pagination - Classic</a></li>
+                                                <li class="lvl-2"><a href="shop-grid-6.html" class="site-nav lvl-2">Pagination - Load More</a></li>
+                                                <li class="lvl-2"><a href="product-labels.html" class="site-nav lvl-2">Dynamic Product Labels</a></li>
+                                                <li class="lvl-2"><a href="product-swatches-style.html" class="site-nav lvl-2">Product Swatches <span class="lbl nm_label2">Sale</span></a></li>
+                                                <li class="lvl-2"><a href="product-hover-info.html" class="site-nav lvl-2">Product Hover Info</a></li>
+                                                <li class="lvl-2"><a href="shop-grid-3.html" class="site-nav lvl-2">Product Reviews</a></li>
+                                                <li class="lvl-2"><a href="shop-left-sidebar.html" class="site-nav lvl-2">Discount Label <span class="lbl nm_label1">New</span></a></li>
+                                            </ul>
+                                      	</li>
+                                        <li class="grid__item lvl-1 col-md-6 col-lg-6">
+                                        	<a href="#"><img src="assets/images/megamenu-bg1.jpg" alt="" title="" /></a>
+                                        </li>
+                                    </ul>
+                              	</div>
+                            </li>
         <li class="lvl1 parent megamenu"><a href="product-layout-1.html">Product <i class="anm anm-plus-l"></i></a></li>
         <li class="lvl1 parent megamenu">
             <a href="#">Pages <i class="anm anm-plus-l"></i></a>
