@@ -1,4 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 
-def register_view(request):
-    return render(request, 'accounts/register.html')
+def login(request):
+    return render(request,'accounts/login.html')
+
+def register(request):
+    return render(request,'accounts/register.html')

@@ -1,7 +1,28 @@
 {% extends 'base.html' %}
 {% load static %}
+<style>
+.grid-view_image {
+    width: 100%;
+    min-height: 200px;   /* smallest allowed */
+    max-height: 300px;   /* largest allowed */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-view_image img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;  /* keeps image inside limit */
+    object-fit: cover;
+    display: block;
+}
+</style>
+
 
 {% block title %}Home - Belle E-commerce{% endblock %}
+
 
 {% block content %}
 <div id="page-content">
@@ -32,7 +53,7 @@
     </div>
     <!-- End Home Slider -->
 
-    <!-- Products Section -->
+    {% comment %} <!-- Products Section -->
     <div class="product-rows section">
         <div class="container">
             <div class="row">
@@ -121,7 +142,7 @@
             </div>
         </div>
     </div>
-    <!-- End Products Section -->
+    <!-- End Products Section --> {% endcomment %}
 
 </div>
 

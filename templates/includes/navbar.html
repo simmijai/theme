@@ -5,21 +5,8 @@
 <div class="top-header">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-10 col-sm-8 col-md-5 col-lg-4">
-                <div class="currency-picker">
-                    <span class="selected-currency">USD</span>
-                    <ul id="currencies">
-                        <li data-currency="INR" class="">INR</li>
-                    </ul>
-                </div>
-                <div class="language-dropdown">
-                    <span class="language-dd">English</span>
-                    <ul id="language">
-                        <li class="">German</li>
-                        <li class="">French</li>
-                    </ul>
-                </div>
-                <p class="phone-no"><i class="anm anm-phone-s"></i> +440 0(111) 044 833</p>
+            <div class="col-10 col-sm-8 col-md-5 col-lg-4">   
+            <p class="phone-no"><i class="anm anm-phone-s"></i> +440 0(111) 044 833</p>
             </div>
             <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
                 <div class="text-center"><p class="top-header_middle-text"> Worldwide Express Shipping</p></div>
@@ -27,9 +14,9 @@
             <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
                 <span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
                 <ul class="customer-links list-inline">
-                    <li><a href="login.html">Login</a></li>
+                    <li><a href="{% url 'login' %}">Login</a></li>
                     <li><a href="{% url 'register' %}">Create Account</a></li>
-                    <li><a href="wishlist.html">Wishlist</a></li>
+                    <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
                 </ul>
             </div>
         </div>
@@ -43,8 +30,9 @@
         <div class="row align-items-center">
             <!--Desktop Logo-->
             <div class="logo col-md-2 col-lg-2 d-none d-lg-block">
-                <a href="index.html">
-                    <img src="{% static 'images/logo.svg' %}" alt="Belle Multipurpose Html Template" title="Belle Multipurpose Html Template" />
+                <a href="{% url 'home' %}">
+                    <h3>Ecommerce Website</h3>
+                    {% comment %} <img src="{% static 'images/logo.svg' %}" alt="Belle Multipurpose Html Template" title="Belle Multipurpose Html Template" /> {% endcomment %}
                 </a>
             </div>
             <!--End Desktop Logo-->
@@ -80,7 +68,7 @@
                                 {% endif %}
                             </ul>
                         </li>
-                        <li class="lvl1 parent dropdown"><a href="#">Pages <i class="anm anm-angle-down-l"></i></a>
+                        {% comment %} <li class="lvl1 parent dropdown"><a href="#">Pages <i class="anm anm-angle-down-l"></i></a>
                           <ul class="dropdown">
                           	<li><a href="cart-variant1.html" class="site-nav">Cart Page <i class="anm anm-angle-right-l"></i></a>
                                 <ul class="dropdown">
@@ -88,7 +76,31 @@
                                     <li><a href="{% url 'cart_page1' %}" class="site-nav">Cart Variant2</a></li>
                                  </ul>
                             </li>
-                            <li><a href="{% url 'checkout' %}" class="site-nav">Checkout</a></li>
+                            <li><a href="{% url 'checkout' %}" class="site-nav">Checkout</a></li> {% endcomment %}
+
+                            {% for category in categories|slice:":4" %}
+<li class="lvl1 parent dropdown">
+    <a href="{% url 'filter_products_ajax' category.slug %}">
+        {{ category.category_name }}
+        {% if category.subcategories.all %}
+        <i class="anm anm-angle-down-l"></i>
+        {% endif %}
+    </a>
+    
+    {% if category.subcategories.all %}
+    <ul class="dropdown">
+        {% for subcat in category.subcategories.all %}
+        <li>
+            <a href="{% url 'filter_products_ajax' subcat.slug %}" class="subcategory-link">
+                {{ subcat.category_name }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</li>
+{% endfor %}
+
 
                     </ul>
                 </nav>
