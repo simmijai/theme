@@ -110,6 +110,22 @@
                                     </ul>
                                 </div> {% endcomment %}
                             </li>
+                            <!-- Categories loop -->
+                                {% for category in top_categories %}
+                                    <li class="lvl1 parent dropdown">
+                                        <a href="{% url 'category_products' category.slug %}">{{ category.category_name }}</a>
+                                        {% if category.subcategories.all %}
+                                        <ul class="dropdown">
+                                            {% for subcat in category.subcategories.all %}
+                                            <li>
+                                                <a href="{% url 'category_products' subcat.slug %}">{{ subcat.category_name }}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+
                             {% comment %} <li class="lvl1 parent megamenu"><a href="#">Shop <i class="anm anm-angle-down-l"></i></a>
                             	<div class="megamenu style4">
                                     <ul class="grid grid--uniform mmWrapper">
