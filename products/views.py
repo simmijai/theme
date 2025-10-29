@@ -29,5 +29,11 @@ def filter_products_ajax(request, slug):
     ]
     return JsonResponse({"products": data})
 
-def product_detail(request):
-    return render 
+def cart_page(request):
+    return render(request,'store/cart.html')
+
+def cart_page1(request):
+    return render(request,'store/cart2.html')
+
+def checkout(request):
+    return render(request,'store/checkout.html')

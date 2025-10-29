@@ -91,13 +91,14 @@
                                        data-toggle="modal" data-target="#content_quickview">
                                         <i class="icon anm anm-search-plus-r"></i>
                                     </a>
+                                    
 
-                                    <form class="variants add" action="#" method="post"
-                                          onclick="window.location.href='cart.html'">
-                                        <button class="btn cartIcon btn-addto-cart" type="button" tabindex="0">
-                                            <i class="icon anm anm-bag-l"></i>
-                                        </button>
+                                  <form action="{% url 'cart_page' %}" method="get" style="display:inline-block;">
+                                    <button class="btn cartIcon btn-addto-cart" type="submit" tabindex="0">
+                                        <i class="icon anm anm-bag-l"></i> Add to Cart
+                                    </button>
                                     </form>
+
 
                                     <div class="wishlist-btn">
                                         <a class="wishlist add-to-wishlist" href="wishlist.html">
@@ -105,11 +106,7 @@
                                         </a>
                                     </div>
 
-                                    <div class="compare-btn">
-                                        <a class="compare add-to-compare" href="compare.html" title="Add to Compare">
-                                            <i class="icon anm anm-random-r"></i>
-                                        </a>
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <!-- End Product Details -->

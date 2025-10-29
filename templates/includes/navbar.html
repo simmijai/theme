@@ -80,19 +80,16 @@
                                 {% endif %}
                             </ul>
                         </li>
-                        <li class="lvl1 parent megamenu"><a href="#">Shop <i class="anm anm-angle-down-l"></i></a></li> 
-                                   
-                        <li class="lvl1 parent megamenu"><a href="#">Product <i class="anm anm-angle-down-l"></i></a></li>
                         <li class="lvl1 parent dropdown"><a href="#">Pages <i class="anm anm-angle-down-l"></i></a>
-                            <ul class="dropdown">
-                                <li><a href="cart-variant1.html" class="site-nav">Cart Page <i class="anm anm-angle-right-l"></i></a>
-                                </li>
-                                <li><a href="checkout.html" class="site-nav">Checkout</a></li>
-                                <li><a href="about-us.html" class="site-nav">About Us <span class="lbl nm_label1">New</span></a></li>
-                                <li><a href="contact-us.html" class="site-nav">Contact Us</a></li>
-                            </ul>
-                        </li>
-                        <li class="lvl1 parent dropdown"><a href="#">Blog <i class="anm anm-angle-down-l"></i></a></li>
+                          <ul class="dropdown">
+                          	<li><a href="cart-variant1.html" class="site-nav">Cart Page <i class="anm anm-angle-right-l"></i></a>
+                                <ul class="dropdown">
+                                    <li><a href="{% url 'cart_page' %}" class="site-nav">Cart Variant1</a></li>
+                                    <li><a href="{% url 'cart_page1' %}" class="site-nav">Cart Variant2</a></li>
+                                 </ul>
+                            </li>
+                            <li><a href="{% url 'checkout' %}" class="site-nav">Checkout</a></li>
+
                     </ul>
                 </nav>
                 <!--End Desktop Menu-->
@@ -109,11 +106,11 @@
             <!--Mobile Logo-->
             <div class="col-4 col-sm-3 col-md-3 col-lg-2">
                 <div class="site-cart">
-                    <a href="javascript:void(0);" class="site-header__cart" title="Cart">
+                    <a href="{% url 'cart_page' %}" class="site-header__cart" title="Cart">
                         <i class="icon anm anm-bag-l"></i>
-                        <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span>
+                        {% comment %} <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span> {% endcomment %}
                     </a>
-                    <!--Minicart Popup-->
+                    {% comment %} <!--Minicart Popup-->
                     <div id="header-cart" class="block block-cart">
                         <ul class="mini-products-list">
                             <li class="item">
@@ -171,11 +168,11 @@
                             </div>
                             <div class="buttonSet text-center">
                                 <a href="cart.html" class="btn btn-secondary btn--small">View Cart</a>
-                                <a href="checkout.html" class="btn btn-secondary btn--small">Checkout</a>
+                                <a href="{% url 'checkout' %}" class="btn btn-secondary btn--small">Checkout</a>
                             </div>
                         </div>
                     </div>
-                    <!--EndMinicart Popup-->
+                    <!--EndMinicart Popup--> {% endcomment %}
                 </div>
                 <div class="site-header__search">
                     <button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button>
@@ -196,59 +193,24 @@
                             <ul class="dropdown">
                                 {% if categories %}
                                     {% for category in categories %}
-    <li class="lvl2 parent">
-<a href="">{{ category.category_name }}</a>
-{% if category.subcategories.all %}
-    <ul class="dropdown">
-        {% for subcat in category.subcategories.all %}
-<a href="">{{ subcat.category_name }}</a>
-        {% endfor %}
-    </ul>
-{% endif %}
+                                    <li class="lvl2 parent">
+                                <a href="">{{ category.category_name }}</a>
+                                {% if category.subcategories.all %}
+                                    <ul class="dropdown">
+                                        {% for subcat in category.subcategories.all %}
+                                <a href="">{{ subcat.category_name }}</a>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
 
-    </li>
-{% endfor %}
+                                    </li>
+                                {% endfor %}
 
                                 {% else %}
-                                    <li><a href="#" class="site-nav">No categories found</a></li>
+                                <li><a href="#" class="site-nav">No categories found</a></li>
                                 {% endif %}
-                            </ul>
-                        </li>
-        <li class="lvl1 parent megamenu"><a href="#">Shop <i class="anm anm-plus-l"></i></a></li>
-        <li class="lvl1 parent megamenu"><a href="#">Shop <i class="anm anm-angle-down-l"></i></a>
-                            	<div class="megamenu style4">
-                                    <ul class="grid grid--uniform mmWrapper">
-                                    	<li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Shop Pages</a>
-                                            <ul class="subLinks">
-                                                <li class="lvl-2"><a href="shop-left-sidebar.html" class="site-nav lvl-2">Left Sidebar</a></li>
-                                                <li class="lvl-2"><a href="shop-right-sidebar.html" class="site-nav lvl-2">Right Sidebar</a></li>
-                                                <li class="lvl-2"><a href="shop-fullwidth.html" class="site-nav lvl-2">Fullwidth</a></li>
-                                                <li class="lvl-2"><a href="shop-grid-3.html" class="site-nav lvl-2">3 items per row</a></li>
-                                                <li class="lvl-2"><a href="shop-grid-4.html" class="site-nav lvl-2">4 items per row</a></li>
-                                                <li class="lvl-2"><a href="shop-grid-5.html" class="site-nav lvl-2">5 items per row</a></li>
-                                                <li class="lvl-2"><a href="shop-grid-6.html" class="site-nav lvl-2">6 items per row</a></li>
-                                                <li class="lvl-2"><a href="shop-grid-7.html" class="site-nav lvl-2">7 items per row</a></li>
-                                                <li class="lvl-2"><a href="shop-listview.html" class="site-nav lvl-2">Product Listview</a></li>
-                                            </ul>
-                                      	</li>
-                                      	<li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Shop Features</a>
-                                            <ul class="subLinks">
-                                                <li class="lvl-2"><a href="shop-left-sidebar.html" class="site-nav lvl-2">Product Countdown <span class="lbl nm_label3">Hot</span></a></li>
-                                                <li class="lvl-2"><a href="shop-right-sidebar.html" class="site-nav lvl-2">Infinite Scrolling</a></li>
-                                                <li class="lvl-2"><a href="shop-grid-3.html" class="site-nav lvl-2">Pagination - Classic</a></li>
-                                                <li class="lvl-2"><a href="shop-grid-6.html" class="site-nav lvl-2">Pagination - Load More</a></li>
-                                                <li class="lvl-2"><a href="product-labels.html" class="site-nav lvl-2">Dynamic Product Labels</a></li>
-                                                <li class="lvl-2"><a href="product-swatches-style.html" class="site-nav lvl-2">Product Swatches <span class="lbl nm_label2">Sale</span></a></li>
-                                                <li class="lvl-2"><a href="product-hover-info.html" class="site-nav lvl-2">Product Hover Info</a></li>
-                                                <li class="lvl-2"><a href="shop-grid-3.html" class="site-nav lvl-2">Product Reviews</a></li>
-                                                <li class="lvl-2"><a href="shop-left-sidebar.html" class="site-nav lvl-2">Discount Label <span class="lbl nm_label1">New</span></a></li>
-                                            </ul>
-                                      	</li>
-                                        <li class="grid__item lvl-1 col-md-6 col-lg-6">
-                                        	<a href="#"><img src="assets/images/megamenu-bg1.jpg" alt="" title="" /></a>
-                                        </li>
-                                    </ul>
-                              	</div>
+                                </ul>
+                                </li>
                             </li>
         <li class="lvl1 parent megamenu"><a href="product-layout-1.html">Product <i class="anm anm-plus-l"></i></a></li>
         <li class="lvl1 parent megamenu">
