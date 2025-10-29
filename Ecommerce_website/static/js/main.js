@@ -121,7 +121,7 @@
 	  ------------------------------------------ */
 	  function minicart_dropdown(){
 		$(".site-header__cart").on("click", function(i) {
-			i.preventDefault();
+			// i.preventDefault();
 			$("#header-cart").slideToggle();
 		});
 		// Hide Cart on document click
