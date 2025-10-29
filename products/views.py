@@ -14,20 +14,7 @@ def category_products(request, slug):
         'selected_category': category,
     })
 
-def filter_products_ajax(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    subcategories = Category.objects.filter(parent=category)
-    products = Product.objects.filter(category__in=[category, *subcategories])
-    data = [
-        {
-            "name": product.name,
-            "price": product.price,
-            "image": product.image.url if product.image else "",
-            "category": product.category.category_name,
-        }
-        for product in products
-    ]
-    return JsonResponse({"products": data})
+
 
 def cart_page(request):
     return render(request,'store/cart.html')
