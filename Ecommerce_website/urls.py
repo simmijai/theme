@@ -19,7 +19,7 @@ from django.urls import path,include
 from store.views import index
 from django.conf import settings
 from django.conf.urls.static import static
-from admin_panel.views import admin_dashboard
+from admin_panel.views.category_views import admin_dashboard
 
 
 
