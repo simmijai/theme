@@ -19,6 +19,7 @@ from django.urls import path,include
 from store.views import index
 from django.conf import settings
 from django.conf.urls.static import static
+from admin_panel.views import admin_dashboard
 
 
 
@@ -29,6 +30,11 @@ urlpatterns = [
 
     path('products/', include('products.urls')),
     path('accounts/', include('accounts.urls')),  # <- include the accounts app
+    path('dashboard/', admin_dashboard, name='dashboard'),  # new dashboard
+    path('admin_panel/', include('admin_panel.urls')),  # include your admin_panel URLs
+
+    
+
 
 
 ]

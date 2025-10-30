@@ -45,3 +45,5 @@ Thumbs.db
 # but make sure to not ignore your actual static source folder
 # Example: staticfiles/ (Django collects here on deploy)
 staticfiles/
+templates/admin/*
+static/admin/*

@@ -21,3 +21,5 @@ def index(request):
     })
 
 
+# def admin_dashboard(request):
+#     return render(request, 'admin/dashboard.html')

@@ -27,3 +27,6 @@ def checkout(request):
 
 def wishlist(request):
     return render(request,'store/wishlist.html')
+
+def product_page(request):
+    return render(request,'store/product_subcategory.html')

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'store',
     'products',
     'accounts',
+    'admin_panel',
 ]
 
 MIDDLEWARE = [
@@ -132,9 +133,12 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR /'static'
+# STATIC_ROOT = BASE_DIR /'static'
+# STATICFILES_DIRS = [
+#     'Ecommerce_website/static',
+# ]
 STATICFILES_DIRS = [
-    'Ecommerce_website/static',
+    BASE_DIR / 'static',  # this points to theme_setup/static
 ]
 
 # Default primary key field type
@@ -146,3 +150,5 @@ AUTH_USER_MODEL = 'accounts.Account'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
+
+LOGIN_REDIRECT_URL = '/admin/'
