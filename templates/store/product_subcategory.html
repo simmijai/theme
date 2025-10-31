@@ -348,13 +348,13 @@
     {% for product in products %}
       <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
           <div class="product-image">
-              <a href="#">
+              <a href="{% url 'product_detail' product.slug %}">
                   <img class="primary" src="{{ product.image.url }}" alt="{{ product.name }}">
                   {% if product.hover_image %}<img class="hover" src="{{ product.hover_image.url }}" alt="{{ product.name }}">{% endif %}
               </a>
           </div>
           <div class="product-details text-center">
-              <div class="product-name"><a href="#">{{ product.name }}</a></div>
+              <div class="product-name"><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></div>
               <div class="product-price"><span class="price">${{ product.price }}</span></div>
           </div>
       </div>

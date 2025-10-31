@@ -9,8 +9,10 @@ urlpatterns = [
     path('checkout/',views.checkout,name="checkout"),
     path('wishlist/',views.wishlist,name="wishlist"),
     
-        # path('product_page/',views.product_page,name="product_page"),
     path('products/subcategory/<slug:slug>/', views.subcategory_products, name='subcategory_products'),
+    
+    path('product/<slug:slug>/', views.product_detail, name='product_detail')
+
 
 
 

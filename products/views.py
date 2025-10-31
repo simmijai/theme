@@ -50,8 +50,7 @@ def checkout(request):
 def wishlist(request):
     return render(request,'store/wishlist.html')
 
-# def product_page(request):
-#     return render(request,'store/product_subcategory.html')
+
 
 def subcategory_products(request, slug):
     subcategory = get_object_or_404(Category, slug=slug, parent__isnull=False)  # ensures it's a subcategory
@@ -62,3 +61,8 @@ def subcategory_products(request, slug):
         'top_categories': Category.objects.filter(parent=None),  # navbar
     }
     return render(request, 'store/product_subcategory.html', context)
+
+def product_detail(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    return render(request, 'store/product_detail.html', {'product': product})
+
