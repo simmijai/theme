@@ -4,8 +4,7 @@ from django.shortcuts import render
 def admin_dashboard(request):
     return render(request, 'admin/dashboard.html')
 
-def admin_product(request):
-    return render(request, 'admin/product.html')
+
 
 def admin_product_create(request):
     return render(request, 'admin/product_create.html')

@@ -41,3 +41,30 @@ class Product(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+        
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='products/')
+    is_default = models.BooleanField(default=False)  # first image to show
+
+    def __str__(self):
+        return f"{self.product.name} Image"
+
+class ProductVariant(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
+    color = models.CharField(max_length=50, blank=True, null=True)
+    size = models.CharField(max_length=50, blank=True, null=True)
+    stock = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # optional variant price
+
+    def __str__(self):
+        return f"{self.product.name} - {self.color or ''} {self.size or ''}"
+
+class ProductAttribute(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='attributes')
+    key = models.CharField(max_length=100)    # e.g., "Material", "Seater"
+    value = models.CharField(max_length=255)  # e.g., "Cotton", "3-Seater"
+
+    def __str__(self):
+        return f"{self.product.name} → {self.key}: {self.value}"
+
