@@ -85,3 +85,9 @@ def product_create(request):
         image_form = ProductImageForm()
 
     return render(request, 'admin/product_create.html', {'form': form, 'image_form': image_form})
+
+def product_delete(request, pk):
+    product = Product.objects.get(pk=pk)
+    product.delete()
+    messages.success(request, f'Product "{product.name}" deleted successfully!')
+    return redirect('admin_product_list')
