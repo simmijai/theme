@@ -91,3 +91,37 @@ def product_delete(request, pk):
     product.delete()
     messages.success(request, f'Product "{product.name}" deleted successfully!')
     return redirect('admin_product_list')
+
+def product_edit(request, pk):
+    product = Product.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        image_form = ProductImageForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            product = form.save()
+            
+            # Handle additional images
+            if 'images' in request.FILES:
+                for img in request.FILES.getlist('images'):
+                    ProductImage.objects.create(product=product, image=img)
+
+            messages.success(request, f'Product "{product.name}" updated successfully!')
+            return redirect('admin_product_list')
+    else:
+        form = ProductForm(instance=product)
+        image_form = ProductImageForm()
+
+    return render(request, 'admin/product_create.html', {
+        'form': form,
+        'image_form': image_form,
+        'action': 'Edit',
+    })
+
+
+def product_image_delete(request, pk):
+    img = ProductImage.objects.get(pk=pk)
+    product_id = img.product.id
+    img.delete()
+    messages.success(request, "Image deleted successfully!")
+    return redirect('admin_product_edit', pk=product_id)
