@@ -6,8 +6,6 @@ def admin_dashboard(request):
 
 
 
-def admin_product_create(request):
-    return render(request, 'admin/product_create.html')
 
 def admin_subcategory_list(request):
     return render(request, 'admin/subcategory.html')

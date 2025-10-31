@@ -1,6 +1,12 @@
 from django import forms
-from products.models import Product
+from products.models import Product, ProductImage
 
+# ✅ Custom widget for selecting multiple files
+class MultiFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+# ✅ Main Product Form
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -8,9 +14,25 @@ class ProductForm(forms.ModelForm):
         widgets = {
             'category': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Product name'}),
-            'description': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Product description'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Product description', 'rows': 3}),
             'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Price'}),
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'stock': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Stock'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),  # single image
+            'stock': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Stock quantity'}),
             'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+
+# ✅ Form for multiple additional images
+class ProductImageForm(forms.Form):
+    images = forms.FileField(
+        required=False,
+        widget=MultiFileInput(
+            attrs={
+                'multiple': True,
+                'class': 'form-control',
+                'name': 'images',  # important for getlist('images')
+            }
+        )
+    )
+    
+    
