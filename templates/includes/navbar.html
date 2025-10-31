@@ -113,12 +113,12 @@
                             <!-- Categories loop -->
                                 {% for category in top_categories %}
                                     <li class="lvl1 parent dropdown">
-                                        <a href="{% url 'category_products' category.slug %}">{{ category.category_name }}</a>
+                                        <a href="#">{{ category.category_name }}</a>
                                         {% if category.subcategories.all %}
                                         <ul class="dropdown">
                                             {% for subcat in category.subcategories.all %}
                                             <li>
-                                                <a href="{% url 'category_products' subcat.slug %}">{{ subcat.category_name }}</a>
+                                                <a href="{% url 'subcategory_products' subcat.slug %}">{{ subcat.category_name }}</a>
                                             </li>
                                             {% endfor %}
                                         </ul>
