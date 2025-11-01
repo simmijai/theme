@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Account
+from django.contrib.auth import login as auth_login
 
 
 import uuid
@@ -147,6 +148,8 @@ def login_otp_view(request):
         if entered_otp == user.otp:
             user.otp = None
             user.save()
+            auth_login(request, user)  # THIS logs the user in
+
             messages.success(request, f'Welcome {user.first_name}! Login successful.')
             return redirect('home')
         else:

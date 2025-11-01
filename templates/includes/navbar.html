@@ -26,9 +26,20 @@
                 <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
                 	<span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
                     <ul class="customer-links list-inline">
-                        <li><a href="{% url 'login' %}">Login</a></li>
-                        <li><a href="{% url 'register' %}">Create Account</a></li>
-                        <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+                  {% if user.is_authenticated %}
+                  <li class="greeting">Hi, {{ user.first_name }}</li>
+                  <li>
+                    <form method="post" action="{% url 'logout' %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn-logout">Logout</button>
+                    </form>
+                  </li>
+                  {% else %}
+                  <li><a href="{% url 'login' %}">Login</a></li>
+                  <li><a href="{% url 'register' %}">Create Account</a></li>
+                  {% endif %}
+                  <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+
                     </ul>
                 </div>
             </div>
@@ -269,6 +280,8 @@
                         	<i class="icon anm anm-bag-l"></i>
                             {% comment %} <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span> {% endcomment %}
                         </a>
+
+                        
                         {% comment %} <!--Minicart Popup-->
                         <div id="header-cart" class="block block-cart">
                         	<ul class="mini-products-list">

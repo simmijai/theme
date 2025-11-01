@@ -17,7 +17,9 @@ def index(request):
     categories = Category.objects.filter(parent=None)  # top-level only
     return render(request, 'store/index.html', {
         'products': products,
-        'categories': categories
+        'categories': categories,
+        'user': request.user  # now available in template
+
     })
 
 
