@@ -29,7 +29,9 @@ urlpatterns = [
     # path('', include('store.urls')),
 
     path('products/', include('products.urls')),
-    path('accounts/', include('accounts.urls')),  # <- include the accounts app
+    path('accounts/', include('accounts.urls')),  # ❌ No namespace
+
+    # path('accounts/', include('accounts.urls')),  # <- include the accounts app
     path('dashboard/', admin_dashboard, name='dashboard'),  # new dashboard
     path('admin_panel/', include('admin_panel.urls')),  # include your admin_panel URLs
 

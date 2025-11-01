@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+import uuid
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, email, username, first_name, last_name, password=None, role='customer'):
@@ -14,9 +15,10 @@ class MyAccountManager(BaseUserManager):
             username=username,
             first_name=first_name,
             last_name=last_name,
-            role=role
+            role=role,
         )
         user.set_password(password)
+        user.is_active = False  # inactive until email verification
         user.save(using=self._db)
         return user
 
@@ -31,11 +33,11 @@ class MyAccountManager(BaseUserManager):
         )
         user.is_admin = True
         user.is_staff = True
-        user.is_superuser = True  # Django built-in field
+        user.is_superuser = True
+        user.is_active = True  # superuser active immediately
         user.save(using=self._db)
         return user
 
-# Roles: admin, staff, customer
 ROLE_CHOICES = (
     ('admin', 'Admin'),
     ('staff', 'Staff'),
@@ -48,15 +50,20 @@ class Account(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
     phone_number = models.CharField(max_length=50, blank=True, null=True)
-    
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
+    
+    # For verification & OTP
+    email_verified = models.BooleanField(default=False)
+    otp = models.CharField(max_length=6, blank=True, null=True)
+    verification_token = models.UUIDField(default=uuid.uuid4, editable=False, null=True, blank=True)
+
 
     # Required fields
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)  # Optional, for your checks
+    is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
