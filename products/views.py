@@ -38,8 +38,7 @@ def category_products(request, slug):
     })
 
 
-def cart_page(request):
-    return render(request,'store/cart.html')
+
 
 def cart_page1(request):
     return render(request,'store/cart2.html')

@@ -34,6 +34,9 @@ urlpatterns = [
     # path('accounts/', include('accounts.urls')),  # <- include the accounts app
     path('dashboard/', admin_dashboard, name='dashboard'),  # new dashboard
     path('admin_panel/', include('admin_panel.urls')),  # include your admin_panel URLs
+    
+    path('cart/', include('cart.urls')),
+
 
     
 

@@ -64,7 +64,7 @@
                             </div>
 
                             <!-- Product Action -->
-                            <form method="post" action="{% url 'cart_page' %}" class="product-form">
+                            <form method="post" action="{% url 'cart_view' %}" class="product-form">
                                 {% csrf_token %}
                                 <div class="product-form__item--quantity">
                                     <div class="wrapQtyBtn">
