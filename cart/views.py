@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from products.models import Product
 from .models import CartItem
+from django.http import JsonResponse
+
 
 
 @login_required
@@ -36,3 +38,13 @@ def cart_view(request):
         'total_price': total_price,
     }
     return render(request, 'store/cart2.html', context)
+
+
+
+def remove_from_cart(request, product_id):
+    if request.method == 'POST':
+        cart_item = get_object_or_404(CartItem, user=request.user, product_id=product_id)
+        cart_item.delete()
+        return JsonResponse({'success': True, 'message': 'Item removed from cart'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)

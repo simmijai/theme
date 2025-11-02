@@ -5,7 +5,7 @@
 
 {% block content %}
  <!--Body Content-->
-    <div id="page-content">
+    <div id="page-content" style="padding-top:60px">
     	<!--Page Title-->
     	<div class="page section-header text-center">
 			<div class="page-title">
@@ -88,10 +88,11 @@
             <div><span class="money">₹{{ item.total_price }}</span></div>
         </td>
         <td class="text-center small--hide">
-            <a href="#" class="btn btn--secondary cart__remove" title="Remove Item">
-                <i class="icon anm anm-times-l"></i>
-            </a>
-        </td>
+        <a href="#" class="btn btn--secondary cart__remove" data-id="{{ item.product.id }}" title="Remove Item">
+        <i class="icon anm anm-times-l"></i>
+    </a>
+</td>
+
     </tr>
     {% empty %}
     <tr>
@@ -247,5 +248,30 @@
         
     </div>
     <!--End Body Content-->
-    
+    <script>
+document.querySelectorAll('.cart__remove').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const productId = this.dataset.id;
+
+        fetch(`/cart/remove/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // remove row instantly
+                this.closest('tr').remove();
+            } else {
+                console.error(data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+</script>
+
 {% endblock %}
