@@ -30,7 +30,7 @@
                                         <th class="product-subtotal text-center alt-font">Add to Cart</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                {% comment %} <tbody>
                                     <tr>
                                     	<td class="product-remove text-center" valign="middle"><a href="#"><i class="icon icon anm anm-times-l"></i></a></td>
                                         <td class="product-thumbnail text-center">
@@ -43,7 +43,36 @@
                                         </td>
                                         <td class="product-subtotal text-center"><button type="button" class="btn btn-small">Add To Cart</button></td>
                                     </tr>
+                                </tbody> {% endcomment %}
+                                <tbody>
+                                {% for item in wishlist_items %}
+                                <tr>
+                                    <td class="product-remove text-center" valign="middle">
+                                        <a href="#" class="remove-from-wishlist" data-id="{{ item.product.id }}">
+                                            <i class="icon icon anm anm-times-l"></i>
+                                        </a>
+                                    </td>
+                                    <td class="product-thumbnail text-center">
+                                        <a href="#"><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="70"></a>
+                                    </td>
+                                    <td class="product-name"><h4 class="no-margin"><a href="#">{{ item.product.name }}</a></h4></td>
+                                    <td class="product-price text-center"><span class="amount">${{ item.product.price }}</span></td>
+                                    <td class="stock text-center">
+                                        {% if item.product.stock > 0 %}
+                                        <span class="in-stock">In Stock</span>
+                                        {% else %}
+                                        <span class="out-stock">Out of Stock</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="product-subtotal text-center">
+                                        <button type="button" class="btn btn-small add-to-cart" data-id="{{ item.product.id }}">Add To Cart</button>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="6" class="text-center">Your wishlist is empty.</td></tr>
+                                {% endfor %}
                                 </tbody>
+
                             </table>
                         </div>
                     </form>                   
@@ -53,4 +82,32 @@
         
     </div>
     <!--End Body Content-->
+    <script>
+document.addEventListener("click", async function(e) {
+    if (e.target.closest(".remove-from-wishlist")) {
+        e.preventDefault();
+        const productId = e.target.closest(".remove-from-wishlist").dataset.id;
+
+        const response = await fetch(`/wishlist/remove/${productId}/`);
+        const data = await response.json();
+
+        if (data.success) {
+            e.target.closest("tr").remove();
+        }
+    }
+
+    if (e.target.closest(".wishlist.add-to-wishlist")) {
+        e.preventDefault();
+        const productId = e.target.closest(".wishlist.add-to-wishlist").dataset.id;
+
+        const response = await fetch(`/wishlist/add/${productId}/`);
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Added to wishlist!");
+        }
+    }
+});
+</script>
+
     {% endblock %}

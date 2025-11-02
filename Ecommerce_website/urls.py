@@ -36,6 +36,8 @@ urlpatterns = [
     path('admin_panel/', include('admin_panel.urls')),  # include your admin_panel URLs
     
     path('cart/', include('cart.urls')),
+    path('wishlist/', include('wishlist.urls')),
+
 
 
     

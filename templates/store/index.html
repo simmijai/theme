@@ -122,11 +122,20 @@
 
 
 
-                                    <div class="wishlist-btn">
-                                        <a class="wishlist add-to-wishlist" href="wishlist.html">
+                                    {% comment %} <div class="wishlist-btn">
+                                        <a class="wishlist add-to-wishlist" href="{% url 'wishlist' %}">
                                             <i class="icon anm anm-heart-l"></i>
                                         </a>
-                                    </div>
+                                    </div> {% endcomment %}
+
+                                    <div class="wishlist-btn">
+  <a href="{% url 'add_to_wishlist' product.id %}"
+     class="wishlist add-to-wishlist"
+     data-product-id="{{ product.id }}"
+     title="Add to Wishlist">
+    <i class="icon anm anm-heart-l"></i>
+  </a>
+</div>
 
                                     
                                 </div>
