@@ -129,7 +129,7 @@
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                {% comment %} <tbody>
                                     <tr>
                                         <td class="text-left">Spike Jacket</td>
                                         <td>$99</td>
@@ -161,7 +161,35 @@
                                         <td colspan="4" class="text-right">Total</td>
                                         <td>$1,444.00</td>
                                     </tr>
-                                </tfoot>
+                                </tfoot> {% endcomment %}
+                                <tbody>
+{% if cart_items %}
+    {% for item in cart_items %}
+    <tr>
+        <td class="text-left">{{ item.product.name }}</td>
+        <td>${{ item.product.price }}</td>
+        <td>—</td>
+        <td>{{ item.quantity }}</td>
+        <td>${{ item.total_price }}</td>
+    </tr>
+    {% endfor %}
+{% else %}
+    <tr>
+        <td colspan="5">Your cart is empty.</td>
+    </tr>
+{% endif %}
+</tbody>
+<tfoot class="font-weight-600">
+    <tr>
+        <td colspan="4" class="text-right">Shipping</td>
+        <td>${{ shipping_cost }}</td>
+    </tr>
+    <tr>
+        <td colspan="4" class="text-right">Total</td>
+        <td>${{ total_price }}</td>
+    </tr>
+</tfoot>
+
                             </table>
                         </div>
                     </div>

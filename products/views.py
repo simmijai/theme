@@ -39,15 +39,6 @@ def category_products(request, slug):
 
 
 
-
-def cart_page1(request):
-    return render(request,'store/cart2.html')
-
-def checkout(request):
-    return render(request,'store/checkout.html')
-
-
-
 def subcategory_products(request, slug):
     subcategory = get_object_or_404(Category, slug=slug, parent__isnull=False)  # ensures it's a subcategory
     products = Product.objects.filter(category=subcategory)  # adjust field if needed
