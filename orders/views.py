@@ -43,3 +43,62 @@ def checkout(request):
         'form': form,
     })
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from cart.models import CartItem
+from .models import Order, OrderItem
+
+@login_required
+def payment_page(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    total_price = sum(item.total_price() for item in cart_items)
+    shipping_cost = 50
+    grand_total = total_price + shipping_cost
+    return render(request, 'store/payment.html', {
+        'cart_items': cart_items,
+        'total_price': total_price,
+        'shipping_cost': shipping_cost,
+        'grand_total': grand_total,
+    })
+
+
+@login_required
+def place_order(request):
+    if request.method == "POST":
+        payment_method = request.POST.get("payment_method", "COD")
+        cart_items = CartItem.objects.filter(user=request.user)
+        total_price = sum(item.total_price() for item in cart_items)
+        shipping_cost = 50
+
+        # ✅ create order
+        order = Order.objects.create(
+            user=request.user,
+            total_price=total_price + shipping_cost,
+            payment_method=payment_method,
+            status="Pending"  # must match your model choices
+        )
+
+        # ✅ create each order item (REMOVED subtotal)
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price=item.product.price
+            )
+
+        # ✅ clear cart
+        cart_items.delete()
+
+        # ✅ redirect to "my orders" page
+        return redirect('my_orders')
+
+    return redirect('payment_page')
+
+
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
+    return render(request, 'store/my_orders.html', {'orders': orders})
+
