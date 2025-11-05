@@ -1,9 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Checkout - Belle E-commerce{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %}Checkout - Belle E-commerce{% endblock %} {% block content %}
 <!--Body Content-->
 <div id="page-content" style="padding-top:60px;">
     <!-- Page Title -->
@@ -20,56 +15,90 @@
         <div class="row">
             <!-- Left Column: Billing Section -->
             <div class="col-xl-6 col-lg-6 col-md-12 mb-4">
+
+                <!-- Show Saved Addresses Button -->
+                <div class="text-center mb-3">
+                    <button id="show-address-btn" class="btn btn-outline-primary w-100 mb-2">
+                        Select Delivery Address
+                    </button>
+                </div>
+
+
+                <!-- Saved Addresses List (hidden by default) -->
+                <div id="address-list-container" style="display:none;" class="mb-3">
+                    {% if addresses %}
+                    <form method="POST" action="{% url 'orders_checkout' %}">
+                        {% csrf_token %} {% for address in addresses %}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="selected_address" id="address_{{ address.id }}" value="{{ address.id }}" {% if address.is_default %}checked{% endif %}>
+                            <label class="form-check-label" for="address_{{ address.id }}">
+                                {{ address.first_name }} {{ address.last_name }}, {{ address.address_line1 }}, {{ address.city }}, {{ address.country }}
+                            </label>
+                            <!-- Optional edit/delete icons -->
+                            <div class="ms-3">
+                                <a href="{% url 'edit_address' address.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a href="{% url 'delete_address' address.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </form>
+                    {% else %}
+                    <p>You have no saved addresses.</p>
+                    {% endif %}
+                </div>
+
                 <!-- Change Address Button -->
                 <div class="text-center mb-3">
                     <button id="change-address-btn" class="btn btn-outline-primary">
-                        Change Billing Address
+                        + Add New Address
                     </button>
                 </div>
 
                 <!-- Billing Form (hidden by default) -->
                 <div id="address-form-container" style="display:none;">
                     <div class="create-ac-content bg-light-gray p-4 rounded shadow-sm">
-                        <form>
+                        <form method="POST" action="{% url 'orders_checkout' %}">
+                            {% csrf_token %}
                             <fieldset>
                                 <h2 class="login-title mb-3">Billing details</h2>
 
                                 <div class="row">
                                     <div class="form-group col-md-6 required">
                                         <label for="input-firstname">First Name <span class="required-f">*</span></label>
-                                        <input name="firstname" id="input-firstname" type="text" class="form-control">
+                                        <input name="first_name" id="input-firstname" type="text" class="form-control">
                                     </div>
                                     <div class="form-group col-md-6 required">
                                         <label for="input-lastname">Last Name <span class="required-f">*</span></label>
-                                        <input name="lastname" id="input-lastname" type="text" class="form-control">
+                                        <input name="last_name" id="input-lastname" type="text" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="form-group col-md-6 required">
-                                        <label for="input-email">E-Mail <span class="required-f">*</span></label>
-                                        <input name="email" id="input-email" type="email" class="form-control">
+                                        <label for="input-state">State <span class="required-f">*</span></label>
+                                        <input name="state" id="input-state" type="state" class="form-control">
                                     </div>
                                     <div class="form-group col-md-6 required">
-                                        <label for="input-telephone">Telephone <span class="required-f">*</span></label>
-                                        <input name="telephone" id="input-telephone" type="tel" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label for="input-company">Company</label>
-                                        <input name="company" id="input-company" type="text" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-address-1">Address <span class="required-f">*</span></label>
-                                        <input name="address_1" id="input-address-1" type="text" class="form-control">
+                                        <label for="input-phone">phone <span class="required-f">*</span></label>
+                                        <input name="phone" id="input-phone" type="tel" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="input-address-2">Apartment</label>
+                                        <label for="input-address">House No./Building Name</label>
+                                        <input name="address_line1" id="input-address" type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-6 required">
+                                        <label for="input-address-1">Road name /Area/colony<span class="required-f">*</span></label>
+                                        <input name="address_line2" id="input-address-1" type="text" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="input-address-2">Near by Land Mark</label>
                                         <input name="address_2" id="input-address-2" type="text" class="form-control">
                                     </div>
                                     <div class="form-group col-md-6 required">
@@ -80,37 +109,32 @@
 
                                 <div class="row">
                                     <div class="form-group col-md-6 required">
-                                        <label for="input-postcode">Post Code <span class="required-f">*</span></label>
-                                        <input name="postcode" id="input-postcode" type="text" class="form-control">
+                                        <label for="input-postal_code">Pin Code <span class="required-f">*</span></label>
+                                        <input name="postal_code" id="input-postal_code" type="text" class="form-control">
                                     </div>
                                     <div class="form-group col-md-6 required">
                                         <label for="input-country">Country <span class="required-f">*</span></label>
-                                        <select name="country_id" id="input-country" class="form-control">
-                                            <option value=""> --- Please Select --- </option>
-                                            <option value="244">Aaland Islands</option>
-                                            <option value="1">Afghanistan</option>
-                                            <option value="2">Albania</option>
-                                            <option value="3">Algeria</option>
-                                            <option value="4">American Samoa</option>
-                                            <option value="5">Andorra</option>
-                                            <option value="6">Angola</option>
-                                        </select>
+                                        <input name="country" id="input-country" type="text" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input" id="create-account">
-                                    <label class="form-check-label" for="create-account"><strong>Create an account?</strong></label>
+                                    <input type="checkbox" class="form-check-input" id="create-account" name="create_account">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="order-notes">Order Notes</label>
                                     <textarea id="order-notes" class="form-control resize-both" rows="3"></textarea>
                                 </div>
+
+                                <div class="text-center mt-3">
+                                    <button type="submit" class="btn btn-success" id="save-address-btn">Save Address</button>
+                                </div>
                             </fieldset>
                         </form>
                     </div>
                 </div>
+
             </div>
 
             <!-- Right Column: Product Table & Payment Section -->
@@ -118,7 +142,7 @@
                 <div class="your-order-payment">
                     <div class="your-order mb-4">
                         <h2 class="order-title mb-4">Your Order</h2>
-                        <div class="table-responsive-sm order-table"> 
+                        <div class="table-responsive-sm order-table">
                             <table class="table table-bordered table-hover text-center bg-white">
                                 <thead>
                                     <tr>
@@ -129,95 +153,57 @@
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
-                                {% comment %} <tbody>
+                                <tbody>
+                                    {% if cart_items %} {% for item in cart_items %}
                                     <tr>
-                                        <td class="text-left">Spike Jacket</td>
-                                        <td>$99</td>
-                                        <td>S</td>
-                                        <td>1</td>
-                                        <td>$99</td>
+                                        <td class="text-left">{{ item.product.name }}</td>
+                                        <td>${{ item.product.price }}</td>
+                                        <td>—</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>${{ item.total_price }}</td>
                                     </tr>
+                                    {% endfor %} {% else %}
                                     <tr>
-                                        <td class="text-left">Argon Sweater</td>
-                                        <td>$199</td>
-                                        <td>M</td>
-                                        <td>2</td>
-                                        <td>$398</td>
+                                        <td colspan="5">Your cart is empty.</td>
                                     </tr>
-                                    <tr>
-                                        <td class="text-left">Babydoll Bow Dress</td>
-                                        <td>$299</td>
-                                        <td>XL</td>
-                                        <td>3</td>
-                                        <td>$897</td>
-                                    </tr>
+                                    {% endif %}
                                 </tbody>
                                 <tfoot class="font-weight-600">
                                     <tr>
                                         <td colspan="4" class="text-right">Shipping</td>
-                                        <td>$50.00</td>
+                                        <td>${{ shipping_cost }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="4" class="text-right">Total</td>
-                                        <td>$1,444.00</td>
+                                        <td>${{ total_price }}</td>
                                     </tr>
-                                </tfoot> {% endcomment %}
-                                <tbody>
-{% if cart_items %}
-    {% for item in cart_items %}
-    <tr>
-        <td class="text-left">{{ item.product.name }}</td>
-        <td>${{ item.product.price }}</td>
-        <td>—</td>
-        <td>{{ item.quantity }}</td>
-        <td>${{ item.total_price }}</td>
-    </tr>
-    {% endfor %}
-{% else %}
-    <tr>
-        <td colspan="5">Your cart is empty.</td>
-    </tr>
-{% endif %}
-</tbody>
-<tfoot class="font-weight-600">
-    <tr>
-        <td colspan="4" class="text-right">Shipping</td>
-        <td>${{ shipping_cost }}</td>
-    </tr>
-    <tr>
-        <td colspan="4" class="text-right">Total</td>
-        <td>${{ total_price }}</td>
-    </tr>
-</tfoot>
-
+                                </tfoot>
                             </table>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="your-payment">
-                        <h2 class="payment-title mb-3">Payment Method</h2>
-                        <div class="payment-method">
-                            <div class="payment-accordion">
-                                <!-- Add payment options later -->
-                            </div>
-                            <div class="order-button-payment text-center mt-4">
-                                <button class="btn btn-primary" type="submit">Place Order</button>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
+</div>
+<div class="order-button-payment mt-4 text-end">
+    {% comment %} <button class="btn btn-primary px-4" type="submit">Continue</button> {% endcomment %}
+    <a href="#" class="btn btn-primary px-4">Continue</a>
+
+</div>
 </div>
 <!--End Body Content-->
 
 <script>
-document.getElementById("change-address-btn").addEventListener("click", function() {
-    const formContainer = document.getElementById("address-form-container");
-    formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
-});
+    document.getElementById("change-address-btn").addEventListener("click", function() {
+        const formContainer = document.getElementById("address-form-container");
+        formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
+    });
+    
+    document.getElementById("show-address-btn").addEventListener("click", function() {
+        const listContainer = document.getElementById("address-list-container");
+        listContainer.style.display = listContainer.style.display === "none" ? "block" : "none";
+    });
 </script>
 {% endblock %}

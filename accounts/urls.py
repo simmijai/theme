@@ -10,5 +10,9 @@ urlpatterns = [
     path('login_otp/', views.login_otp_view, name='login_otp'),
     
     path('accounts/logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    
+    path('address/edit/<int:pk>/', views.edit_address, name='edit_address'),
+    path('address/delete/<int:pk>/', views.delete_address, name='delete_address'),
+
 
 ]

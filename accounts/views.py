@@ -156,3 +156,33 @@ def login_otp_view(request):
             messages.error(request, 'Invalid OTP.')
 
     return render(request, 'accounts/login_otp.html', {'email': email})
+
+from django.shortcuts import render, get_object_or_404, redirect
+from accounts.models import Address
+from accounts.forms import AddressForm
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def edit_address(request, pk):
+    address = get_object_or_404(Address, pk=pk, user=request.user)
+    
+    if request.method == "POST":
+        form = AddressForm(request.POST, instance=address)
+        if form.is_valid():
+            form.save()
+            return redirect('orders_checkout')
+    else:
+        form = AddressForm(instance=address)
+    
+    return render(request, 'accounts/edit_address.html', {'form': form})
+
+@login_required
+def delete_address(request, pk):
+    address = get_object_or_404(Address, pk=pk, user=request.user)
+    
+    if request.method == "POST":
+        address.delete()
+        return redirect('orders_checkout')
+    
+    return render(request, 'accounts/confirm_delete.html', {'address': address})
+
