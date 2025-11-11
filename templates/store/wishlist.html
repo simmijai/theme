@@ -65,7 +65,16 @@
                                         {% endif %}
                                     </td>
                                     <td class="product-subtotal text-center">
-                                        <button type="button" class="btn btn-small add-to-cart" data-id="{{ item.product.id }}">Add To Cart</button>
+                                        <form action="{% url 'add_to_cart' item.product.id %}" method="post">
+                                                {% csrf_token %}
+                                                
+                                                <input type="hidden" name="quantity" value="1"> 
+                                                
+                                                <button type="submit" class="btn btn-small add-to-cart">
+                                                    Add To Cart
+                                                </button>
+                                            </form>
+                                        {% comment %} <button type="button" class="btn btn-small add-to-cart" data-id="{{ item.product.id }}">Add To Cart</button> {% endcomment %}
                                     </td>
                                 </tr>
                                 {% empty %}

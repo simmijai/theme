@@ -103,11 +103,11 @@
 
                     		<tfoot>
                                 <tr>
-                                    <td colspan="3" class="text-left"><a href="{% url 'orders_checkout' %}" class="btn btn-secondary btn--small cart-continue">Continue shopping</a></td>
-                                    <td colspan="3" class="text-right">
+                                    <td colspan="3" class="text-left"><a href="{% url 'home' %}" class="btn btn-secondary btn--small cart-continue">Continue shopping</a></td>
+                                    {% comment %} <td colspan="3" class="text-right">
 	                                    <button type="submit" name="clear" class="btn btn-secondary btn--small  small--hide">Clear Cart</button>
                                     	<button type="submit" name="update" class="btn btn-secondary btn--small cart-continue ml-2">Update Cart</button>
-                                    </td>
+                                    </td> {% endcomment %}
                                 </tr>
                             </tfoot>
                     </table> 
@@ -228,15 +228,16 @@
                                 <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">$1001.00</span></span>
                               </div>
                               <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
-                              <p class="cart_tearm">
+                              {% comment %} <p class="cart_tearm">
                                 <label>
                                   <input type="checkbox" name="tearm" class="checkbox" value="tearm" required="">
                                   I agree with the terms and conditions
 								</label>
-                              </p>
-                              <input type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" value="Proceed To Checkout" disabled="disabled">
+                              </p> {% endcomment %}
+                              {% comment %} <input type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" value="Proceed To Checkout" disabled="disabled"> {% endcomment %}
+                              <a href="{% url 'orders_checkout' %}" id="cartCheckout" class="btn btn--small-wide checkout" style="display: block; text-align: center;">
+                                  Proceed To Checkout</a>
                               <div class="paymnet-img"><img src="{% static 'images/payment-img.jpg' %}" alt="Payment"></div>
-                              <p><a href="#;">Checkout with Multiple Addresses</a></p>
                             </div>
         
                         </div>

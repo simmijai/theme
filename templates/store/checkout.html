@@ -17,11 +17,25 @@
             <div class="col-xl-6 col-lg-6 col-md-12 mb-4">
 
                 <!-- Show Saved Addresses Button -->
-                <div class="text-center mb-3">
+                {% comment %} <div class="text-center mb-3">
                     <button id="show-address-btn" class="btn btn-outline-primary w-100 mb-2">
                         Select Delivery Address
                     </button>
-                </div>
+                </div> {% endcomment %}
+
+                <div class="row mb-4 gx-3">
+    <div class="col-md-6">
+        <button id="show-address-btn" class="btn btn-primary w-100 shadow-sm" type="button">
+            Select Delivery Address
+        </button>
+    </div>
+
+    <div class="col-md-6">
+        <button id="change-address-btn" class="btn btn-outline-secondary w-100 shadow-sm" type="button">
+            + Add New Address
+        </button>
+    </div>
+</div>
 
 
                 <!-- Saved Addresses List (hidden by default) -->
@@ -49,11 +63,11 @@
                 </div>
 
                 <!-- Change Address Button -->
-                <div class="text-center mb-3">
+                {% comment %} <div class="text-center mb-3">
                     <button id="change-address-btn" class="btn btn-outline-primary">
                         + Add New Address
                     </button>
-                </div>
+                </div> {% endcomment %}
 
                 <!-- Billing Form (hidden by default) -->
                 <div id="address-form-container" style="display:none;">
@@ -181,17 +195,18 @@
                             </table>
                         </div>
                     </div>
+                    <div class="order-button-payment mt-4 text-end">
+                    {% comment %} <button class="btn btn-primary px-4" type="submit">Continue</button> {% endcomment %}
+                    <a href="{% url 'payment_page' %}" class="btn btn-primary px-4">Continue</a>
+
+                </div>
                 </div>
             </div>
         </div>
 
     </div>
 </div>
-<div class="order-button-payment mt-4 text-end">
-    {% comment %} <button class="btn btn-primary px-4" type="submit">Continue</button> {% endcomment %}
-    <a href="{% url 'payment_page' %}" class="btn btn-primary px-4">Continue</a>
 
-</div>
 </div>
 <!--End Body Content-->
 
