@@ -30,7 +30,7 @@ def category_products(request, slug):
 
     categories = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
 
-    return render(request, 'store/product_page.html', {
+    return render(request, 'store/product_category_page.html', {
         'category': category,
         'categories': categories,
         'products': products,

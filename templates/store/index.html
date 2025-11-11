@@ -43,7 +43,7 @@
             <div class="row justify-content-center">
                 {% for cat in categories %}
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center mb-4">
-                    <a href="?category={{ cat.slug }}" class="text-dark text-decoration-none">
+                    <a href="{% url 'category_products' cat.slug %}" class="text-dark text-decoration-none">
                         <div class="rounded-circle overflow-hidden mx-auto mb-2" style="width:120px;height:120px;">
                             {% if cat.cat_image %}
                                 <img src="{{ cat.cat_image.url }}" alt="{{ cat.category_name }}"
