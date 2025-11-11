@@ -4,8 +4,9 @@ from products.models import Product,Category
 
 def index(request):
     category_slug = request.GET.get('category')
-    products = Product.objects.all()
-
+# Sort products by newest first (for "New Arrivals")
+    products = Product.objects.filter(is_available=True).order_by('-created_at')
+    
     if category_slug:
         try:
             category = Category.objects.get(slug=category_slug)
