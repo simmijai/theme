@@ -1,8 +1,11 @@
 from django.shortcuts import render
+from .models import HomeSlider  # import the new model
 from products.models import Product,Category
 
 
 def index(request):
+    
+    sliders = HomeSlider.objects.filter(is_active=True).order_by('order')
     category_slug = request.GET.get('category')
 # Sort products by newest first (for "New Arrivals")
     products = Product.objects.filter(is_available=True).order_by('-created_at')
@@ -17,6 +20,7 @@ def index(request):
 
     categories = Category.objects.filter(parent=None)  # top-level only
     return render(request, 'store/index.html', {
+        'sliders': sliders,
         'products': products,
         'categories': categories,
         'user': request.user  # now available in template
