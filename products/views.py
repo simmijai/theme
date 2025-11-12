@@ -75,7 +75,6 @@ def subcategory_products(request, slug):
     elif sort == 'oldest':
         products = products.order_by('created_at')
     elif sort == 'best-selling':
-        # Example: Assuming you have an OrderItem model or sales count field
         # products = products.annotate(sales_count=Sum('order_items__quantity')).order_by('-sales_count')
         pass  # replace with real logic if you have sales data
 

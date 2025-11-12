@@ -5,6 +5,14 @@
 
 {% block content %}
 <div id="page-content" class="py-5">
+    <!--Collection Banner-->
+    	<div class="collection-header">
+			<div class="collection-hero">
+        		<div class="collection-hero__image"><img class="blur-up lazyload" data-src="{% static 'images/cat-women.jpg' %}" src="{% static 'images/cat-women.jpg' %}" alt="Women" title="Women" /></div>
+        		<div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">{{category.category_name}}</h1></div>
+            </div>
+		</div>
+        <!--End Collection Banner-->
 
     <div class="container">
         <!-- CATEGORY TITLE + DESCRIPTION -->
