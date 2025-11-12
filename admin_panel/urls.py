@@ -7,7 +7,7 @@ urlpatterns = [
     # Dashboard & Others
     path('dashboard/', admin_views.admin_dashboard, name='admin_dashboard'),
     path('subcategory/list/', admin_views.admin_subcategory_list, name='admin_subcategory_list'),
-    path('customer_details/', admin_views.customer_details, name='customer_details'),
+    path('customer/<int:customer_id>/', customer_views.customer_details, name='customer_details'),
 
     # Category CRUD (Class-based)
     path('category/list/', category_views.CategoryListView.as_view(), name='admin_category_list'),
