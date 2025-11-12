@@ -39,15 +39,56 @@ def category_products(request, slug):
 
 
 
+# def subcategory_products(request, slug):
+#     subcategory = get_object_or_404(Category, slug=slug, parent__isnull=False)  # ensures it's a subcategory
+#     products = Product.objects.filter(category=subcategory)  # adjust field if needed
+
+#     context = {
+#         'products': products,
+#         'top_categories': Category.objects.filter(parent=None),  # navbar
+#     }
+#     return render(request, 'store/product_subcategory.html', context)
+
+from django.shortcuts import render, get_object_or_404
+from .models import Category, Product
+
 def subcategory_products(request, slug):
-    subcategory = get_object_or_404(Category, slug=slug, parent__isnull=False)  # ensures it's a subcategory
-    products = Product.objects.filter(category=subcategory)  # adjust field if needed
+    subcategory = get_object_or_404(Category, slug=slug, parent__isnull=False)
+    
+    # Get all products in this subcategory
+    products = Product.objects.filter(category=subcategory)
+    
+    # Get the 'sort' parameter from GET request
+    sort = request.GET.get('sort', '')
+    
+    # Apply sorting
+    if sort == 'title-ascending':
+        products = products.order_by('name')
+    elif sort == 'title-descending':
+        products = products.order_by('-name')
+    elif sort == 'price-ascending':
+        products = products.order_by('price')
+    elif sort == 'price-descending':
+        products = products.order_by('-price')
+    elif sort == 'newest':
+        products = products.order_by('-created_at')
+    elif sort == 'oldest':
+        products = products.order_by('created_at')
+    elif sort == 'best-selling':
+        # Example: Assuming you have an OrderItem model or sales count field
+        # products = products.annotate(sales_count=Sum('order_items__quantity')).order_by('-sales_count')
+        pass  # replace with real logic if you have sales data
 
     context = {
+        'subcategory': subcategory,
         'products': products,
-        'top_categories': Category.objects.filter(parent=None),  # navbar
+        'sort': sort,
+        'product_count': products.count(),
+        'top_categories': Category.objects.filter(parent=None),  # for navbar/sidebar
     }
+    
     return render(request, 'store/product_subcategory.html', context)
+
 
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)

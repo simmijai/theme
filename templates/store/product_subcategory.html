@@ -262,7 +262,7 @@
                                         	<img src="{% static 'images/list.jpg' %}" alt="List" />
                                         </a>
                                     </div>
-                                    <div class="col-4 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
+                                    {% comment %} <div class="col-4 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
                                     	<span class="filters-toolbar__product-count">Showing: 22</span>
                                     </div>
                                     <div class="col-4 col-md-4 col-lg-4 text-right">
@@ -280,7 +280,31 @@
                                       		</select>
                                       		<input class="collection-header__default-sort" type="hidden" value="manual">
                                         </div>
-                                    </div>
+                                    </div> {% endcomment %}
+
+                                    <div class="col-4 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
+                                <span class="filters-toolbar__product-count">
+                                    Showing: {{ product_count }}
+                                </span>
+                            </div>
+                            <div class="col-4 col-md-4 col-lg-4 text-right">
+                                <div class="filters-toolbar__item">
+                                    <form method="get">
+                                        <label for="SortBy" class="hidden">Sort</label>
+                                        <select name="sort" id="SortBy" class="filters-toolbar__input filters-toolbar__input--sort" onchange="this.form.submit()">
+                                            <option value="">Sort</option>
+                                            <option value="best-selling" {% if sort == 'best-selling' %}selected{% endif %}>Best Selling</option>
+                                            <option value="title-ascending" {% if sort == 'title-ascending' %}selected{% endif %}>Alphabetically, A-Z</option>
+                                            <option value="title-descending" {% if sort == 'title-descending' %}selected{% endif %}>Alphabetically, Z-A</option>
+                                            <option value="price-ascending" {% if sort == 'price-ascending' %}selected{% endif %}>Price, low to high</option>
+                                            <option value="price-descending" {% if sort == 'price-descending' %}selected{% endif %}>Price, high to low</option>
+                                            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Date, new to old</option>
+                                            <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Date, old to new</option>
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+
 
                                 </div>
                             </div>
