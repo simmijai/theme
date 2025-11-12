@@ -1,7 +1,6 @@
 # admin_panel/urls.py
 from django.urls import path
-from admin_panel.views import admin_views, category_views,product_views
-
+from admin_panel.views import admin_views, category_views,product_views,customer_views
 # from . import views
 
 urlpatterns = [
@@ -26,5 +25,5 @@ urlpatterns = [
 
     path('products/image/delete/<int:pk>/', product_views.product_image_delete, name='admin_product_image_delete'),
 
-
+    path('customer/list/', customer_views.customer_list, name='customer_list'),
 ]
