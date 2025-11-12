@@ -39,7 +39,7 @@
 
 
                 <!-- Saved Addresses List (hidden by default) -->
-                <div id="address-list-container" style="display:none;" class="mb-3">
+                <div id="address-list-container" class="mb-3">
                     {% if addresses %}
                     <form method="POST" action="{% url 'orders_checkout' %}">
                         {% csrf_token %} {% for address in addresses %}
