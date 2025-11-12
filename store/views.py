@@ -8,7 +8,7 @@ def index(request):
     sliders = HomeSlider.objects.filter(is_active=True).order_by('order')
     category_slug = request.GET.get('category')
 # Sort products by newest first (for "New Arrivals")
-    products = Product.objects.filter(is_available=True).order_by('-created_at')
+    products = Product.objects.filter(is_available=True).order_by('-created_at')[:8]
     
     if category_slug:
         try:

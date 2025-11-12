@@ -10,8 +10,8 @@
     	<div class="collection-header">
 			<div class="collection-hero">
         		<div class="collection-hero__image"><img class="blur-up lazyload" data-src="{% static 'images/cat-women.jpg' %}" src="{% static 'images/cat-women.jpg' %}" alt="Women" title="Women" /></div>
-        		<div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">Shop Left Sidebar</h1></div>
-      		</div>
+        		<div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">{{category.category_name}}</h1></div>
+            </div>
 		</div>
         <!--End Collection Banner-->
         
@@ -21,7 +21,7 @@
             	<div class="col-12 col-sm-12 col-md-3 col-lg-3 sidebar filterbar">
                 	<div class="closeFilter d-block d-md-none d-lg-none"><i class="icon icon anm anm-times-l"></i></div>
                 	<div class="sidebar_tags">
-                    	<!--Categories-->
+                    	{% comment %} <!--Categories-->
                     	<div class="sidebar_widget categories filter-widget">
                             <div class="widget-title"><h2>Categories</h2></div>
                             <div class="widget-content">
@@ -50,7 +50,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <!--Categories-->
+                        <!--Categories--> {% endcomment %}
                         <!--Price Filter-->
                         <div class="sidebar_widget filterBox filter-widget">
                             <div class="widget-title">
@@ -142,7 +142,7 @@
                         </div>
                         <!--End Brand--> {% endcomment %}
                         <!--Popular Products-->
-						<div class="sidebar_widget">
+						{% comment %} <div class="sidebar_widget">
                         	<div class="widget-title"><h2>Popular Products</h2></div>
 							<div class="widget-content">
                                 <div class="list list-sidebar-products">
@@ -162,9 +162,38 @@
                                   </div>
                                 </div>
                           	</div>
-						</div>
+						</div> {% endcomment %}
+                        <div class="sidebar_widget">
+    <div class="widget-title"><h2>Popular Products</h2></div>
+    <div class="widget-content">
+        <div class="list list-sidebar-products">
+            <div class="grid">
+                {% for product in products %}
+                <div class="grid__item">
+                    <div class="mini-list-item">
+                        <div class="mini-view_image">
+                            <a class="grid-view-item__link" href="{% url 'product_detail' product.slug %}">
+                                <img class="grid-view-item__image" src="{{ product.image.url }}" alt="{{ product.name }}">
+                            </a>
+                        </div>
+                        <div class="details">
+                            <a class="grid-view-item__title" href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>
+                            <div class="grid-view-item__meta">
+                                <span class="product-price__price">₹{{ product.price }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No popular products found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
                         <!--End Popular Products-->
-                        {% comment %} <!--Banner-->
+                         {% comment %} <!--Banner-->
                         <div class="sidebar_widget static-banner">
                         	<img src="{% static 'images/side-banner-2.jpg' %}" alt="" />
                         </div>
