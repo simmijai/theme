@@ -37,18 +37,6 @@ def category_products(request, slug):
         'selected_category': slug,  # use slug for active highlighting
     })
 
-
-
-# def subcategory_products(request, slug):
-#     subcategory = get_object_or_404(Category, slug=slug, parent__isnull=False)  # ensures it's a subcategory
-#     products = Product.objects.filter(category=subcategory)  # adjust field if needed
-
-#     context = {
-#         'products': products,
-#         'top_categories': Category.objects.filter(parent=None),  # navbar
-#     }
-#     return render(request, 'store/product_subcategory.html', context)
-
 from django.shortcuts import render, get_object_or_404
 from .models import Category, Product
 
@@ -89,7 +77,34 @@ def subcategory_products(request, slug):
     return render(request, 'store/product_subcategory.html', context)
 
 
+# def product_detail(request, slug):
+#     product = get_object_or_404(Product, slug=slug)
+#     return render(request, 'store/product_detail.html', {'product': product})
+
+from orders.models import OrderItem
+
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
-    return render(request, 'store/product_detail.html', {'product': product})
+    user = request.user
+    show_review_button = False
+    existing_review = None
 
+    if user.is_authenticated:
+        # Check if user has delivered orders with this product
+        delivered_orders = OrderItem.objects.filter(
+            order__user=user,
+            order__status='Delivered',
+            product=product
+        )
+        if delivered_orders.exists():
+            show_review_button = True
+
+        # Check if user has already submitted a review
+        existing_review = product.reviews.filter(user=user).first()  # depends on your Review model
+
+    context = {
+        'product': product,
+        'show_review_button': show_review_button,
+        'existing_review': existing_review,
+    }
+    return render(request, 'store/product_detail.html', context)
