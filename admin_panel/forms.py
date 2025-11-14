@@ -1,5 +1,7 @@
 from django import forms
 from products.models import Product, ProductImage
+from store.models import HomeSlider
+
 
 # ✅ Custom widget for selecting multiple files
 class MultiFileInput(forms.ClearableFileInput):
@@ -36,3 +38,9 @@ class ProductImageForm(forms.Form):
     )
     
     
+
+class HomeSliderForm(forms.ModelForm):
+    class Meta:
+        model = HomeSlider
+        fields = ['title', 'subtitle', 'image', 'button_text', 'button_link', 'is_active', 'order']
+

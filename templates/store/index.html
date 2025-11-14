@@ -6,7 +6,7 @@
 {% block content %}
 <div id="page-content">
 
-    <!-- Hero Slider -->
+    {% comment %} <!-- Hero Slider -->
     {% if sliders %}
     <div class="slideshow slideshow-wrapper pb-section sliderFull">
         <div class="home-slideshow">
@@ -36,7 +36,53 @@
         </div>
     </div>
     {% endif %}
-    <!-- End Hero Slider -->
+    <!-- End Hero Slider --> {% endcomment %}
+
+    {% if sliders %}
+    <div class="slideshow slideshow-wrapper pb-section sliderFull">
+            <div class="home-slideshow">
+
+                {% for slide in sliders %}
+                <div class="slide">
+                    <div class="blur-up lazyload bg-size">
+
+                        <img class="blur-up lazyload bg-img"
+                            data-src="{{ slide.image.url }}"
+                            src="{{ slide.image.url }}"
+                            alt="{{ slide.title }}">
+
+                        <div class="slideshow__text-wrap slideshow__overlay classic bottom">
+                            <div class="slideshow__text-content bottom">
+                                <div class="wrap-caption center">
+
+                                    <h2 class="h1 mega-title slideshow__title">
+                                        {{ slide.title }}
+                                    </h2>
+
+                                    {% if slide.subtitle %}
+                                    <span class="mega-subtitle slideshow__subtitle">
+                                        {{ slide.subtitle }}
+                                    </span>
+                                    {% endif %}
+
+                                    {% if slide.button_link %}
+                                    <a href="{{ slide.button_link }}" class="btn">
+                                        {{ slide.button_text }}
+                                    </a>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    {% endif %}
+
 
     <!-- Category Section -->
     {% if categories %}
