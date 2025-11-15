@@ -108,3 +108,56 @@ def product_detail(request, slug):
         'existing_review': existing_review,
     }
     return render(request, 'store/product_detail.html', context)
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from products.models import Product
+from store.models import Review
+from orders.models import Order
+
+@login_required
+def add_or_edit_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    user = request.user
+
+    # Try to get existing review
+    review, created = Review.objects.get_or_create(
+        product=product,
+        user=user,
+        defaults={'order': Order.objects.filter(user=user, status='Delivered').last()}
+    )
+
+    # Only allow review if user has a delivered order for this product
+    delivered_orders = product.orderitem_set.filter(order__user=user, order__status='Delivered')
+    if not delivered_orders.exists():
+        messages.error(request, "You cannot review a product you haven't purchased.")
+        return redirect('product_detail', slug=product.slug)
+
+    if request.method == "POST":
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+        image = request.FILES.get('image')
+
+        review.rating = rating
+        review.comment = comment
+        if image:
+            review.image = image
+        review.save()
+
+        messages.success(request, "Your review has been submitted successfully!")
+        return redirect('product_detail', slug=product.slug)
+
+    # GET request is handled by the modal already, no need to render separate template
+    return redirect('product_detail', slug=product.slug)
+
+
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    product_slug = review.product.slug
+    review.delete()
+    return redirect('product_detail', slug=product_slug)
