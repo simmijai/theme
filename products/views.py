@@ -82,6 +82,8 @@ def subcategory_products(request, slug):
 #     return render(request, 'store/product_detail.html', {'product': product})
 
 from orders.models import OrderItem
+from django.db.models import Q   # <-- ADD THIS IMPORT
+
 
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
@@ -102,10 +104,21 @@ def product_detail(request, slug):
         # Check if user has already submitted a review
         existing_review = product.reviews.filter(user=user).first()  # depends on your Review model
 
+     # Build reviews queryset for display:
+    if user.is_authenticated:
+        # show approved reviews + this user's review (if exists)
+        reviews_qs = product.reviews.filter(Q(is_approved=True) | Q(user=user)).order_by('-created_at')
+    else:
+        reviews_qs = product.reviews.filter(is_approved=True).order_by('-created_at')
+
+    # Limit to last 10 as you wanted
+    reviews_to_show = reviews_qs[:10]
+    
     context = {
         'product': product,
         'show_review_button': show_review_button,
         'existing_review': existing_review,
+        'reviews': reviews_to_show
     }
     return render(request, 'store/product_detail.html', context)
 

@@ -25,6 +25,12 @@ from django.conf import settings
 from products.models import Product
 from orders.models import Order
 
+# store/models.py (excerpt)
+from django.db import models
+from django.conf import settings
+from products.models import Product
+from orders.models import Order
+
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
@@ -32,6 +38,7 @@ class Review(models.Model):
     rating = models.PositiveSmallIntegerField(default=5)  # 1-5 stars
     comment = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='review_images/', blank=True, null=True)
+    is_approved = models.BooleanField(default=False, help_text="If true the review is visible to all users.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -41,3 +48,7 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.product.name} ({self.rating}★)"
+
+    @property
+    def visible_to_public(self):
+        return self.is_approved

@@ -81,11 +81,13 @@
                                 </div>
                             </form>
                             {% if user.is_authenticated and show_review_button %}
+                              {% if show_review_button %}
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
                                 {% if existing_review %}Edit Your Review{% else %}Add Review{% endif %}
                             </button>
-                            {% elif not user.is_authenticated %}
-                            <p><a href="{% url 'login' %}">Login</a> to add a review</p>
+                            {% comment %} {% elif not user.is_authenticated %}
+                            <p><a href="{% url 'login' %}">Login</a> to add a review</p> {% endcomment %}
+                              {% endif %}
                             {% endif %}
 
                         </div>
@@ -141,7 +143,7 @@
 </div>
 
 <h4>Reviews</h4>
-{% for review in product.reviews.all|slice:":10" %}
+{% for review in reviews %}
   <div class="card mb-2">
     <div class="card-body">
       <strong>{{ review.user.get_full_name|default:review.user.email }}</strong> - {{ review.rating }} ★
@@ -149,9 +151,12 @@
       {% if review.image %}
         <img src="{{ review.image.url }}" style="max-width:150px;">
       {% endif %}
-      {% if review.user == user %}
-        <a href="{% url 'add_or_edit_review' product.id %}" class="btn btn-sm btn-warning">Edit</a>
+        {% if review.user == user %}
+        {% comment %} <a href="{% url 'add_or_edit_review' product.id %}" class="btn btn-sm btn-warning">Edit</a> {% endcomment %}
         <a href="{% url 'delete_review' review.id %}" class="btn btn-sm btn-danger">Delete</a>
+        {% comment %} {% if not review.is_approved %}
+        <span class="badge bg-warning ms-2">Pending Approval</span>
+        {% endif %} {% endcomment %}
       {% endif %}
     </div>
   </div>

@@ -45,6 +45,7 @@ path('sliders/', views_slider.slider_list, name='admin_slider_list'),
     path('reviews/', admin_reviews.admin_review_list, name='admin_review_list'),
     path('reviews/edit/<int:review_id>/', admin_reviews.admin_review_edit, name='admin_review_edit'),
     path('reviews/delete/<int:review_id>/', admin_reviews.admin_review_delete, name='admin_review_delete'),
+    path('reviews/toggle/<int:review_id>/', admin_reviews.admin_review_toggle, name='admin_review_toggle'),
 
 
 
