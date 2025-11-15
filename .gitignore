@@ -40,6 +40,7 @@ Thumbs.db
 *.tmp
 *.swp
 *.swo
+*.pyc
 
 # If you manually copy your theme into static, keep this
 # but make sure to not ignore your actual static source folder

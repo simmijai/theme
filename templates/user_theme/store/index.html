@@ -1,0 +1,169 @@
+{% extends 'user_theme/base.html' %}
+
+{% load static %}
+
+{% block title %}Home - Belle E-commerce{% endblock %}
+
+{% block content %}
+<div id="page-content">
+    
+    <!-- Slideshow Section -->
+    {% if sliders %}
+    <div class="slideshow slideshow-wrapper pb-section sliderFull">
+            <div class="home-slideshow">
+
+                {% for slide in sliders %}
+                <div class="slide">
+                    <div class="blur-up lazyload bg-size">
+
+                        <img class="blur-up lazyload bg-img"
+                            data-src="{{ slide.image.url }}"
+                            src="{{ slide.image.url }}"
+                            alt="{{ slide.title }}">
+
+                        <div class="slideshow__text-wrap slideshow__overlay classic bottom">
+                            <div class="slideshow__text-content bottom">
+                                <div class="wrap-caption center">
+
+                                    <h2 class="h1 mega-title slideshow__title">
+                                        {{ slide.title }}
+                                    </h2>
+
+                                    {% if slide.subtitle %}
+                                    <span class="mega-subtitle slideshow__subtitle">
+                                        {{ slide.subtitle }}
+                                    </span>
+                                    {% endif %}
+
+                                    {% if slide.button_link %}
+                                    <a href="{{ slide.button_link }}" class="btn">
+                                        {{ slide.button_text }}
+                                    </a>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    {% endif %}
+
+
+    <!-- Category Section -->
+    {% if categories %}
+    <div class="section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="h2">Shop by Category</h2>
+                <p class="text-muted">Explore our collections</p>
+            </div>
+            <div class="row justify-content-center">
+                {% for cat in categories %}
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center mb-4">
+                    <a href="{% url 'category_products' cat.slug %}" class="text-dark text-decoration-none">
+                        <div class="rounded-circle overflow-hidden mx-auto mb-2" style="width:120px;height:120px;">
+                            {% if cat.cat_image %}
+                                <img src="{{ cat.cat_image.url }}" alt="{{ cat.category_name }}"
+                                     class="img-fluid w-100 h-100" style="object-fit:cover;">
+                            {% else %}
+                                <img src="{% static 'images/no-image.png' %}" class="img-fluid w-100 h-100" style="object-fit:cover;">
+                            {% endif %}
+                        </div>
+                        <h6>{{ cat.category_name }}</h6>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <!-- End Category Section -->
+
+    <!-- Product Grid -->
+    <div class="product-rows section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="h2">New Arrivals</h2>
+                <p>Browse our latest items</p>
+            </div>
+
+            <div class="grid-products">
+                <div class="row" id="product-list">
+                    {% for product in products %}
+                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item grid-view-item style2">
+                        <div class="grid-view_image">
+
+                            <!-- Product Image -->
+                            <a href="{% url 'product_detail' product.slug %}" class="grid-view-item__link">
+                                <img class="grid-view-item__image primary blur-up lazyload"
+                                     src="{{ product.image.url }}" alt="{{ product.name }}">
+                                <img class="grid-view-item__image hover blur-up lazyload"
+                                     src="{{ product.image.url }}" alt="{{ product.name }}">
+                            </a>
+
+                            <!-- Product Details -->
+                            <div class="product-details hoverDetails text-center mobile">
+                                {% if product.category.parent %}
+                                    <div class="subcategory-name text-muted" style="font-size: 14px;">
+                                        {{ product.category.parent.name }} › {{ product.category.name }}
+                                    </div>
+                                {% else %}
+                                    <div class="subcategory-name text-muted" style="font-size: 14px;">
+                                        {{ product.category.name }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="product-name mt-2">
+                                    <a href="{% url 'product_detail' product.slug %}" class="text-dark font-weight-bold">{{ product.name }}</a>
+                                </div>
+
+                                <div class="product-price mt-1">
+                                    <span class="price">₹{{ product.price }}</span>
+                                </div>
+
+                                <div class="button-set mt-2">
+                                    <a href="javascript:void(0)" title="Quick View"
+                                       class="quick-view-popup quick-view"
+                                       data-toggle="modal" data-target="#content_quickview">
+                                        <i class="icon anm anm-search-plus-r"></i>
+                                    </a>
+
+                                    <form action="{% url 'add_to_cart' product.id %}" method="post" style="display:inline-block;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button class="btn cartIcon btn-addto-cart" type="submit" tabindex="0">
+                                            <i class="icon anm anm-bag-l"></i>
+                                        </button>
+                                    </form>
+
+                                    <div class="wishlist-btn">
+                                        <a href="{% url 'add_to_wishlist' product.id %}" class="wishlist add-to-wishlist" title="Add to Wishlist">
+                                            <i class="icon anm anm-heart-l"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center">
+                        <p>No products available.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% comment %} <div class="text-center mt-4">
+                <a href="#" class="btn btn-outline-dark">View All Products</a>
+            </div> {% endcomment %}
+        </div>
+    </div>
+    <!-- End Product Grid -->
+
+</div>
+{% endblock %}

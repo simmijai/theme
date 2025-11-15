@@ -1,0 +1,103 @@
+{% extends 'user_theme/base.html' %}
+
+{% load static %}
+
+{% block title %}{{ category.category_name }} - Belle E-commerce{% endblock %}
+
+{% block content %}
+<div id="page-content" class="py-5">
+    <!--Collection Banner-->
+    	<div class="collection-header">
+			<div class="collection-hero">
+        		<div class="collection-hero__image"><img class="blur-up lazyload" data-src="{% static 'images/cat-women.jpg' %}" src="{% static 'images/cat-women.jpg' %}" alt="Women" title="Women" /></div>
+        		<div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">{{category.category_name}}</h1></div>
+            </div>
+		</div>
+        <!--End Collection Banner-->
+
+    <div class="container">
+        <!-- CATEGORY TITLE + DESCRIPTION -->
+        <div class="text-center mb-5">
+            <h1 class="fw-bold text-uppercase">{{ category.category_name }}</h1>
+            <div class="category-description mx-auto" style="max-width:700px;">
+                <p class="text-muted">
+                    {% if category.description %}
+                        {{ category.description }}
+                    {% else %}
+                        Discover our exclusive range of {{ category.category_name }} — crafted for elegance and comfort.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- SUBCATEGORIES SECTION -->
+        {% if category.subcategories.all %}
+        <div class="text-center mb-5">
+            <h3 class="fw-semibold mb-4">Explore Subcategories</h3>
+            <div class="row justify-content-center">
+                {% for subcat in category.subcategories.all %}
+                <div class="col-6 col-md-3 col-lg-2 mb-4">
+                    <a href="{% url 'category_products' subcat.slug %}" class="text-decoration-none text-dark">
+                        <div class="rounded-circle overflow-hidden shadow-sm mx-auto mb-2"
+                             style="width:120px;height:120px;">
+                            {% if subcat.cat_image %}
+                                <img src="{{ subcat.cat_image.url }}" alt="{{ subcat.category_name }}"
+                                     class="img-fluid w-100 h-100" style="object-fit:cover;">
+                            {% else %}
+                                <img src="{% static 'images/no-image.png' %}" alt="No Image"
+                                     class="img-fluid w-100 h-100" style="object-fit:cover;">
+                            {% endif %}
+                        </div>
+                        <h6 class="fw-semibold">{{ subcat.category_name }}</h6>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- PRODUCT GRID -->
+        <div class="mb-4">
+            <h3 class="fw-semibold mb-4 text-center">Products</h3>
+            <div class="row">
+                {% for product in products %}
+                <div class="col-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <a href="{% url 'product_detail' product.slug %}">
+                            <img src="{{ product.image.url }}" class="card-img-top"
+                                 alt="{{ product.name }}" style="height:250px;object-fit:cover;">
+                        </a>
+                        <div class="card-body text-center">
+                            <p class="small text-muted mb-1">{{ product.category.category_name }}</p>
+                            <h6 class="fw-semibold text-truncate">
+                                <a href="{% url 'product_detail' product.slug %}"
+                                   class="text-dark text-decoration-none">{{ product.name }}</a>
+                            </h6>
+                            <p class="fw-bold text-primary mb-2">₹{{ product.price }}</p>
+
+                            <form action="{% url 'add_to_cart' product.id %}" method="post" style="display:inline-block;">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button class="btn btn-sm btn-dark" type="submit">
+                                    <i class="icon anm anm-bag-l me-1"></i> Add to Cart
+                                </button>
+                            </form>
+
+                            <a href="{% url 'add_to_wishlist' product.id %}"
+                               class="btn btn-sm btn-outline-secondary ms-2">
+                                <i class="icon anm anm-heart-l"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No products found in this category.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

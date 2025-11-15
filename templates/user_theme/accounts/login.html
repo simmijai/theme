@@ -1,0 +1,47 @@
+{% extends 'user_theme/base.html' %}
+
+{% load static %}
+
+{% block title %}Login - Belle E-commerce{% endblock %}
+
+{% block content %}
+<div id="page-content" style="padding-top:60px;">
+    <div class="page section-header text-center">
+        <div class="page-title">
+            <div class="wrapper"><h1 class="page-width">Login</h1></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="login-form">
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-100">Send OTP</button>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <p>Don't have an account? <a href="{% url 'register' %}">Create Account</a></p>
+                        </div>
+                    </form>
+
+                    {% if messages %}
+                        <ul>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

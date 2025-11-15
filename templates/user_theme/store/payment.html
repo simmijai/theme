@@ -1,0 +1,64 @@
+{% extends 'user_theme/base.html' %}
+
+{% load static %}
+
+{% block title %}Payment - Belle E-commerce{% endblock %}
+
+{% block content %}
+<div id="page-content" style="padding-top:60px;">
+  <div class="page section-header text-center mb-4">
+    <div class="page-title">
+      <div class="wrapper">
+        <h1 class="page-width">Payment</h1>
+        <p class="text-muted mt-2">Select your payment method to complete the order</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-6 col-lg-7 col-md-10">
+        <div class="card shadow-lg border-0 rounded-4 p-4">
+          <h3 class="mb-4 text-center">Choose Payment Method</h3>
+
+          <form method="POST" action="{% url 'place_order' %}">
+            {% csrf_token %}
+            
+            <!-- COD Option -->
+            <div class="form-check mb-3 border p-3 rounded">
+              <input class="form-check-input" type="radio" name="payment_method" id="cod" value="COD" checked>
+              <label class="form-check-label fw-bold" for="cod">💵 Cash on Delivery (COD)</label>
+            </div>
+
+            <!-- Summary -->
+            <div class="mt-4 border-top pt-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span>Subtotal:</span>
+                <strong>${{ total_price }}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Shipping:</span>
+                <strong>${{ shipping_cost }}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="fw-bold fs-5">Total:</span>
+                <strong class="text-success fs-5">${{ grand_total }}</strong>
+              </div>
+            </div>
+
+            <!-- Button -->
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-success px-5 py-2 rounded-pill">
+                Place Order
+              </button>
+              <div class="mt-2">
+                <a href="{% url 'orders_checkout' %}" class="text-muted small">&larr; Back to Checkout</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
