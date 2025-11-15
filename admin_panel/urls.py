@@ -1,7 +1,10 @@
 # admin_panel/urls.py
 from django.urls import path
-from admin_panel.views import admin_views, category_views,product_views,customer_views,order_views, views_slider
-# from . import views
+from admin_panel.views import (
+    admin_views, category_views, product_views,
+    customer_views, order_views, views_slider, admin_reviews
+)# from . import views
+
 
 urlpatterns = [
     # Dashboard & Others
@@ -38,8 +41,13 @@ path('sliders/', views_slider.slider_list, name='admin_slider_list'),
     path('sliders/create/', views_slider.slider_create, name='admin_slider_create'),
     path('sliders/edit/<int:slider_id>/', views_slider.slider_edit, name='admin_slider_edit'),
     path('sliders/delete/<int:slider_id>/', views_slider.slider_delete, name='admin_slider_delete'),
-
+    
+    path('reviews/', admin_reviews.admin_review_list, name='admin_review_list'),
+    path('reviews/edit/<int:review_id>/', admin_reviews.admin_review_edit, name='admin_review_edit'),
+    path('reviews/delete/<int:review_id>/', admin_reviews.admin_review_delete, name='admin_review_delete'),
 
 
 
 ]
+
+
