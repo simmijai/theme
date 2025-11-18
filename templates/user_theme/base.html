@@ -46,7 +46,7 @@
 
   <div class="pageWrapper">
       {% include 'user_theme/includes/navbar.html' %}
-            {% if messages %}
+            {% if messages and user.is_staff %}
             <div class="container mt-3">
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
