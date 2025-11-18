@@ -10,21 +10,38 @@ from django.http import JsonResponse
 @login_required
 def add_to_cart(request, product_id):
     """Add product to user's cart or increase quantity if already exists"""
-    product = get_object_or_404(Product, id=product_id)
-    quantity = int(request.POST.get('quantity', 1))
+    try:
+        product = get_object_or_404(Product, id=product_id)
+        
+        # Handle both POST and GET requests
+        if request.method == 'POST':
+            quantity = int(request.POST.get('quantity', 1))
+        else:
+            quantity = int(request.GET.get('quantity', 1))
+        
+        # Validate quantity
+        if quantity < 1:
+            quantity = 1
+        
+        cart_item, created = CartItem.objects.get_or_create(
+            user=request.user,
+            product=product,
+            defaults={'quantity': quantity}
+        )
 
-    cart_item, created = CartItem.objects.get_or_create(
-        user=request.user,
-        product=product,
-        defaults={'quantity': quantity}
-    )
+        if not created:
+            cart_item.quantity += quantity
+            cart_item.save()
 
-    if not created:
-        cart_item.quantity += quantity
-        cart_item.save()
-
-    messages.success(request, f"'{product.name}' added to your cart.")
-    return redirect('cart_view')
+        messages.success(request, f"'{product.name}' added to your cart.")
+        return redirect('cart_view')
+    
+    except ValueError:
+        messages.error(request, 'Invalid quantity provided.')
+        return redirect('cart_view')
+    except Exception as e:
+        messages.error(request, f'Error adding item to cart: {str(e)}')
+        return redirect('cart_view')
 
 
 @login_required
