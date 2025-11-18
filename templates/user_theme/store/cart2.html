@@ -82,11 +82,15 @@
         </td>
         <td class="cart__update-wrapper cart-flex-item text-right">
             <div class="cart__qty text-center">
-                {{ item.quantity }}
+                <div class="qtyField">
+                        <button class="cart-qty-btn minus" data-id="{{ item.product.id }}" type="button">−</button>
+                        <input class="cart__qty-input cart-qty-input" type="text" name="quantity" value="{{ item.quantity }}" data-id="{{ item.product.id }}" pattern="[0-9]*" style="width:48px;text-align:center;">
+                        <button class="cart-qty-btn plus" data-id="{{ item.product.id }}" type="button">+</button>
+                </div>
             </div>
         </td>
         <td class="text-right small--hide cart-price">
-            <div><span class="money">₹{{ item.total_price }}</span></div>
+            <div><span class="money" id="item-total-{{ item.product.id }}">₹{{ item.total_price }}</span></div>
         </td>
         <td class="text-center small--hide">
         <a href="#" class="btn btn--secondary cart__remove" data-id="{{ item.product.id }}" title="Remove Item">
@@ -212,10 +216,10 @@
                         
                         <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
                             <div class="solid-border">	
-                              <div class="row border-bottom pb-2">
-                                <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                                <span class="col-12 col-sm-6 text-right"><span class="money">$735.00</span></span>
-                              </div>
+                                                            <div class="row border-bottom pb-2">
+                                                                <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
+                                                                <span class="col-12 col-sm-6 text-right"><span class="money" id="cart-subtotal">₹{{ total_price }}</span></span>
+                                                            </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title">Tax</span>
                                 <span class="col-12 col-sm-6 text-right">$10.00</span>
@@ -251,27 +255,120 @@
     </div>
     <!--End Body Content-->
     <script>
+// Helper to read cookie (for CSRF)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+// Remove item handler
 document.querySelectorAll('.cart__remove').forEach(btn => {
     btn.addEventListener('click', function(e) {
         e.preventDefault();
         const productId = this.dataset.id;
+        const row = this.closest('tr');
 
         fetch(`/cart/remove/${productId}/`, {
             method: 'POST',
             headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
+                'X-CSRFToken': csrftoken,
+                'X-Requested-With': 'XMLHttpRequest'
             },
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // remove row instantly
-                this.closest('tr').remove();
+                row.remove();
+                // update cart subtotal if provided (optional)
+                if (data.cart_total !== undefined) {
+                    const subtotalEl = document.getElementById('cart-subtotal');
+                    if (subtotalEl) subtotalEl.textContent = '₹' + data.cart_total;
+                }
             } else {
                 console.error(data.message);
             }
         })
         .catch(error => console.error('Error:', error));
+    });
+});
+
+// Update quantity helpers
+function updateQuantity(productId, quantity, onSuccess) {
+    fetch(`/cart/update/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `quantity=${encodeURIComponent(quantity)}`
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            if (onSuccess) onSuccess(data);
+        } else {
+            console.error('Update failed', data.message);
+        }
+    })
+    .catch(err => console.error('Update error', err));
+}
+
+// Wire +/- buttons and direct input edits (use cart-specific classes to avoid main.js handlers)
+document.querySelectorAll('.cart-qty-btn.plus, .cart-qty-btn.minus').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        const id = this.dataset.id;
+        const input = document.querySelector(`input[data-id="${id}"]`);
+        const row = input.closest('tr');
+        let qty = parseInt(input.value) || 0;
+        if (this.classList.contains('plus')) qty += 1;
+        else qty = Math.max(0, qty - 1);
+
+        // Optimistically update UI
+        input.value = qty;
+
+        updateQuantity(id, qty, function(data){
+            // update item total and cart subtotal
+            const itemTotalEl = document.getElementById(`item-total-${id}`);
+            if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = '₹' + data.item_total;
+            const subtotalEl = document.getElementById('cart-subtotal');
+            if (subtotalEl && data.cart_total !== undefined) subtotalEl.textContent = '₹' + data.cart_total;
+            // if item removed (qty 0), remove row
+            if (qty <= 0) {
+                row.remove();
+            }
+        });
+    });
+});
+
+// Handle manual input change (on blur) for cart inputs
+document.querySelectorAll('.cart-qty-input').forEach(input => {
+    input.addEventListener('change', function(e){
+        const id = this.dataset.id;
+        let qty = parseInt(this.value) || 0;
+        if (qty < 0) qty = 0;
+        this.value = qty;
+        updateQuantity(id, qty, function(data){
+            const itemTotalEl = document.getElementById(`item-total-${id}`);
+            if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = '₹' + data.item_total;
+            const subtotalEl = document.getElementById('cart-subtotal');
+            if (subtotalEl && data.cart_total !== undefined) subtotalEl.textContent = '₹' + data.cart_total;
+            if (qty <= 0) {
+                const row = input.closest('tr'); if (row) row.remove();
+            }
+        });
     });
 });
 </script>

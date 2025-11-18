@@ -65,3 +65,45 @@ def remove_from_cart(request, product_id):
         return JsonResponse({'success': True, 'message': 'Item removed from cart'})
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+
+
+@login_required
+def update_quantity(request, product_id):
+    """Update the quantity for a cart item via AJAX. Expects POST with 'quantity'."""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
+
+    try:
+        qty = int(request.POST.get('quantity', 1))
+    except (TypeError, ValueError):
+        return JsonResponse({'success': False, 'message': 'Invalid quantity'}, status=400)
+
+    if qty < 1:
+        # Treat quantities less than 1 as removal
+        cart_item = CartItem.objects.filter(user=request.user, product_id=product_id).first()
+        if cart_item:
+            cart_item.delete()
+        # compute totals
+        cart_items = CartItem.objects.filter(user=request.user)
+        cart_total = sum(item.total_price() for item in cart_items)
+        return JsonResponse({'success': True, 'message': 'Item removed', 'cart_total': cart_total})
+
+    cart_item = CartItem.objects.filter(user=request.user, product_id=product_id).first()
+    if not cart_item:
+        return JsonResponse({'success': False, 'message': 'Cart item not found'}, status=404)
+
+    cart_item.quantity = qty
+    cart_item.save()
+
+    # recompute totals
+    item_total = cart_item.total_price()
+    cart_items = CartItem.objects.filter(user=request.user)
+    cart_total = sum(item.total_price() for item in cart_items)
+
+    return JsonResponse({
+        'success': True,
+        'message': 'Quantity updated',
+        'item_total': item_total,
+        'cart_total': cart_total,
+        'quantity': cart_item.quantity,
+    })
