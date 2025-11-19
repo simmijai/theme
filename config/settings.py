@@ -13,23 +13,31 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dj%xcwti$jq(+a_3xvwgzm#y0)@v*#=8enr&wz5^rxf7jpsx0o'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dj%xcwti$jq(+a_3xvwgzm#y0)@v*#=8enr&wz5^rxf7jpsx0o')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+# 
+# Default to localhost so it runs locally; override with COMMA-separated env var in production.
+_default_hosts = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ','.join(_default_hosts)).split(',')
+ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
 
 
 # Application definition
