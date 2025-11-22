@@ -20,6 +20,7 @@ from apps.store.views import index
 from django.conf import settings
 from django.conf.urls.static import static
 from apps.admin_panel.views.category_views import admin_dashboard
+from apps.admin_panel.views import admin_views
 
 
 
@@ -37,7 +38,8 @@ urlpatterns = [
     path('cart/', include('apps.cart.urls')),
     path('wishlist/', include('apps.wishlist.urls')),
     path('orders/', include('apps.orders.urls')),
-
+# Custom admin login at project root
+    path('admin-login/', admin_views.admin_login, name='admin_login'),
 
 
     
