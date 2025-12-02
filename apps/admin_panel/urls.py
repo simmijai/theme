@@ -9,7 +9,7 @@ from apps.admin_panel.views import (
 urlpatterns = [
     # Dashboard & Others
     path('dashboard/', admin_views.admin_dashboard, name='admin_dashboard'),
-    path('subcategory/list/', admin_views.admin_subcategory_list, name='admin_subcategory_list'),
+    path('subcategory/list/<int:category_id>/', admin_views.admin_subcategory_list, name='admin_subcategory_list'),
     path('customer/<int:customer_id>/', customer_views.customer_details, name='customer_details'),
 
     # Category CRUD (Class-based)

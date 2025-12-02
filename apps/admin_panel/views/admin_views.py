@@ -1,5 +1,8 @@
 # admin_panel/views/admin_views.py
 from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from apps.products.models import Category
+
 
 from django.shortcuts import redirect
 
@@ -17,8 +20,19 @@ def admin_dashboard(request):
 
 
 
-def admin_subcategory_list(request):
-    return render(request, 'admin/categories/subcategory.html')
+# def admin_subcategory_list(request):
+#     return render(request, 'admin/categories/subcategory.html')
+
+def admin_subcategory_list(request, category_id):
+    # fetch the parent category
+    category = get_object_or_404(Category, id=category_id)
+    # fetch subcategories
+    subcategories = category.subcategories.all()
+
+    return render(request, 'admin/categories/subcategory.html', {
+        'category': category,
+        'subcategories': subcategories
+    })
 
 def customer_details(request):
     return render(request, 'admin/customers/customer_details.html')
