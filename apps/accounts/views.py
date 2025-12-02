@@ -9,6 +9,29 @@ import uuid
 from apps.accounts.models import Address
 from apps.accounts.forms import AddressForm
 from django.contrib.auth.decorators import login_required
+import threading
+from .redis_otp import RedisOTPManager  # Import Redis manager
+
+def send_otp_email_async(user_email, user_name, otp):
+    """Send OTP email in background thread"""
+    subject = 'Your Login OTP'
+    message = f"""
+    Hi {user_name},
+    
+    Your OTP for login is: {otp}
+    
+    This OTP is valid for 10 minutes.
+    
+    If you didn't request this, please ignore this email.
+    """
+    
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [user_email],
+        fail_silently=False,
+    )
 
 def register_view(request):
     if request.method == 'POST':
@@ -71,20 +94,19 @@ def login_view(request):
                 messages.error(request, 'Email not verified. Please verify first.')
                 return redirect('login')
 
-            # Generate new OTP
-            otp = str(random.randint(100000, 999999))
-            user.otp = otp
-            user.save()
+            # ✅ USING REDIS - Generate OTP
+            otp, error = RedisOTPManager.generate_otp(email)
+            
+            if error:
+                messages.error(request, error)
+                return redirect('login')
 
-            # Send OTP
-            send_mail(
-                'Login OTP',
-                f'Hi {user.first_name},\n\nYour OTP for login is: {otp}',
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-                fail_silently=False,
-            )
-
+            # ✅ Send OTP email in background thread (faster)
+            threading.Thread(
+                target=send_otp_email_async,
+                args=(email, user.first_name, otp)
+            ).start()
+            
             request.session['login_email'] = email
             messages.info(request, 'OTP sent to your email.')
             return redirect('login_otp')
@@ -107,11 +129,28 @@ def login_otp_view(request):
     except Account.DoesNotExist:
         messages.error(request, 'Invalid session. Please try again.')
         return redirect('login')
+    
+    # Get remaining time - SIMPLE FIX
+    remaining_seconds = 600  # Default 10 minutes
+    
+    try:
+        rt = RedisOTPManager.get_remaining_time(email)
+        if rt:
+            remaining_seconds = rt
+    except:
+        pass  # Keep default if error
+
 
     if request.method == "POST":
         entered_otp = request.POST.get('otp')
-        if entered_otp == user.otp:
-            user.otp = None
+         # ✅ USING REDIS - Verify OTP (super fast)
+        is_valid, message = RedisOTPManager.verify_otp(email, entered_otp)
+        
+        if is_valid:
+            # ✅ Cleanup OTP from Redis
+            RedisOTPManager.cleanup_otp(email)
+            
+            user.otp = None  # Clear old DB OTP if exists
             user.save()
             auth_login(request, user)  # THIS logs the user in
 
@@ -119,9 +158,15 @@ def login_otp_view(request):
             return redirect('home')
         else:
             messages.error(request, 'Invalid OTP.')
+            
+        # Get remaining time for template
+        remaining_time = RedisOTPManager.get_remaining_time(email)
 
-    return render(request, 'user_theme/accounts/login_otp.html', {'email': email})
-
+    return render(request, 'user_theme/accounts/login_otp.html',
+                  {
+        'email': email,
+        'remaining_seconds': remaining_seconds
+                  })
 
 @login_required
 def edit_address(request, pk):

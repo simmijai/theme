@@ -56,7 +56,6 @@ class Account(AbstractBaseUser, PermissionsMixin):
     
     # For verification & OTP
     email_verified = models.BooleanField(default=False)
-    otp = models.CharField(max_length=6, blank=True, null=True)
     verification_token = models.UUIDField(default=uuid.uuid4, editable=False, null=True, blank=True)
 
 
