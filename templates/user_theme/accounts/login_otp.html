@@ -22,13 +22,13 @@
                     <button type="submit" class="btn btn-primary w-100">Verify</button>
                 </form>
 
-                {% if messages %}
+                {% comment %} {% if messages %}
                     <ul>
                         {% for message in messages %}
                             <li>{{ message }}</li>
                         {% endfor %}
                     </ul>
-                {% endif %}
+                {% endif %} {% endcomment %}
             </div>
         </div>
     </div>

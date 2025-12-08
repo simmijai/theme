@@ -57,7 +57,7 @@ def cart_view(request):
     return render(request, 'user_theme/store/cart2.html', context)
 
 
-
+@login_required
 def remove_from_cart(request, product_id):
     if request.method == 'POST':
         cart_item = get_object_or_404(CartItem, user=request.user, product_id=product_id)

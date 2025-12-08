@@ -120,10 +120,12 @@
 	  6. Minicart Dropdown ---------------------
 	  ------------------------------------------ */
 	  function minicart_dropdown(){
-		$(".site-header__cart").on("click", function(i) {
-			i.preventDefault();
-			$("#header-cart").slideToggle();
-		});
+		// $(".site-header__cart").on("click", function(i) {
+		// 	if(!i.ctrlKey && !i.metaKey){
+		// 	i.preventDefault();
+		// 	$("#header-cart").slideToggle();
+		// 	}
+		// });
 		// Hide Cart on document click
 		$("body").on("click", function(event ) {
 		  var $target = $(event.target);
