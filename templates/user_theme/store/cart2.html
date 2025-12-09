@@ -380,8 +380,23 @@ document.querySelectorAll('.cart-qty-input').forEach(input => {
         });
     });
 });
+
+
+
 </script>
 
+<script>
+document.getElementById('cartCheckout').addEventListener('click', function(e){
+    const subtotalEl = document.getElementById('cart-subtotal');
+    // Extract number from ₹ string
+    const subtotal = subtotalEl ? parseFloat(subtotalEl.textContent.replace(/[^0-9.-]+/g,"")) : 0;
+
+    if(subtotal <= 0){
+        e.preventDefault();
+        alert('Your cart is empty! Add items before proceeding to checkout.');
+    }
+});
+</script>
 
 
 {% endblock %}
