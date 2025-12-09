@@ -26,7 +26,3 @@ def index(request):
         'user': request.user  # now available in template
 
     })
-
-
-# def admin_dashboard(request):
-#     return render(request, 'admin/dashboard.html')

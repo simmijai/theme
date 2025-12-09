@@ -1,0 +1,90 @@
+{% extends 'admin_theme/base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="nxl-container">
+    <div class="nxl-content">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card stretch stretch-full">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="productList">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>SKU</th>
+                                            <th>Price</th>
+                                            <th>Stock</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in products %}
+                                        <tr>
+                                            {% comment %} <td>
+                                                {% if product.image %}
+                                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50" height="50">
+                                                {% else %}
+                                                    —
+                                                {% endif %}
+                                            </td> {% endcomment %}
+                                            <td>
+    <div style="display:flex; gap:5px; align-items:center;">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50" height="50" style="border-radius:6px;">
+        {% endif %}
+        {% for img in product.images.all %}
+            <img src="{{ img.image.url }}" alt="{{ product.name }}" width="50" height="50" style="border-radius:6px;">
+        {% endfor %}
+        {% if not product.image and not product.images.all %}
+            —
+        {% endif %}
+    </div>
+</td>
+
+                                            <td>{{ product.name }}</td>
+                                            <td>{{ product.category.category_name }}</td>
+                                            <td>{{ product.sku|default:"—" }}</td>
+                                            <td>₹{{ product.price }}</td>
+                                            <td>{{ product.stock }}</td>
+                                            <td>
+                                                {% if product.is_available %}
+                                                    <span class="badge bg-success">Available</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">Out of stock</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="{% url 'admin_product_edit' product.id %}" class="btn btn-sm btn-primary me-1">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                                <form method="POST" action="{% url 'admin_product_delete' product.id %}" style="display:inline;" onsubmit="return confirmDelete('{{ product.name }}');">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+
+<script>
+function confirmDelete(name) {
+    return confirm("Are you sure you want to delete '" + name + "'?");
+}
+</script>
+{% endblock %}

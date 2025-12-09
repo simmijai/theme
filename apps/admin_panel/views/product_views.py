@@ -6,49 +6,8 @@ from django.contrib import messages
 
 def product_list(request):
     products = Product.objects.prefetch_related('images', 'category').all()
-    return render(request, 'admin/products/product.html', {'products': products})
+    return render(request, 'admin_theme/products/product.html', {'products': products})
 
-
-
-
-# def product_create(request):
-#     if request.method == 'POST':
-#         print("📩 POST request received")
-#         print("🧾 POST keys:", request.POST.keys())
-#         print("📂 FILES keys:", request.FILES.keys())
-
-#         form = ProductForm(request.POST, request.FILES)
-#         img_form = ProductImageForm(request.POST, request.FILES)
-
-#         if form.is_valid():
-#             product = form.save()
-#             print("✅ Product form valid")
-
-#             if img_form.is_valid():
-#                 print("✅ Image form valid")
-#                 images = request.FILES.getlist('images')
-#                 for image in images:
-#                     ProductImage.objects.create(product=product, image=image)
-#             else:
-#                 print("⚠️ Image form invalid:", img_form.errors)
-
-#             messages.success(request, f'✅ Product "{product.name}" created successfully!')
-#             return redirect('admin_product_list')
-
-#         else:
-#             print("❌ Form invalid")
-#             print("ProductForm errors:", form.errors)
-#             print("ImageForm errors:", img_form.errors)
-
-#     else:
-#         form = ProductForm()
-#         img_form = ProductImageForm()
-
-#     return render(request, 'admin/product_create.html', {
-#         'form': form,
-#         'img_form': img_form,
-#         'action': 'Add',
-#     })
 
 def product_create(request):
     if request.method == 'POST':
@@ -84,7 +43,7 @@ def product_create(request):
         form = ProductForm()
         image_form = ProductImageForm()
 
-    return render(request, 'admin/products/product_create.html', {'form': form, 'image_form': image_form})
+    return render(request, 'admin_theme/products/product_create.html', {'form': form, 'image_form': image_form})
 
 def product_delete(request, pk):
     product = Product.objects.get(pk=pk)
@@ -112,7 +71,7 @@ def product_edit(request, pk):
         form = ProductForm(instance=product)
         image_form = ProductImageForm()
 
-    return render(request, 'admin/products/product_create.html', {
+    return render(request, 'admin_theme/products/product_create.html', {
         'form': form,
         'image_form': image_form,
         'action': 'Edit',

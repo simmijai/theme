@@ -1,0 +1,113 @@
+{% extends 'admin_theme/base.html' %}
+{% load static %}
+
+{% block content %}
+<!--! [Start] Main Content !-->
+    <!--! ================================================================ !-->
+    <main class="nxl-container">
+        <div class="nxl-content">
+            <!-- [ Main Content ] start -->
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card stretch stretch-full">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="customerList">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-30">
+                                                    <div class="btn-group mb-1">
+                                                        <div class="custom-control custom-checkbox ms-1">
+                                                            <input type="checkbox" class="custom-control-input" id="checkAllCustomer">
+                                                            <label class="custom-control-label" for="checkAllCustomer"></label>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <th>Customer</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Total Orders</th>
+                                                <th>Last Order Date</th>
+                                                <th>EDIT</th>
+                                                <th class="text-end">FULL INFO</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for customer in customers %}
+                                            <tr class="single-item">
+                                                <td>
+                                                    <div class="item-checkbox ms-1">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input checkbox" id="checkBox_1">
+                                                            <label class="custom-control-label" for="checkBox_1"></label>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="customers-view.html" class="hstack gap-3">
+                                                        {% comment %} <div class="avatar-image avatar-md">
+                                                            <img src="assets/images/avatar/1.png" alt="" class="img-fluid">
+                                                        </div> {% endcomment %}
+                                                        <div>
+                                                <span class="text-truncate-1-line">{{ customer.first_name }} {{ customer.last_name }}</span>
+                                                        </div>
+                                                    </a>
+                                                </td>
+                                                <td><a href="apps-email.html">{{ customer.email }}</a></td>
+                                                <td><a href="tel:">{{ customer.phone_number }}</a></td>
+                                                <td>{{ customer.total_orders }}</td>
+                                                <td>
+                                                    {% if customer.last_order_date %}
+                                                        {{ customer.last_order_date|date:"d-m-Y" }}
+                                                    {% else %}
+                                                        -
+                                                    {% endif %}
+                                                </td>
+
+                                                <td><div class="col-md-4 text-end">
+                                    <a href="#" class="btn btn-primary">Edit</a>
+                                </div></td>
+                                                <td>
+                                                    <div class="hstack gap-2 justify-content-end">
+                                                        <a href="{% url 'customer_details' customer.id %}" class="avatar-text avatar-md">
+                                                            <i class="feather feather-eye"></i>
+                                                        </a>
+                                                        {% comment %} <div class="dropdown">
+                                                            <a href="javascript:void(0)" class="avatar-text avatar-md" data-bs-toggle="dropdown" data-bs-offset="0,21">
+                                                                <i class="feather feather-more-horizontal"></i>
+                                                            </a>
+                                                            <ul class="dropdown-menu">
+                                                                <li>
+                                                                    <a class="dropdown-item" href="javascript:void(0)">
+                                                                        <i class="feather feather-edit-3 me-3"></i>
+                                                                        <span>Edit</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="dropdown-divider"></li>
+                                                                <li>
+                                                                    <a class="dropdown-item" href="javascript:void(0)">
+                                                                        <i class="feather feather-trash-2 me-3"></i>
+                                                                        <span>Delete</span>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div> {% endcomment %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ Main Content ] end -->
+        </div>
+    </main>
+    <!--! ================================================================ !-->
+    <!--! [End] Main Content !-->
+    {% endblock %}

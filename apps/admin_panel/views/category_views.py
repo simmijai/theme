@@ -6,7 +6,7 @@ from apps.products.models import Category  # make sure Category model exists
 # DASHBOARD
 # ------------------------
 def admin_dashboard(request):
-    return render(request, 'admin/dashboard.html')
+    return render(request, 'admin_theme/dashboard.html')
 
 
 
@@ -14,25 +14,33 @@ def admin_dashboard(request):
 # PRODUCT
 # ------------------------
 def admin_product(request):
-    return render(request, 'admin/products/product.html')
+    return render(request, 'admin_theme/products/product.html')
 
 
 def admin_product_create(request):
-    return render(request, 'admin/products/product_create.html')
+    return render(request, 'admin_theme/products/product_create.html')
 
 
 # ------------------------
 # SUBCATEGORY
 # ------------------------
-def admin_subcategory_list(request):
-    return render(request, 'admin/categories/subcategory.html')
+def admin_subcategory_list(request, category_id):
+    # fetch the parent category
+    category = get_object_or_404(Category, id=category_id)
+    # fetch subcategories
+    subcategories = category.subcategories.all()
+
+    return render(request, 'admin_theme/categories/subcategory.html', {
+        'category': category,
+        'subcategories': subcategories
+    })
 
 
 # ------------------------
 # CUSTOMER
 # ------------------------
 def customer_details(request):
-    return render(request, 'admin/customers/customer_details.html')
+    return render(request, 'admin_theme/customers/customer_details.html')
 
 
 
@@ -44,7 +52,7 @@ from apps.products.models import Category
 
 # ------------------- LIST -------------------
 class CategoryListView(View):
-    template_name = 'admin/categories/category.html'
+    template_name = 'admin_theme/categories/category.html'
 
     def get(self, request):
         categories = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
@@ -53,7 +61,7 @@ class CategoryListView(View):
 
 # ------------------- CREATE -------------------
 class CategoryCreateView(View):
-    template_name = 'admin/categories/category_add.html'
+    template_name = 'admin_theme/categories/category_add.html'
 
     def get(self, request):
         categories = Category.objects.filter(parent__isnull=True)
@@ -79,7 +87,7 @@ class CategoryCreateView(View):
 
 # ------------------- UPDATE -------------------
 class CategoryUpdateView(View):
-    template_name = 'admin/categories/category_add.html'  # using same form for simplicity
+    template_name = 'admin_theme/categories/category_add.html'  # using same form for simplicity
 
     def get(self, request, pk):
         category = get_object_or_404(Category, pk=pk)

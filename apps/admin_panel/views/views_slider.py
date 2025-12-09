@@ -4,7 +4,7 @@ from apps.admin_panel.forms import HomeSliderForm
 
 def slider_list(request):
     sliders = HomeSlider.objects.all()
-    return render(request, 'admin/sliders/list.html', {'sliders': sliders})
+    return render(request, 'admin_theme/sliders/list.html', {'sliders': sliders})
 
 def slider_create(request):
     if request.method == 'POST':
@@ -14,7 +14,7 @@ def slider_create(request):
             return redirect('admin_slider_list')
     else:
         form = HomeSliderForm()
-    return render(request, 'admin/sliders/form.html', {'form': form, 'title': 'Create Slider'})
+    return render(request, 'admin_theme/sliders/form.html', {'form': form, 'title': 'Create Slider'})
 
 def slider_edit(request, slider_id):
     slider = get_object_or_404(HomeSlider, id=slider_id)
@@ -25,7 +25,7 @@ def slider_edit(request, slider_id):
             return redirect('admin_slider_list')
     else:
         form = HomeSliderForm(instance=slider)
-    return render(request, 'admin/sliders/form.html', {'form': form, 'title': 'Edit Slider'})
+    return render(request, 'admin_theme/sliders/form.html', {'form': form, 'title': 'Edit Slider'})
 
 def slider_delete(request, slider_id):
     slider = get_object_or_404(HomeSlider, id=slider_id)

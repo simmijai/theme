@@ -9,9 +9,10 @@ from apps.admin_panel.views import (
 urlpatterns = [
     # Dashboard & Others
     path('dashboard/', admin_views.admin_dashboard, name='admin_dashboard'),
-    path('subcategory/list/<int:category_id>/', admin_views.admin_subcategory_list, name='admin_subcategory_list'),
-    path('customer/<int:customer_id>/', customer_views.customer_details, name='customer_details'),
-
+    
+    #subcategory
+    path('subcategory/list/<int:category_id>/', category_views.admin_subcategory_list, name='admin_subcategory_list'),
+    
     # Category CRUD (Class-based)
     path('category/list/', category_views.CategoryListView.as_view(), name='admin_category_list'),
     path('category/add/', category_views.CategoryCreateView.as_view(), name='admin_category_create'),
@@ -22,22 +23,18 @@ urlpatterns = [
     path('products/', product_views.product_list, name='admin_product_list'),
     path('products/add/', product_views.product_create, name='admin_product_create'),
     path('products/edit/<int:pk>/', product_views.product_edit, name='admin_product_edit'),
-
-
     path('products/delete/<int:pk>/', product_views.product_delete, name='admin_product_delete'),
-
     path('products/image/delete/<int:pk>/', product_views.product_image_delete, name='admin_product_image_delete'),
 
     path('customer/list/', customer_views.customer_list, name='customer_list'),
+    path('customer/<int:customer_id>/', customer_views.customer_details, name='customer_details'),
+
     
-    path('order/<int:order_id>/', customer_views.order_detail, name='order-detail'),
-    
+    path('order/<int:order_id>/', order_views.order_detail, name='order-detail'),
     path('admin/orders/', order_views.admin_order_list, name='admin_order_list'),
-path('admin/orders/<int:order_id>/update-status/', order_views.update_order_status, name='update_order_status'),
+    path('admin/orders/<int:order_id>/update-status/', order_views.update_order_status, name='update_order_status'),
 
-
-
-path('sliders/', views_slider.slider_list, name='admin_slider_list'),
+    path('sliders/', views_slider.slider_list, name='admin_slider_list'),
     path('sliders/create/', views_slider.slider_create, name='admin_slider_create'),
     path('sliders/edit/<int:slider_id>/', views_slider.slider_edit, name='admin_slider_edit'),
     path('sliders/delete/<int:slider_id>/', views_slider.slider_delete, name='admin_slider_delete'),
@@ -48,6 +45,8 @@ path('sliders/', views_slider.slider_list, name='admin_slider_list'),
     path('reviews/toggle/<int:review_id>/', admin_reviews.admin_review_toggle, name='admin_review_toggle'),
 
     path('admin/', admin_views.admin_login, name='admin_login'),
+    path('admin-logout/', admin_views.admin_logout, name='admin_logout'),  # new logout URL
+
 
 
 ]

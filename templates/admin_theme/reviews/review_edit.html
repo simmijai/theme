@@ -1,0 +1,44 @@
+{% extends "admin_theme/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Review</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>Rating</label>
+            <select name="rating" class="form-control">
+                {% for i in "12345" %}
+                    <option value="{{ i }}" {% if review.rating|stringformat:"s" == i %}selected{% endif %}>
+                        {{ i }} ★
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Comment</label>
+            <textarea name="comment" class="form-control">{{ review.comment }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Image</label>
+            {% if review.image %}
+                <br><img src="{{ review.image.url }}" width="100">
+            {% endif %}
+            <input type="file" name="image" class="form-control mt-2">
+        </div>
+
+        <div class="mb-3">
+            <label>Approved Status</label><br>
+            <input type="checkbox" name="is_approved" {% if review.is_approved %}checked{% endif %}>
+            <label> Approve this review</label>
+        </div>
+
+        <button type="submit" class="btn btn-success">Update</button>
+        <a href="{% url 'admin_review_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

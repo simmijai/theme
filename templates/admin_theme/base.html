@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Duralux || Dashboard</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'admin_theme/images/favicon.ico' %}" type="image/x-icon">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'admin_theme/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_theme/vendors/css/vendors.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_theme/vendors/css/daterangepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_theme/css/theme.min.css' %}">
+</head>
+<body>
+
+{% include 'admin_theme/components/sidebar.html' %}
+{% include 'admin_theme/components/header.html' %}
+
+<div class="main-content">
+    {% block content %}
+    <!-- dashboard content will go here -->
+    {% endblock %}
+</div>
+
+{% include 'admin_theme/components/theme_customizer.html' %}
+{% include 'admin_theme/components/footer.html' %}
+
+<!-- JS -->
+<script src="{% static 'admin_theme/vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'admin_theme/vendors/js/daterangepicker.min.js' %}"></script>
+<script src="{% static 'admin_theme/vendors/js/apexcharts.min.js' %}"></script>
+<script src="{% static 'admin_theme/vendors/js/circle-progress.min.js' %}"></script>
+
+<script src="{% static 'admin_theme/js/common-init.min.js' %}"></script>
+<script src="{% static 'admin_theme/js/dashboard-init.min.js' %}"></script>
+<script src="{% static 'admin_theme/js/theme-customizer-init.min.js' %}"></script>
+
+</body>
+</html>

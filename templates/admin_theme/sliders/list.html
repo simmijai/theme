@@ -1,0 +1,88 @@
+{% extends 'admin_theme/base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="nxl-container">
+    <div class="nxl-content">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card stretch stretch-full">
+                        
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="card-title">Home Sliders</h4>
+                            <a href="{% url 'admin_slider_create' %}" class="btn btn-primary btn-sm">
+                                + Add Slider
+                            </a>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Title</th>
+                                            <th>Image</th>
+                                            <th>Order</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for slider in sliders %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ slider.title }}</td>
+
+                                            <td>
+                                                {% if slider.image %}
+                                                <img src="{{ slider.image.url }}" width="80" height="45" style="border-radius:5px;">
+                                                {% else %}
+                                                —
+                                                {% endif %}
+                                            </td>
+
+                                            <td>{{ slider.order }}</td>
+
+                                            <td>
+                                                {% if slider.is_active %}
+                                                    <span class="badge bg-success">Active</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">Inactive</span>
+                                                {% endif %}
+                                            </td>
+
+                                            <td class="text-end">
+                                                <a href="{% url 'admin_slider_edit' slider.id %}" class="btn btn-sm btn-primary me-1">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+
+                                                <form action="{% url 'admin_slider_delete' slider.id %}" 
+                                                      method="POST" 
+                                                      style="display:inline;" 
+                                                      onsubmit="return confirm('Delete {{ slider.title }}?');">
+                                                    {% csrf_token %}
+                                                    <button class="btn btn-sm btn-danger" type="submit">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4">No sliders found.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

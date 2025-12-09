@@ -1,0 +1,105 @@
+{% extends 'admin_theme/base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="nxl-container">
+    <div class="nxl-content">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card stretch stretch-full">
+
+                        <div class="card-header">
+                            <h4 class="card-title">{{ title }}</h4>
+                        </div>
+
+                        <div class="card-body">
+
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <div class="row">
+
+                                    <!-- Title -->
+                                    <div class="col-lg-12 mb-3">
+                                        <label>Title</label>
+                                        <input type="text" 
+                                               name="title" 
+                                               class="form-control"
+                                               value="{{ form.title.value|default:'' }}">
+                                    </div>
+
+                                    <!-- Subtitle -->
+                                    <div class="col-lg-12 mb-3">
+                                        <label>Subtitle</label>
+                                        <input type="text" 
+                                               name="subtitle" 
+                                               class="form-control"
+                                               value="{{ form.subtitle.value|default:'' }}">
+                                    </div>
+
+                                    <!-- Image -->
+                                    <div class="col-lg-12 mb-3">
+                                        <label>Slider Image</label>
+                                        <input type="file" 
+                                               name="image" 
+                                               class="form-control">
+
+                                        {% if form.instance.image %}
+                                        <div class="mt-2">
+                                            <img src="{{ form.instance.image.url }}" width="180" style="border-radius:8px;">
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Button Text -->
+                                    <div class="col-lg-6 mb-3">
+                                        <label>Button Text</label>
+                                        <input type="text"
+                                               name="button_text" 
+                                               class="form-control"
+                                               value="{{ form.button_text.value|default:'' }}">
+                                    </div>
+
+                                    <!-- Button Link -->
+                                    <div class="col-lg-6 mb-3">
+                                        <label>Button Link</label>
+                                        <input type="url"
+                                               name="button_link" 
+                                               class="form-control"
+                                               value="{{ form.button_link.value|default:'' }}">
+                                    </div>
+
+                                    <!-- Order -->
+                                    <div class="col-lg-6 mb-3">
+                                        <label>Order</label>
+                                        <input type="number"
+                                               name="order" 
+                                               class="form-control"
+                                               value="{{ form.order.value|default:'0' }}">
+                                    </div>
+
+                                    <!-- Active -->
+                                    <div class="col-lg-6 mb-3">
+                                        <label>Status</label><br>
+                                        <label class="switch">
+                                            <input type="checkbox" name="is_active" {% if form.is_active.value %}checked{% endif %}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                                <button type="submit" class="btn btn-success mt-3">Save</button>
+                                <a href="{% url 'admin_slider_list' %}" class="btn btn-secondary mt-3">Cancel</a>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

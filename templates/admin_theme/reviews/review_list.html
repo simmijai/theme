@@ -1,0 +1,63 @@
+{% extends "admin_theme/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>User Reviews</h2>
+
+    <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Product</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Image</th>
+            <th>Date</th>
+            <th>Approved</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in reviews %}
+        <tr>
+            <td>{{ r.user.email }}</td>
+            <td>{{ r.product.name }}</td>
+            <td>{{ r.rating }} ★</td>
+            <td>{{ r.comment|truncatewords:12 }}</td>
+            <td>
+                {% if r.image %}
+                    <img src="{{ r.image.url }}" width="60">
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>{{ r.created_at|date:"d M Y" }}</td>
+
+            <td>
+                {% if r.is_approved %}
+                    <span class="badge bg-success">Approved</span>
+                {% else %}
+                    <span class="badge bg-warning">Pending</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'admin_review_edit' r.id %}" class="btn btn-sm btn-primary">Edit</a>
+
+                {% if r.is_approved %}
+                    <a href="{% url 'admin_review_toggle' r.id %}" class="btn btn-sm btn-warning">Unapprove</a>
+                {% else %}
+                    <a href="{% url 'admin_review_toggle' r.id %}" class="btn btn-sm btn-success">Approve</a>
+                {% endif %}
+
+                <a href="{% url 'admin_review_delete' r.id %}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Delete this review?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+{% endblock %}

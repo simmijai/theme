@@ -2,40 +2,26 @@
 from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404
 from apps.products.models import Category
+from functools import wraps
+
 
 
 from django.shortcuts import redirect
 
 def admin_required(view_func):
+    @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.role == 'admin':
-            return view_func(request, *args, **kwargs)
-        return redirect('admin_login')  # your login URL name
+        if not request.user.is_authenticated:
+            return redirect('admin_login')
+        if request.user.role != 'admin':
+            return redirect('admin_login')
+        return view_func(request, *args, **kwargs)
     return wrapper
+
 
 @admin_required
 def admin_dashboard(request):
-    return render(request, 'admin/dashboard.html')
-
-
-
-
-# def admin_subcategory_list(request):
-#     return render(request, 'admin/categories/subcategory.html')
-
-def admin_subcategory_list(request, category_id):
-    # fetch the parent category
-    category = get_object_or_404(Category, id=category_id)
-    # fetch subcategories
-    subcategories = category.subcategories.all()
-
-    return render(request, 'admin/categories/subcategory.html', {
-        'category': category,
-        'subcategories': subcategories
-    })
-
-def customer_details(request):
-    return render(request, 'admin/customers/customer_details.html')
+    return render(request, 'admin_theme/dashboard.html')
 
 
 from django.shortcuts import render, redirect
@@ -56,8 +42,16 @@ def admin_login(request):
                 login(request, user)
                 return redirect('admin_dashboard')  # replace with your admin dashboard url
             else:
-                return render(request, 'admin/admin_login.html', {'error': 'You are not authorized as admin.'})
+                return render(request, 'admin_theme/admin_login.html', {'error': 'You are not authorized as admin.'})
         else:
-            return render(request, 'admin/admin_login.html', {'error': 'Invalid credentials.'})
+            return render(request, 'admin_theme/admin_login.html', {'error': 'Invalid credentials.'})
 
-    return render(request, 'admin/admin_login.html', {'error': 'Invalid credentials.'})
+    return render(request, 'admin_theme/admin_login.html', {'error': 'Invalid credentials.'})
+
+
+from django.contrib.auth import logout
+
+def admin_logout(request):
+    logout(request)
+    return redirect('admin_login')  # redirect to admin login page
+

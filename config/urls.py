@@ -32,7 +32,6 @@ urlpatterns = [
     path('products/', include('apps.products.urls')),
     path('accounts/', include('apps.accounts.urls')),  # ❌ No namespace
 
-    path('dashboard/', admin_dashboard, name='dashboard'),  # new dashboard
     path('admin_panel/', include('apps.admin_panel.urls')),  # include your admin_panel URLs
     
     path('cart/', include('apps.cart.urls')),
