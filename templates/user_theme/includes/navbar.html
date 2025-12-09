@@ -1,6 +1,88 @@
 
 {% load static %}
 
+<!-- INLINE CSS FOR PROFILE DROPDOWN (TEMPORARY) -->
+<style>
+    /* Profile Dropdown – Top Header */
+    .header-profile-menu {
+        position: relative;
+        display: inline-block;
+    }
+
+    .header-profile-menu .profile-trigger {
+        color: #fff;
+        font-weight: 500;
+        padding: 5px 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .header-profile-menu i {
+        font-size: 18px;
+        margin-right: 5px;
+    }
+
+    /* Dropdown */
+    .profile-dropdown {
+        position: absolute;
+        right: 0;
+        top: 120%;
+        min-width: 200px;
+        background: #fff;
+        color: #000;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: none;
+        z-index: 999;
+    }
+
+    .profile-dropdown li {
+        list-style: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .profile-dropdown li:last-child {
+        border-bottom: none;
+    }
+
+    .profile-dropdown li a,
+    .profile-dropdown li button {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        width: 100%;
+        text-align: left;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .profile-dropdown li a:hover,
+    .profile-dropdown li button:hover {
+        background: #f5f5f5;
+    }
+
+    .profile-info {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eaeaea;
+        background: #fafafa;
+    }
+
+    /* Hover trigger */
+    .header-profile-menu:hover .profile-dropdown {
+        display: block;
+    }
+
+    /* Greeting hidden (we replace it with icon+dropdown) */
+    .customer-links .greeting {
+        display: none !important;
+    }
+</style>
+
+
 <div class="pageWrapper">
 	<!--Search Form Drawer-->
 	<div class="search">
@@ -25,7 +107,7 @@
                 </div>
                 <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
                 	<span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
-                    <ul class="customer-links list-inline">
+                    {% comment %} <ul class="customer-links list-inline">
                   {% if user.is_authenticated %}
                   <li class="greeting">Hi, {{ user.first_name }}</li>
                   <li>
@@ -43,6 +125,41 @@
                 <a class="nav-link" href="{% url 'my_orders' %}">My Orders</a>
             </li>
 
+                    </ul> {% endcomment %}
+
+                     <ul class="customer-links list-inline">
+
+                        {% if user.is_authenticated %}
+                        
+                        <!-- NEW PROFILE DROPDOWN ADDED HERE -->
+                        <li class="header-profile-menu">
+                            <span class="profile-trigger">
+                                <i class="anm anm-user-al"></i> {{ user.first_name }}
+                            </span>
+
+                            <ul class="profile-dropdown">
+                                <li class="profile-info">
+                                    <strong>{{ user.first_name }} {{ user.last_name }}</strong><br>
+                                    <small>{{ user.email }}</small>
+                                </li>
+
+                                <li><a href="{% url 'my_orders' %}">My Orders</a></li>
+                                <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+
+                        {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Create Account</a></li>
+                        {% endif %}
+                        
                     </ul>
                 </div>
             </div>
