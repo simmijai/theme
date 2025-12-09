@@ -80,6 +80,15 @@
     .customer-links .greeting {
         display: none !important;
     }
+
+    .my-cart-style i {
+    font-size: 22px;   /* whatever size looked perfect */
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 </style>
 
 
@@ -395,12 +404,22 @@
                 </div>
                 <!--Mobile Logo-->
                 <div class="col-4 col-sm-3 col-md-3 col-lg-2">
-                	<div class="site-cart">
+                	{% comment %} <div class="site-cart">
                     	<a href="{% url 'cart_view' %}" 
                        title="Cart">
                         	<i class="icon anm anm-bag-l"></i>
-                            {% comment %} <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span> {% endcomment %}
-                        </a>
+                            <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span>
+                        </a> {% endcomment %}
+
+
+                        <div class="site-cart">
+                          <a href="{% url 'cart_view' %}" class="cart-icon my-cart-style" title="Cart">
+                              <i class="icon anm anm-bag-l"></i>
+                              {% comment %} 
+                              <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span>
+                              {% endcomment %}
+                          </a>
+                      </div>
 
                         
                         {% comment %} <!--Minicart Popup-->
@@ -466,7 +485,6 @@
                             </div>
                         </div>
                         <!--EndMinicart Popup--> {% endcomment %}
-                    </div>
                     <div class="site-header__search">
                     	<button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button>
                     </div>

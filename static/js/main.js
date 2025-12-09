@@ -127,12 +127,12 @@
 		// 	}
 		// });
 		// Hide Cart on document click
-		$("body").on("click", function(event ) {
-		  var $target = $(event.target);
-		  if(!$target.parents().is(".site-cart") && !$target.is(".site-cart")){
-			$("body").find("#header-cart").slideUp();
-		  }
-		});
+		// $("body").on("click", function(event ) {
+		//   var $target = $(event.target);
+		//   if(!$target.parents().is(".site-cart") && !$target.is(".site-cart")){
+		// 	$("body").find("#header-cart").slideUp();
+		//   }
+		// });
 	  }
 	 minicart_dropdown();
 	
