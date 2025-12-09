@@ -222,7 +222,7 @@
                                                             </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title">Tax</span>
-                                <span class="col-12 col-sm-6 text-right">$10.00</span>
+                                <span class="col-12 col-sm-6 text-right">$50.00</span>
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
@@ -230,8 +230,11 @@
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
-                                <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">$1001.00</span></span>
-                              </div>
+                                <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right">
+                                    <span class="money" id="cart-grand-total">₹{{ grand_total }}</span>
+                                </span>
+                            </div>
+
                               <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
                               {% comment %} <p class="cart_tearm">
                                 <label>
@@ -295,6 +298,9 @@ document.querySelectorAll('.cart__remove').forEach(btn => {
                 if (data.cart_total !== undefined) {
                     const subtotalEl = document.getElementById('cart-subtotal');
                     if (subtotalEl) subtotalEl.textContent = '₹' + data.cart_total;
+
+                    const grandTotalEl = document.getElementById('cart-grand-total');
+                    if (grandTotalEl) grandTotalEl.textContent = '₹' + data.cart_total;
                 }
             } else {
                 console.error(data.message);
@@ -345,6 +351,9 @@ document.querySelectorAll('.cart-qty-btn.plus, .cart-qty-btn.minus').forEach(btn
             if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = '₹' + data.item_total;
             const subtotalEl = document.getElementById('cart-subtotal');
             if (subtotalEl && data.cart_total !== undefined) subtotalEl.textContent = '₹' + data.cart_total;
+
+            const grandTotalEl = document.getElementById('cart-grand-total');
+            if (grandTotalEl && data.cart_total !== undefined) grandTotalEl.textContent = '₹' + data.cart_total;
             // if item removed (qty 0), remove row
             if (qty <= 0) {
                 row.remove();
@@ -372,5 +381,7 @@ document.querySelectorAll('.cart-qty-input').forEach(input => {
     });
 });
 </script>
+
+
 
 {% endblock %}
