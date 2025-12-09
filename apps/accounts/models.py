@@ -82,6 +82,7 @@ class Address(models.Model):
     phone = models.CharField(max_length=15)
     address_line1 = models.CharField(max_length=255)
     address_line2 = models.CharField(max_length=255, blank=True, null=True)
+    near_by_landmark = models.CharField(max_length=255, blank=True, null=True)  # NEW
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     country = models.CharField(max_length=100)

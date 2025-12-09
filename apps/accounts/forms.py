@@ -66,7 +66,7 @@ class AddressForm(forms.ModelForm):
         model = Address
         fields = [
             'first_name', 'last_name', 'phone', 'address_line1', 
-            'address_line2', 'city', 'state', 'country', 'postal_code'
+            'address_line2','near_by_landmark', 'city', 'state', 'country', 'postal_code'
         ]
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),

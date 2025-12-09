@@ -1,8 +1,10 @@
 {% extends 'user_theme/base.html' %}
- {% load static %} {% block title %}Checkout - Belle E-commerce{% endblock %} {% block content %}
-<!--Body Content-->
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
 <div id="page-content" style="padding-top:60px;">
-    <!-- Page Title -->
     <div class="page section-header text-center">
         <div class="page-title">
             <div class="wrapper">
@@ -10,216 +12,240 @@
             </div>
         </div>
     </div>
-    <!-- End Page Title -->
 
     <div class="container mt-4">
         <div class="row">
-            <!-- Left Column: Billing Section -->
-            <div class="col-xl-6 col-lg-6 col-md-12 mb-4">
 
-                <!-- Show Saved Addresses Button -->
-                {% comment %} <div class="text-center mb-3">
-                    <button id="show-address-btn" class="btn btn-outline-primary w-100 mb-2">
-                        Select Delivery Address
-                    </button>
-                </div> {% endcomment %}
+            <!-- LEFT COLUMN -->
+            <div class="col-lg-6 col-md-12 mb-4">
 
+                <!-- Buttons -->
                 <div class="row mb-4 gx-3">
-    <div class="col-md-6">
-        <button id="show-address-btn" class="btn btn-primary w-100 shadow-sm" type="button">
-            Select Delivery Address
-        </button>
-    </div>
+                    <div class="col-md-6">
+                        <button id="show-address-btn" class="btn btn-primary w-100 shadow-sm" type="button">
+                            Select Delivery Address
+                        </button>
+                    </div>
 
-    <div class="col-md-6">
-        <button id="change-address-btn" class="btn btn-outline-secondary w-100 shadow-sm" type="button">
-            + Add New Address
-        </button>
-    </div>
-</div>
+                    <div class="col-md-6">
+                        <button id="add-address-btn" class="btn btn-outline-secondary w-100 shadow-sm" type="button">
+                            + Add / Edit Address
+                        </button>
+                    </div>
+                </div>
 
-
-                <!-- Saved Addresses List (hidden by default) -->
-                <div id="address-list-container" class="mb-3">
+                <!-- Address List (HIDDEN BY DEFAULT) -->
+                <div id="address-list-container" class="mb-3" style="display:none;">
                     {% if addresses %}
-                    <form method="POST" action="{% url 'orders_checkout' %}">
-                        {% csrf_token %} {% for address in addresses %}
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="selected_address" id="address_{{ address.id }}" value="{{ address.id }}" {% if address.is_default %}checked{% endif %}>
-                            <label class="form-check-label" for="address_{{ address.id }}">
-                                {{ address.first_name }} {{ address.last_name }}, {{ address.address_line1 }}, {{ address.city }}, {{ address.country }}
-                            </label>
-                            <!-- Optional edit/delete icons -->
-                            <div class="ms-3">
-                                <a href="{% url 'edit_address' address.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                <a href="{% url 'delete_address' address.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        {% for address in addresses %}
+                        <div class="border p-3 rounded mb-2 d-flex justify-content-between">
+                            <div>
+                                <strong>{{ address.first_name }} {{ address.last_name }}</strong><br>
+                                {{ address.address_line1 }},
+                                {% if address.address_line2 %}{{ address.address_line2 }}, {% endif %}
+                                {% if address.near_by_landmark %}{{ address.near_by_landmark }}, {% endif %}
+                                {{ address.city }}, {{ address.state }}, {{ address.country }} - {{ address.postal_code }}<br>
+                                Phone: {{ address.phone }}
+                            </div>
 
+                            <div class="text-end">
+                                <input type="radio" name="selected_address" value="{{ address.id }}" class="form-check-input mt-2">
+
+                                <button type="button"
+                                    class="btn btn-sm btn-outline-secondary mt-2"
+                                    onclick='editAddress({{ address.id }},
+                                        "{{ address.first_name }}",
+                                        "{{ address.last_name }}",
+                                        "{{ address.address_line1 }}",
+                                        "{{ address.address_line2|default:'' }}",
+                                        "{{ address.near_by_landmark|default:'' }}",
+                                        "{{ address.city }}",
+                                        "{{ address.state }}",
+                                        "{{ address.postal_code }}",
+                                        "{{ address.country }}",
+                                        "{{ address.phone }}"
+                                    )'>
+                                    Edit
+                                </button>
+
+                                <button><a href="?delete={{ address.id }}"
+                                   class="btn btn-sm btn-outline-danger mt-2">
+                                    Delete
+                                </a>
+                                </button>
                             </div>
                         </div>
                         {% endfor %}
-                    </form>
                     {% else %}
-                    <p>You have no saved addresses.</p>
+                    <p>No saved addresses.</p>
                     {% endif %}
                 </div>
 
-                <!-- Change Address Button -->
-                {% comment %} <div class="text-center mb-3">
-                    <button id="change-address-btn" class="btn btn-outline-primary">
-                        + Add New Address
-                    </button>
-                </div> {% endcomment %}
-
-                <!-- Billing Form (hidden by default) -->
+                <!-- Address Form (HIDDEN BY DEFAULT) -->
                 <div id="address-form-container" style="display:none;">
-                    <div class="create-ac-content bg-light-gray p-4 rounded shadow-sm">
-                        <form method="POST" action="{% url 'orders_checkout' %}">
+                    <div class="bg-light p-4 rounded shadow-sm">
+
+                        <form method="POST" action="">
                             {% csrf_token %}
-                            <fieldset>
-                                <h2 class="login-title mb-3">Billing details</h2>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-firstname">First Name <span class="required-f">*</span></label>
-                                        <input name="first_name" id="input-firstname" type="text" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-lastname">Last Name <span class="required-f">*</span></label>
-                                        <input name="last_name" id="input-lastname" type="text" class="form-control">
-                                    </div>
+                            <input type="hidden" name="address_id" id="address_id">
+
+                            <h4 class="mb-3">Address Details</h4>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label>First Name *</label>
+                                    <input name="first_name" id="input-firstname" type="text" class="form-control">
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-state">State <span class="required-f">*</span></label>
-                                        <input name="state" id="input-state" type="state" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-phone">phone <span class="required-f">*</span></label>
-                                        <input name="phone" id="input-phone" type="tel" class="form-control">
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>Last Name *</label>
+                                    <input name="last_name" id="input-lastname" type="text" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label>State *</label>
+                                    <input name="state" id="input-state" type="text" class="form-control">
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label for="input-address">House No./Building Name</label>
-                                        <input name="address_line1" id="input-address" type="text" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-address-1">Road name /Area/colony<span class="required-f">*</span></label>
-                                        <input name="address_line2" id="input-address-1" type="text" class="form-control">
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>Phone *</label>
+                                    <input name="phone" id="input-phone" type="text" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label>House / Building</label>
+                                    <input name="address_line1" id="input-address" type="text" class="form-control">
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label for="input-address-2">Near by Land Mark</label>
-                                        <input name="address_2" id="input-address-2" type="text" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-city">City <span class="required-f">*</span></label>
-                                        <input name="city" id="input-city" type="text" class="form-control">
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>Road / Area *</label>
+                                    <input name="address_line2" id="input-address-1" type="text" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label>Nearby Landmark</label>
+                                    <input name="near_by_landmark" id="nput-nearby" type="text" class="form-control">
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-postal_code">Pin Code <span class="required-f">*</span></label>
-                                        <input name="postal_code" id="input-postal_code" type="text" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6 required">
-                                        <label for="input-country">Country <span class="required-f">*</span></label>
-                                        <input name="country" id="input-country" type="text" class="form-control">
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>City *</label>
+                                    <input name="city" id="input-city" type="text" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label>Pincode *</label>
+                                    <input name="postal_code" id="input-postal_code" type="text" class="form-control">
                                 </div>
 
-                                <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input" id="create-account" name="create_account">
+                                <div class="col-md-6 mb-3">
+                                    <label>Country *</label>
+                                    <input name="country" id="input-country" type="text" class="form-control">
                                 </div>
+                            </div>
 
-                                <div class="form-group">
-                                    <label for="order-notes">Order Notes</label>
-                                    <textarea id="order-notes" class="form-control resize-both" rows="3"></textarea>
-                                </div>
-
-                                <div class="text-center mt-3">
-                                    <button type="submit" class="btn btn-success" id="save-address-btn">Save Address</button>
-                                </div>
-                            </fieldset>
+                            <button type="submit" class="btn btn-success mt-3 w-100">
+                                Save Address
+                            </button>
                         </form>
+
                     </div>
                 </div>
 
             </div>
 
-            <!-- Right Column: Product Table & Payment Section -->
-            <div class="col-xl-6 col-lg-6 col-md-12 mb-4">
+            <!-- RIGHT COLUMN -->
+            <div class="col-lg-6 col-md-12">
                 <div class="your-order-payment">
-                    <div class="your-order mb-4">
-                        <h2 class="order-title mb-4">Your Order</h2>
-                        <div class="table-responsive-sm order-table">
-                            <table class="table table-bordered table-hover text-center bg-white">
-                                <thead>
-                                    <tr>
-                                        <th class="text-left">Product Name</th>
-                                        <th>Price</th>
-                                        <th>Size</th>
-                                        <th>Qty</th>
-                                        <th>Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% if cart_items %} {% for item in cart_items %}
-                                    <tr>
-                                        <td class="text-left">{{ item.product.name }}</td>
-                                        <td>${{ item.product.price }}</td>
-                                        <td>—</td>
-                                        <td>{{ item.quantity }}</td>
-                                        <td>${{ item.total_price }}</td>
-                                    </tr>
-                                    {% endfor %} {% else %}
-                                    <tr>
-                                        <td colspan="5">Your cart is empty.</td>
-                                    </tr>
-                                    {% endif %}
-                                </tbody>
-                                <tfoot class="font-weight-600">
-                                    <tr>
-                                        <td colspan="4" class="text-right">Shipping</td>
-                                        <td>${{ shipping_cost }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4" class="text-right">Total</td>
-                                        <td>${{ total_price }}</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="order-button-payment mt-4 text-end">
-                    {% comment %} <button class="btn btn-primary px-4" type="submit">Continue</button> {% endcomment %}
-                    <a href="{% url 'payment_page' %}" class="btn btn-primary px-4">Continue</a>
 
-                </div>
+                    <h2 class="order-title mb-4">Your Order</h2>
+
+                    <table class="table table-bordered text-center bg-white">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>₹{{ item.product.price }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ item.total_price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end">Shipping</td>
+                                <td>₹{{ shipping_cost }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end">Total</td>
+                                <td>₹{{ total_price }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="mt-4 text-end">
+                        <a href="{% url 'payment_page' %}" class="btn btn-primary px-4">Continue</a>
+                    </div>
+
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
 </div>
 
-</div>
-<!--End Body Content-->
-
 <script>
-    document.getElementById("change-address-btn").addEventListener("click", function() {
-        const formContainer = document.getElementById("address-form-container");
-        formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
-    });
-    
-    document.getElementById("show-address-btn").addEventListener("click", function() {
-        const listContainer = document.getElementById("address-list-container");
-        listContainer.style.display = listContainer.style.display === "none" ? "block" : "none";
-    });
+// toggle
+document.getElementById("show-address-btn").onclick = function () {
+    toggle("address-list-container");
+};
+
+document.getElementById("add-address-btn").onclick = function () {
+    toggle("address-form-container");
+};
+
+// simple toggle
+function toggle(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
+// prefill edit form
+function editAddress(id, first, last, a1, a2, near, city, state, postal, country, phone) {
+    document.getElementById("address_id").value = id;
+
+    document.getElementById("input-firstname").value = first;
+    document.getElementById("input-lastname").value = last;
+    document.getElementById("input-address").value = a1;
+    document.getElementById("input-address-1").value = a2;
+    document.getElementById("nput-nearby").value = near;
+    document.getElementById("input-city").value = city;
+    document.getElementById("input-state").value = state;
+    document.getElementById("input-postal_code").value = postal;
+    document.getElementById("input-country").value = country;
+    document.getElementById("input-phone").value = phone;
+
+    // open form automatically
+    document.getElementById("address-form-container").style.display = "block";
+}
 </script>
+
 {% endblock %}
