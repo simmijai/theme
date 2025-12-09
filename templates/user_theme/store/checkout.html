@@ -202,7 +202,7 @@
                     </table>
 
                     <div class="mt-4 text-end">
-                        <a href="{% url 'payment_page' %}" class="btn btn-primary px-4">Continue</a>
+    <a href="{% url 'payment_page' %}" id="continue-btn" class="btn btn-primary px-4">Continue</a>
                     </div>
 
                 </div>
@@ -246,6 +246,17 @@ function editAddress(id, first, last, a1, a2, near, city, state, postal, country
     // open form automatically
     document.getElementById("address-form-container").style.display = "block";
 }
+// Prevent Continue if no address selected
+document.getElementById("continue-btn").addEventListener("click", function(event){
+    const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
+    
+    if (!selectedAddress) {
+        event.preventDefault(); // block navigation
+        alert("Please select a delivery address before proceeding.");
+    }
+});
 </script>
+
+
 
 {% endblock %}
