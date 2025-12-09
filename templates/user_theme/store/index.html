@@ -30,7 +30,29 @@
         object-position: center;
         display: block;
     }
+
+    /* Push slider down below navbar */
+    #page-content {
+        margin-top: 50px !important;
+    }
+
+    /* Ensure navbar stays above slider */
+    header.site-header {
+        position: relative;
+        z-index: 9999;
+    }
+
+    /* Remove accidental floating buttons/icons inside slider */
+    .slideshow .site-header__icons,
+    .slideshow .site-cart,
+    .slideshow .site-header__search,
+    .slideshow .site-header__account,
+    .slideshow .nav,
+    .slideshow .site-header__icon {
+        display: none !important;
+    }
 </style>
+
 
 <div id="page-content">
     
