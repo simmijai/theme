@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django import forms
-from .models import Account
+from .models import Account, Address
 
 class AccountCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
@@ -50,3 +50,5 @@ class AccountAdmin(UserAdmin):
     ordering = ('email',)
 
 admin.site.register(Account, AccountAdmin)
+
+admin.site.register(Address)
