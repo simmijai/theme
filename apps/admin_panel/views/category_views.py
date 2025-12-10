@@ -74,13 +74,17 @@ class CategoryCreateView(View):
         cat_image = request.FILES.get('cat_image')
         parent_id = request.POST.get('parent')
         parent = Category.objects.get(id=parent_id) if parent_id else None
+        is_active = request.POST.get('is_active') == 'on'
+
 
         Category.objects.create(
             category_name=name,
             slug=slug,
             description=description,
             cat_image=cat_image,
-            parent=parent
+            parent=parent,
+            is_active=is_active
+            
         )
         return redirect('admin_category_list')
 
