@@ -11,6 +11,12 @@ def checkout(request):
     user = request.user
 
     cart_items = CartItem.objects.filter(user=user)
+    
+    # Check if cart is empty
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty. Add items before checkout.")
+        return redirect('cart_view')
+    
     total_price = sum(item.total_price() for item in cart_items)
     shipping_cost = 50
 
@@ -113,6 +119,12 @@ from .models import Order, OrderItem
 @login_required
 def payment_page(request):
     cart_items = CartItem.objects.filter(user=request.user)
+    
+    # Check if cart is empty
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty. Add items before proceeding to payment.")
+        return redirect('cart_view')
+    
     total_price = sum(item.total_price() for item in cart_items)
     shipping_cost = 50
     grand_total = total_price + shipping_cost
@@ -129,6 +141,12 @@ def place_order(request):
     if request.method == "POST":
         payment_method = request.POST.get("payment_method", "COD")
         cart_items = CartItem.objects.filter(user=request.user)
+        
+        # Check if cart is empty
+        if not cart_items.exists():
+            messages.error(request, "Your cart is empty. Cannot place order.")
+            return redirect('cart_view')
+        
         total_price = sum(item.total_price() for item in cart_items)
         shipping_cost = 50
 
