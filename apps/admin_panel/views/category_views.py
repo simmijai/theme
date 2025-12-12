@@ -8,19 +8,6 @@ from apps.products.models import Category  # make sure Category model exists
 def admin_dashboard(request):
     return render(request, 'admin_theme/dashboard.html')
 
-
-
-# ------------------------
-# PRODUCT
-# ------------------------
-def admin_product(request):
-    return render(request, 'admin_theme/products/product.html')
-
-
-def admin_product_create(request):
-    return render(request, 'admin_theme/products/product_create.html')
-
-
 # ------------------------
 # SUBCATEGORY
 # ------------------------
@@ -34,14 +21,6 @@ def admin_subcategory_list(request, category_id):
         'category': category,
         'subcategories': subcategories
     })
-
-
-# ------------------------
-# CUSTOMER
-# ------------------------
-def customer_details(request):
-    return render(request, 'admin_theme/customers/customer_details.html')
-
 
 
 # admin_panel/views/category_views.py

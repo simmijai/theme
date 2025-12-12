@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from apps.cart.models import CartItem
 from apps.accounts.models import Address
 from apps.accounts.forms import AddressForm
@@ -151,11 +152,7 @@ def my_orders(request):
     return render(request, 'user_theme/store/my_orders.html', {'orders': orders})
 
 
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from apps.accounts.models import Address
 
-from django.contrib import messages
 
 @login_required
 def delete_address(request, pk):
