@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 from .models import Category, Product
+from .search import search_products
 
 
 def category_products(request, slug):
@@ -158,3 +160,17 @@ def delete_review(request, review_id):
     product_slug = review.product.slug
     review.delete()
     return redirect('product_detail', slug=product_slug)
+
+def search_products_view(request):
+    query = request.GET.get('q', '')
+    products = search_products(query) if query else Product.objects.all()
+    
+    # Pagination
+    paginator = Paginator(products, 12)
+    page = paginator.get_page(request.GET.get('page'))
+    
+    return render(request, 'user_theme/store/search_results.html', {
+        'products': page,
+        'query': query,
+        'total_results': products.count()
+    })

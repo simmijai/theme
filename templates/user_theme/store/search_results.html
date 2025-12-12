@@ -1,0 +1,76 @@
+{% extends 'user_theme/base.html' %}
+{% load static %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div id="page-content">
+    <div class="page section-header text-center">
+        <div class="page-title">
+            <div class="wrapper">
+                <h1 class="page-width">Search Results</h1>
+                {% if query %}
+                    <p>{{ total_results }} results for "{{ query }}"</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if products %}
+            <div class="row">
+                {% for product in products %}
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                    <div class="product-image">
+                        <a href="{% url 'product_detail' product.slug %}">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="blur-up lazyload">
+                        </a>
+                    </div>
+                    <div class="product-details text-center">
+                        <div class="product-name">
+                            <a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>
+                        </div>
+                        <div class="product-price">
+                            <span class="price">₹{{ product.price }}</span>
+                        </div>
+                        {% if not product.is_in_stock %}
+                            <p class="text-danger">Out of Stock</p>
+                        {% elif product.is_low_stock %}
+                            <p class="text-warning">Only {{ product.stock }} left!</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if products.has_other_pages %}
+            <nav class="clearfix pagination-bottom">
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                        <div class="pagination">
+                            {% if products.has_previous %}
+                                <a href="?q={{ query }}&page={{ products.previous_page_number }}">&laquo; Previous</a>
+                            {% endif %}
+                            
+                            <span class="page-numbers current">{{ products.number }}</span>
+                            
+                            {% if products.has_next %}
+                                <a href="?q={{ query }}&page={{ products.next_page_number }}">Next &raquo;</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center">
+                <h3>No products found</h3>
+                {% if query %}
+                    <p>Try searching with different keywords.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
