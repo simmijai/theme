@@ -91,6 +91,14 @@
                             <input type="hidden" name="address_id" id="address_id">
 
                             <h4 class="mb-3">Address Details</h4>
+                            
+                            {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    {% for field, errors in form.errors.items %}
+                                        <strong>{{ field|title }}:</strong> {{ errors.0 }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -131,7 +139,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label>Nearby Landmark</label>
-                                    <input name="near_by_landmark" id="nput-nearby" type="text" class="form-control">
+                                    <input name="near_by_landmark" id="input-nearby" type="text" class="form-control">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -236,7 +244,7 @@ function editAddress(id, first, last, a1, a2, near, city, state, postal, country
     document.getElementById("input-lastname").value = last;
     document.getElementById("input-address").value = a1;
     document.getElementById("input-address-1").value = a2;
-    document.getElementById("nput-nearby").value = near;
+    document.getElementById("input-nearby").value = near;
     document.getElementById("input-city").value = city;
     document.getElementById("input-state").value = state;
     document.getElementById("input-postal_code").value = postal;

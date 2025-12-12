@@ -43,8 +43,12 @@ def checkout(request):
             new_addr = form.save(commit=False)
             new_addr.user = user
             new_addr.save()
+            messages.success(request, "Address added successfully.")
             return redirect("orders_checkout")
-
+        else:
+            # Print errors for debugging
+            print("Form errors:", form.errors)
+            messages.error(request, "Please fix the errors below.")
     else:
         form = AddressForm()
 
