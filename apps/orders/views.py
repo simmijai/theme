@@ -26,9 +26,18 @@ def checkout(request):
         return redirect("orders_checkout")
 
     # --------------------------
+    # HANDLE ADDRESS SELECTION
+    # --------------------------
+    if request.method == "POST" and 'selected_address' in request.POST:
+        selected_address_id = request.POST.get('selected_address')
+        request.session['selected_address_id'] = selected_address_id
+        messages.success(request, 'Address selected successfully.')
+        return redirect('orders_checkout')
+    
+    # --------------------------
     # ADD / EDIT ADDRESS  
     # --------------------------
-    if request.method == "POST":
+    elif request.method == "POST":
         edit_id = request.POST.get("address_id")  # Hidden field
 
         if edit_id:  
@@ -123,12 +132,29 @@ def place_order(request):
         total_price = sum(item.total_price() for item in cart_items)
         shipping_cost = 50
 
-        # ✅ create order
+        # Get selected address from session or default
+        selected_address_id = request.session.get('selected_address_id')
+        address = None
+        if selected_address_id:
+            try:
+                address = Address.objects.get(id=selected_address_id, user=request.user)
+            except Address.DoesNotExist:
+                pass
+        
+        if not address:
+            address = Address.objects.filter(user=request.user).first()
+        
+        if not address:
+            messages.error(request, 'Please add a delivery address before placing order.')
+            return redirect('orders_checkout')
+        
+        # ✅ create order with address
         order = Order.objects.create(
             user=request.user,
+            address=address,
             total_price=total_price + shipping_cost,
             payment_method=payment_method,
-            status="Pending"  # must match your model choices
+            status="Pending"
         )
 
         # ✅ create each order item and update stock

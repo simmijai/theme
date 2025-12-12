@@ -19,9 +19,14 @@ def add_to_cart(request, product_id):
         else:
             quantity = int(request.GET.get('quantity', 1))
         
-        # Validate quantity
+        # Validate quantity and stock
         if quantity < 1:
             quantity = 1
+        
+        # Check stock availability
+        if quantity > product.stock:
+            messages.error(request, f'Only {product.stock} items available in stock.')
+            return redirect('cart_view')
         
         cart_item, created = CartItem.objects.get_or_create(
             user=request.user,
@@ -30,7 +35,11 @@ def add_to_cart(request, product_id):
         )
 
         if not created:
-            cart_item.quantity += quantity
+            new_quantity = cart_item.quantity + quantity
+            if new_quantity > product.stock:
+                messages.error(request, f'Cannot add more. Only {product.stock} items available.')
+                return redirect('cart_view')
+            cart_item.quantity = new_quantity
             cart_item.save()
 
         messages.success(request, f"'{product.name}' added to your cart.")
@@ -96,6 +105,13 @@ def update_quantity(request, product_id):
     cart_item = CartItem.objects.filter(user=request.user, product_id=product_id).first()
     if not cart_item:
         return JsonResponse({'success': False, 'message': 'Cart item not found'}, status=404)
+
+    # Check stock availability
+    if qty > cart_item.product.stock:
+        return JsonResponse({
+            'success': False, 
+            'message': f'Only {cart_item.product.stock} items available in stock'
+        })
 
     cart_item.quantity = qty
     cart_item.save()
