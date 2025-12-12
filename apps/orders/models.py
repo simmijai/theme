@@ -26,6 +26,13 @@ class Order(models.Model):
 
     def get_total_items(self):
         return sum(item.quantity for item in self.items.all())
+    
+    def update_stock_on_order(self):
+        """Reduce stock when order is placed"""
+        for item in self.items.all():
+            if item.product:
+                item.product.stock -= item.quantity
+                item.product.save()
 
 
 class OrderItem(models.Model):
