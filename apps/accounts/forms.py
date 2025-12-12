@@ -82,15 +82,55 @@ class AddressForm(forms.ModelForm):
         } 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
-
+        if not phone:
+            raise forms.ValidationError("Phone number is required.")
         if not phone.isdigit():
             raise forms.ValidationError("Phone must contain only digits.")
-
         if len(phone) < 7 or len(phone) > 15:
             raise forms.ValidationError("Enter a valid phone number.")
-
         if phone == "0000000000":
             raise forms.ValidationError("Invalid phone number.")
-
         return phone
+    
+    def clean_first_name(self):
+        name = self.cleaned_data.get('first_name')
+        if not name:
+            raise forms.ValidationError("First name is required.")
+        return name
+    
+    def clean_last_name(self):
+        name = self.cleaned_data.get('last_name')
+        if not name:
+            raise forms.ValidationError("Last name is required.")
+        return name
+    
+    def clean_address_line1(self):
+        address = self.cleaned_data.get('address_line1')
+        if not address:
+            raise forms.ValidationError("Address is required.")
+        return address
+    
+    def clean_city(self):
+        city = self.cleaned_data.get('city')
+        if not city:
+            raise forms.ValidationError("City is required.")
+        return city
+    
+    def clean_state(self):
+        state = self.cleaned_data.get('state')
+        if not state:
+            raise forms.ValidationError("State is required.")
+        return state
+    
+    def clean_country(self):
+        country = self.cleaned_data.get('country')
+        if not country:
+            raise forms.ValidationError("Country is required.")
+        return country
+    
+    def clean_postal_code(self):
+        postal = self.cleaned_data.get('postal_code')
+        if not postal:
+            raise forms.ValidationError("Postal code is required.")
+        return postal
 

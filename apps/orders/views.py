@@ -131,7 +131,7 @@ def place_order(request):
             status="Pending"  # must match your model choices
         )
 
-        # ✅ create each order item (REMOVED subtotal)
+        # ✅ create each order item and update stock
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -139,6 +139,9 @@ def place_order(request):
                 quantity=item.quantity,
                 price=item.product.price
             )
+            # Update stock
+            item.product.stock -= item.quantity
+            item.product.save()
 
         # ✅ clear cart
         cart_items.delete()
