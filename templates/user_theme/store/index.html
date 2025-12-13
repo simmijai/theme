@@ -14,6 +14,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
     }
     
     .grid-view-item__link {
@@ -157,6 +158,19 @@
                                 <img class="grid-view-item__image hover blur-up lazyload"
                                      src="{{ product.image.url }}" alt="{{ product.name }}">
                             </a>
+
+                            <div class="product-info text-center mt-2">
+        <div class="product-name">
+            <a href="{% url 'product_detail' product.slug %}" class="text-dark font-weight-bold">
+                {{ product.name }}
+            </a>
+        </div>
+
+        <div class="product-price">
+            <span class="price">₹{{ product.price }}</span>
+        </div>
+    </div>
+
 
                             <!-- Product Details -->
                             <div class="product-details hoverDetails text-center mobile">
