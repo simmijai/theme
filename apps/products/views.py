@@ -72,7 +72,9 @@ from django.db.models import Q   # <-- ADD THIS IMPORT
 
 
 def product_detail(request, slug):
-    product = get_object_or_404(Product, slug=slug)
+    product = get_object_or_404(
+        Product.objects.prefetch_related('images'),  # prefetch extra images
+        slug=slug)
     user = request.user
     show_review_button = False
     existing_review = None
@@ -104,7 +106,8 @@ def product_detail(request, slug):
         'product': product,
         'show_review_button': show_review_button,
         'existing_review': existing_review,
-        'reviews': reviews_to_show
+        'reviews': reviews_to_show,
+        'extra_images': product.images.all(),
     }
     return render(request, 'user_theme/store/product_detail.html', context)
 

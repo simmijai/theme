@@ -24,9 +24,18 @@
                         <div class="product-details-img">
                             <div class="product-thumb">
                                 <div id="gallery" class="product-dec-slider-2 product-tab-left">
+                                  <!-- Main image -->
                                     <a data-image="{{ product.image.url }}" data-zoom-image="{{ product.image.url }}">
                                         <img class="blur-up lazyload" data-src="{{ product.image.url }}" src="{{ product.image.url }}" alt="{{ product.name }}">
                                     </a>
+                                     <!-- Extra images -->
+                                  {% for img in extra_images %}
+                                      <a data-image="{{ img.image.url }}" data-zoom-image="{{ img.image.url }}">
+                                          <img class="blur-up lazyload" data-src="{{ img.image.url }}" src="{{ img.image.url }}" alt="{{ product.name }} - extra image">
+                                      </a>
+                                  {% empty %}
+                                      <!-- Optional fallback if no extra images -->
+                                  {% endfor %}
                                 </div>
                             </div>
                             <div class="zoompro-wrap product-zoom-right pl-20">
@@ -64,7 +73,7 @@
                             </div>
 
                             <!-- Product Action -->
-                            <form method="post" action="{% url 'cart_view' %}" class="product-form">
+                              <form method="post" action="{% url 'add_to_cart' product.id %}" class="product-form">
                                 {% csrf_token %}
                                 <div class="product-form__item--quantity">
                                     <div class="wrapQtyBtn">

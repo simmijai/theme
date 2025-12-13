@@ -68,13 +68,13 @@
     {% for item in cart_items %}
     <tr class="cart__row border-bottom line1 cart-flex border-top">
         <td class="cart__image-wrapper cart-flex-item">
-            <a href="#">
+            <a href="{% url 'product_detail' product.slug %}">
                 <img class="cart__image" src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
             </a>
         </td>
         <td class="cart__meta small--text-left cart-flex-item">
             <div class="list-view-item__title">
-                <a href="#">{{ item.product.name }}</a>
+                <a href="{% url 'product_detail' product.slug %}">{{ item.product.name }}</a>
             </div>
         </td>
         <td class="cart__price-wrapper cart-flex-item">
