@@ -253,8 +253,9 @@
                             <!-- Categories loop -->
                                 {% for category in top_categories %}
                                     <li class="lvl1 parent dropdown">
-                                        <a href="#">{{ category.category_name }}</a>
-                                        {% if category.subcategories.all %}
+                                  <a href="{% url 'category_products' category.slug %}">
+                                          {{ category.category_name }}
+                                      </a>                                        {% if category.subcategories.all %}
                                         <ul class="dropdown">
                                             {% for subcat in category.subcategories.all %}
                                             <li>
