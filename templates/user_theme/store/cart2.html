@@ -68,17 +68,17 @@
     {% for item in cart_items %}
     <tr class="cart__row border-bottom line1 cart-flex border-top">
         <td class="cart__image-wrapper cart-flex-item">
-            <a href="{% url 'product_detail' product.slug %}">
+            <a href="#">
                 <img class="cart__image" src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
             </a>
         </td>
         <td class="cart__meta small--text-left cart-flex-item">
             <div class="list-view-item__title">
-                <a href="{% url 'product_detail' product.slug %}">{{ item.product.name }}</a>
+                <a href="{% url '#">{{ item.product.name }}</a>
             </div>
         </td>
         <td class="cart__price-wrapper cart-flex-item">
-            <span class="money">₹{{ item.product.price }}</span>
+            <span class="money">${{ item.product.price }}</span>
         </td>
         <td class="cart__update-wrapper cart-flex-item text-right">
             <div class="cart__qty text-center">
@@ -90,7 +90,7 @@
             </div>
         </td>
         <td class="text-right small--hide cart-price">
-            <div><span class="money" id="item-total-{{ item.product.id }}">₹{{ item.total_price }}</span></div>
+            <div><span class="money" id="item-total-{{ item.product.id }}">${{ item.total_price }}</span></div>
         </td>
         <td class="text-center small--hide">
         <a href="#" class="btn btn--secondary cart__remove" data-id="{{ item.product.id }}" title="Remove Item">
@@ -122,7 +122,7 @@
                 
                 <div class="container mt-4">
                     <div class="row">
-                    	<div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
+                    	{% comment %} <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
                         	<h5>Discount Codes</h5>
                             <form action="#" method="post">
                             	<div class="form-group">
@@ -212,30 +212,30 @@
                                     <div><input type="button" class="btn btn-secondary btn--small" value="Calculate shipping"></div>
                                 </div>
                             </form>
-                        </div>
+                        </div> {% endcomment %}
                         
                         <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
                             <div class="solid-border">	
                                                             <div class="row border-bottom pb-2">
                                                                 <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                                                                <span class="col-12 col-sm-6 text-right"><span class="money" id="cart-subtotal">₹{{ total_price }}</span></span>
+                                                                <span class="col-12 col-sm-6 text-right"><span class="money" id="cart-subtotal">${{ total_price }}</span></span>
                                                             </div>
                               <div class="row border-bottom pb-2 pt-2">
-                                <span class="col-12 col-sm-6 cart__subtotal-title">Tax</span>
-                                <span class="col-12 col-sm-6 text-right">$50.00</span>
+                                {% comment %} <span class="col-12 col-sm-6 cart__subtotal-title">Tax</span>
+                                <span class="col-12 col-sm-6 text-right">$50.00</span> {% endcomment %}
                               </div>
-                              <div class="row border-bottom pb-2 pt-2">
+                              {% comment %} <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
                                 <span class="col-12 col-sm-6 text-right">Free shipping</span>
-                              </div>
+                              </div> {% endcomment %}
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
                                 <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right">
-                                    <span class="money" id="cart-grand-total">₹{{ grand_total }}</span>
+                                    <span class="money" id="cart-grand-total">${{ grand_total }}</span>
                                 </span>
                             </div>
 
-                              <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
+                              {% comment %} <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div> {% endcomment %}
                               {% comment %} <p class="cart_tearm">
                                 <label>
                                   <input type="checkbox" name="tearm" class="checkbox" value="tearm" required="">
@@ -297,10 +297,10 @@ document.querySelectorAll('.cart__remove').forEach(btn => {
                 // update cart subtotal if provided (optional)
                 if (data.cart_total !== undefined) {
                     const subtotalEl = document.getElementById('cart-subtotal');
-                    if (subtotalEl) subtotalEl.textContent = '₹' + data.cart_total;
+                    if (subtotalEl) subtotalEl.textContent = '$' + data.cart_total;
 
                     const grandTotalEl = document.getElementById('cart-grand-total');
-                    if (grandTotalEl) grandTotalEl.textContent = '₹' + data.cart_total;
+                    if (grandTotalEl) grandTotalEl.textContent = '$' + data.cart_total;
                 }
             } else {
                 console.error(data.message);
@@ -348,12 +348,12 @@ document.querySelectorAll('.cart-qty-btn.plus, .cart-qty-btn.minus').forEach(btn
         updateQuantity(id, qty, function(data){
             // update item total and cart subtotal
             const itemTotalEl = document.getElementById(`item-total-${id}`);
-            if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = '₹' + data.item_total;
+            if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = '$' + data.item_total;
             const subtotalEl = document.getElementById('cart-subtotal');
-            if (subtotalEl && data.cart_total !== undefined) subtotalEl.textContent = '₹' + data.cart_total;
+            if (subtotalEl && data.cart_total !== undefined) subtotalEl.textContent = '$' + data.cart_total;
 
             const grandTotalEl = document.getElementById('cart-grand-total');
-            if (grandTotalEl && data.cart_total !== undefined) grandTotalEl.textContent = '₹' + data.cart_total;
+            if (grandTotalEl && data.cart_total !== undefined) grandTotalEl.textContent = '$' + data.cart_total;
             // if item removed (qty 0), remove row
             if (qty <= 0) {
                 row.remove();
@@ -371,9 +371,9 @@ document.querySelectorAll('.cart-qty-input').forEach(input => {
         this.value = qty;
         updateQuantity(id, qty, function(data){
             const itemTotalEl = document.getElementById(`item-total-${id}`);
-            if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = '₹' + data.item_total;
+            if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = '$' + data.item_total;
             const subtotalEl = document.getElementById('cart-subtotal');
-            if (subtotalEl && data.cart_total !== undefined) subtotalEl.textContent = '₹' + data.cart_total;
+            if (subtotalEl && data.cart_total !== undefined) subtotalEl.textContent = '$' + data.cart_total;
             if (qty <= 0) {
                 const row = input.closest('tr'); if (row) row.remove();
             }
@@ -388,7 +388,7 @@ document.querySelectorAll('.cart-qty-input').forEach(input => {
 <script>
 document.getElementById('cartCheckout').addEventListener('click', function(e){
     const subtotalEl = document.getElementById('cart-subtotal');
-    // Extract number from ₹ string
+    // Extract number from $ string
     const subtotal = subtotalEl ? parseFloat(subtotalEl.textContent.replace(/[^0-9.-]+/g,"")) : 0;
 
     if(subtotal <= 0){

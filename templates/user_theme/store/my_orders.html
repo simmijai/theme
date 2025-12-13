@@ -27,7 +27,7 @@
 
             <div class="card-body">
                 <p><strong>Payment:</strong> {{ order.payment_method }}</p>
-                <p><strong>Total:</strong> ₹{{ order.total_price }}</p>
+                <p><strong>Total:</strong> ${{ order.total_price }}</p>
 
                 <!-- Expandable Order Items -->
                 <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#orderItems{{ order.id }}">
@@ -49,8 +49,8 @@
                             <tr>
                                 <td>{{ item.product.name }}</td>
                                 <td>{{ item.quantity }}</td>
-                                <td>₹{{ item.price }}</td>
-                                <td>₹{{ item.subtotal }}</td>
+                                <td>${{ item.price }}</td>
+                                <td>${{ item.subtotal }}</td>
                             </tr>
                             {% empty %}
                             <tr>

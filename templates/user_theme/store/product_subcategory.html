@@ -180,7 +180,7 @@
                         <div class="details">
                             <a class="grid-view-item__title" href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>
                             <div class="grid-view-item__meta">
-                                <span class="product-price__price">₹{{ product.price }}</span>
+                                <span class="product-price__price">${{ product.price }}</span>
                             </div>
                         </div>
                     </div>
@@ -429,7 +429,7 @@
                     </div>
 
                     <div class="product-price mt-1">
-                        <span class="price">₹{{ product.price }}</span>
+                        <span class="price">${{ product.price }}</span>
                     </div>
 
                     <!-- Buttons -->

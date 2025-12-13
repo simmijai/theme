@@ -48,7 +48,7 @@
 </p>
                                 </div>
                                 <div class="col-md-4 text-end">
-                                    <p><strong>Total Amount:</strong> ₹{{ order.total_price }}</p>
+                                    <p><strong>Total Amount:</strong> ${{ order.total_price }}</p>
                                     <p><strong>Order Date:</strong> {{ order.created_at|date:"d-m-Y H:i" }}</p>
                                 </div>
                             </div>
@@ -76,8 +76,8 @@
                                         <tr>
                                             <td>{{ item.product.name }}</td>
                                             <td>{{ item.quantity }}</td>
-                                            <td>₹{{ item.price }}</td>
-                                            <td>₹{{ item.subtotal }}</td>
+                                            <td>${{ item.price }}</td>
+                                            <td>${{ item.subtotal }}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>

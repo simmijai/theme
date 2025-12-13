@@ -36,10 +36,10 @@
                 <span>Subtotal:</span>
                 <strong>${{ total_price }}</strong>
               </div>
-              <div class="d-flex justify-content-between mb-2">
+              {% comment %} <div class="d-flex justify-content-between mb-2">
                 <span>Shipping:</span>
                 <strong>${{ shipping_cost }}</strong>
-              </div>
+              </div> {% endcomment %}
               <div class="d-flex justify-content-between">
                 <span class="fw-bold fs-5">Total:</span>
                 <strong class="text-success fs-5">${{ grand_total }}</strong>
@@ -51,9 +51,9 @@
               <button type="submit" class="btn btn-success px-5 py-2 rounded-pill">
                 Place Order
               </button>
-              <div class="mt-2">
+              {% comment %} <div class="mt-2">
                 <a href="{% url 'orders_checkout' %}" class="text-muted small">&larr; Back to Checkout</a>
-              </div>
+              </div> {% endcomment %}
             </div>
           </form>
         </div>

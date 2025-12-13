@@ -56,7 +56,7 @@
                                             <tr>
                                                 <td>{{ order.id }}</td>
                                                 <td>{{ order.products_count }}</td>
-                                                <td>₹{{ order.total_amount }}</td>
+                                                <td>${{ order.total_amount }}</td>
                                                 <td>{{ order.date|date:"d-m-Y H:i" }}</td>
                                                 <td>{{ order.status }}</td>
                                                 <td class="text-end">

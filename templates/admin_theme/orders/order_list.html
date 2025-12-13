@@ -27,7 +27,7 @@
                                 {{ order.user.email }}
                             </td>
                             <td>{{ order.get_total_items }}</td>
-                            <td>₹{{ order.total_price }}</td>
+                            <td>${{ order.total_price }}</td>
                             <td>
                                 <form method="POST" action="{% url 'update_order_status' order.id %}">
                                     {% csrf_token %}

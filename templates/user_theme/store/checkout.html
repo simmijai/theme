@@ -69,7 +69,7 @@
                                 </button>
 
                                 <button><a href="?delete={{ address.id }}"
-                                   class="btn btn-sm btn-outline-danger mt-2">
+                                   class="btn btn-sm btn-outline-secondary mt-2">
                                     Delete
                                 </a>
                                 </button>
@@ -190,21 +190,21 @@
                             {% for item in cart_items %}
                             <tr>
                                 <td>{{ item.product.name }}</td>
-                                <td>₹{{ item.product.price }}</td>
+                                <td>${{ item.product.price }}</td>
                                 <td>{{ item.quantity }}</td>
-                                <td>₹{{ item.total_price }}</td>
+                                <td>${{ item.total_price }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
 
                         <tfoot>
-                            <tr>
+                            {% comment %} <tr>
                                 <td colspan="3" class="text-end">Shipping</td>
-                                <td>₹{{ shipping_cost }}</td>
-                            </tr>
+                                <td>${{ shipping_cost }}</td>
+                            </tr> {% endcomment %}
                             <tr>
                                 <td colspan="3" class="text-end">Total</td>
-                                <td>₹{{ total_price }}</td>
+                                <td>${{ total_price }}</td>
                             </tr>
                         </tfoot>
                     </table>
