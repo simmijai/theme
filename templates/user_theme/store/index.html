@@ -184,13 +184,13 @@
                                     </div>
                                 {% endif %}
 
-                                <div class="product-name mt-2">
+                                {% comment %} <div class="product-name mt-2">
                                     <a href="{% url 'product_detail' product.slug %}" class="text-dark font-weight-bold">{{ product.name }}</a>
                                 </div>
 
                                 <div class="product-price mt-1">
                                     <span class="price">₹{{ product.price }}</span>
-                                </div>
+                                </div> {% endcomment %}
 
                                 <div class="button-set mt-2">
                                     <a href="javascript:void(0)" title="Quick View"
