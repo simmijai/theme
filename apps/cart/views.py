@@ -4,6 +4,8 @@ from django.contrib import messages
 from apps.products.models import Product
 from .models import CartItem
 from django.http import JsonResponse
+from apps.wishlist.models import Wishlist
+
 
 
 
@@ -41,6 +43,9 @@ def add_to_cart(request, product_id):
                 return redirect('cart_view')
             cart_item.quantity = new_quantity
             cart_item.save()
+            
+        Wishlist.objects.filter(user=request.user, product=product).delete()
+
 
         messages.success(request, f"'{product.name}' added to your cart.")
         return redirect('cart_view')
