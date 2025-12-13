@@ -4,15 +4,23 @@ from apps.accounts.models import Account, Address
 from apps.orders.models import Order
 from django.db.models import Max, Count
 
-
+from django.db.models import Subquery, OuterRef
 
 
 
 def customer_list(request):
+    
+    default_phone = Address.objects.filter(
+    user=OuterRef('pk'),
+    is_default=True
+    ).values('phone')[:1]
+    
      # Get all customers
     customers = Account.objects.filter(role='customer').annotate(
         total_orders=Count('order'),                # total orders per customer
-        last_order_date=Max('order__created_at')    # latest order date per customer
+        last_order_date=Max('order__created_at'),   # latest order date per customer
+        phone=Subquery(default_phone)
+
     )
     return render(request, 'admin_theme/customers/customer_list.html', {'customers': customers})
 
@@ -33,9 +41,9 @@ def customer_details(request, customer_id):
     customer.total_orders = orders.count()
     customer.last_order_date = orders.first().created_at if orders.exists() else None
 
-    # Prepare address string
-    addresses = customer.addresses.all()  # Make sure your Account model has a related_name 'addresses'
-    customer.address = ", ".join([f"{a.address_line1}, {a.city}" for a in addresses])
+    # # Prepare address string
+    # addresses = customer.addresses.all()  # Make sure your Account model has a related_name 'addresses'
+    # customer.address = ", ".join([f"{a.address_line1}, {a.city}" for a in addresses])
 
     context = {
         'customer': customer,

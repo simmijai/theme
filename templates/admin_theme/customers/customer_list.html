@@ -55,7 +55,7 @@
                                                     </a>
                                                 </td>
                                                 <td><a href="apps-email.html">{{ customer.email }}</a></td>
-                                                <td><a href="tel:">{{ customer.phone_number }}</a></td>
+                                                <td><a href="tel:">{{ customer.phone|default:"-" }}</a></td>
                                                 <td>{{ customer.total_orders }}</td>
                                                 <td>
                                                     {% if customer.last_order_date %}
