@@ -1,12 +1,27 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView
 from apps.products.models import Product, ProductImage
 from apps.admin_panel.forms import ProductForm, ProductImageForm
 from django.contrib import messages
 
+class AdminRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
 
-def product_list(request):
-    products = Product.objects.prefetch_related('images', 'category').all()
-    return render(request, 'admin_theme/products/product.html', {'products': products})
+class AdminProductListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = Product
+    template_name = 'admin_theme/products/product.html'
+    context_object_name = 'products'
+    paginate_by = 5
+    
+    def get_queryset(self):
+        return Product.objects.prefetch_related('images', 'category').all().order_by('-created_at')
+
+# Keep FBV for backward compatibility (can be removed later)
+# def product_list(request):
+#     products = Product.objects.prefetch_related('images', 'category').all()
+#     return render(request, 'admin_theme/products/product.html', {'products': products})
 
 
 def product_create(request):

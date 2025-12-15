@@ -13,6 +13,7 @@
                                 <table class="table table-hover" id="productList">
                                     <thead>
                                         <tr>
+                                            <th>S.No.</th>
                                             <th>Image</th>
                                             <th>Name</th>
                                             <th>Category</th>
@@ -26,6 +27,7 @@
                                     <tbody>
                                         {% for product in products %}
                                         <tr>
+                                            <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
                                             {% comment %} <td>
                                                 {% if product.image %}
                                                     <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50" height="50">
@@ -60,21 +62,67 @@
                                                 {% endif %}
                                             </td>
                                             <td class="text-end">
-                                                <a href="{% url 'admin_product_edit' product.id %}" class="btn btn-sm btn-primary me-1">
-                                                    <i class="bi bi-pencil"></i> Edit
-                                                </a>
-                                                <form method="POST" action="{% url 'admin_product_delete' product.id %}" style="display:inline;" onsubmit="return confirmDelete('{{ product.name }}');">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="bi bi-trash"></i> Delete
+                                                <div class="btn-group" role="group">
+                                                    <a href="{% url 'admin_product_edit' product.id %}" class="btn btn-sm btn-outline-primary" title="Edit Product">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Delete Product" onclick="deleteProduct('{{ product.id }}', '{{ product.name }}')">
+                                                        <i class="bi bi-trash3"></i>
                                                     </button>
-                                                </form>
+                                                </div>
                                             </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            <!-- Pagination -->
+                            {% if is_paginated %}
+                            <div class="card-footer">
+                                <nav aria-label="Product pagination">
+                                    <ul class="pagination justify-content-center mb-0">
+                                        {% if page_obj.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=1">First</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        <!-- Show page numbers -->
+                                        {% for num in page_obj.paginator.page_range %}
+                                            {% if page_obj.number == num %}
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ num }}</span>
+                                                </li>
+                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        {% if page_obj.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                                
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">
+                                        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} products
+                                    </small>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
                         </div>
                     </div>
                 </div>
@@ -83,8 +131,23 @@
 </main>
 
 <script>
-function confirmDelete(name) {
-    return confirm("Are you sure you want to delete '" + name + "'?");
+function deleteProduct(productId, productName) {
+    if (confirm(`Are you sure you want to delete '${productName}'?\n\nThis action cannot be undone.`)) {
+        // Create and submit form
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin_panel/products/delete/${productId}/`;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        
+        form.appendChild(csrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 </script>
 {% endblock %}
