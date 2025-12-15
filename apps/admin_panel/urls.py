@@ -26,12 +26,12 @@ urlpatterns = [
     path('products/delete/<int:pk>/', product_views.product_delete, name='admin_product_delete'),
     path('products/image/delete/<int:pk>/', product_views.product_image_delete, name='admin_product_image_delete'),
 
-    path('customer/list/', customer_views.customer_list, name='customer_list'),
+    path('customer/list/', customer_views.AdminCustomerListView.as_view(), name='customer_list'),
     path('customer/<int:customer_id>/', customer_views.customer_details, name='customer_details'),
 
     
     path('order/<int:order_id>/', order_views.order_detail, name='order-detail'),
-    path('admin/orders/', order_views.admin_order_list, name='admin_order_list'),
+    path('admin/orders/', order_views.AdminOrderListView.as_view(), name='admin_order_list'),
     path('admin/orders/<int:order_id>/update-status/', order_views.update_order_status, name='update_order_status'),
 
     path('sliders/', views_slider.slider_list, name='admin_slider_list'),
