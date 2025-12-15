@@ -63,7 +63,6 @@ def checkout(request):
         else:
             # Print errors for debugging
             print("Form errors:", form.errors)
-            messages.error(request, "Please fix the errors below.")
     else:
         form = AddressForm()
 
