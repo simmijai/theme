@@ -9,10 +9,25 @@
     <!--Collection Banner-->
     	<div class="collection-header">
 			<div class="collection-hero">
-        		<div class="collection-hero__image"><img class="blur-up lazyload" data-src="{% static 'images/cat-women.jpg' %}" src="{% static 'images/cat-women.jpg' %}" alt="Women" title="Women" /></div>
-        		<div class="collection-hero__title-wrapper">
-                    {% comment %} <h1 class="collection-hero__title page-width">{{category.category_name}}</h1> {% endcomment %}
+        		<div class="collection-hero__image">
+                    {% comment %} <img class="blur-up lazyload" data-src="{% static 'images/cat-women.jpg' %}" src="{% static 'images/cat-women.jpg' %}" alt="Women" title="Women" /> {% endcomment %}
+                {% if category.cat_image %}
+        <img class="blur-up lazyload"
+             src="{{ category.cat_image.url }}"
+             alt="{{ category.category_name }}"
+             title="{{ category.category_name }}">
+    {% else %}
+        <img class="blur-up lazyload"
+             src="{% static 'images/no-image.png' %}"
+             alt="No Image">
+    {% endif %}
                 </div>
+        		<div class="collection-hero__title-wrapper">
+                <h1 class="collection-hero__title page-width">
+                    {{ category.category_name }}
+                </h1>
+</div>
+
             </div>
 		</div>
         <!--End Collection Banner-->
@@ -20,7 +35,7 @@
     <div class="container">
         <!-- CATEGORY TITLE + DESCRIPTION -->
         <div class="text-center mb-5">
-            <h1 class="fw-bold text-uppercase">{{ category.category_name }}</h1>
+            {% comment %} <h1 class="fw-bold text-uppercase">{{ category.category_name }}</h1> {% endcomment %}
             <div class="category-description mx-auto" style="max-width:700px;">
                 <p class="text-muted">
                     {% if category.description %}
@@ -35,11 +50,11 @@
         <!-- SUBCATEGORIES SECTION -->
         {% if category.subcategories.all %}
         <div class="text-center mb-5">
-            <h3 class="fw-semibold mb-4">Explore Subcategories</h3>
+            <h2 class="fw-semibold mb-4">Explore Subcategories</h2>
             <div class="row justify-content-center">
                 {% for subcat in category.subcategories.all %}
                 <div class="col-6 col-md-3 col-lg-2 mb-4">
-                    <a href="{% url 'category_products' subcat.slug %}" class="text-decoration-none text-dark">
+                    <a href="{% url 'subcategory_products' subcat.slug %}" class="text-decoration-none text-dark">
                         <div class="rounded-circle overflow-hidden shadow-sm mx-auto mb-2"
                              style="width:120px;height:120px;">
                             {% if subcat.cat_image %}
@@ -60,7 +75,8 @@
 
         <!-- PRODUCT GRID -->
         <div class="mb-4">
-            <h3 class="fw-semibold mb-4 text-center">Products</h3>
+            <h2 class="fw-semibold mb-4 text-center">Explore Different Products For Your Best Style
+</h2>
             <div class="row">
                 {% for product in products %}
                 <div class="col-6 col-md-4 col-lg-3 mb-4">

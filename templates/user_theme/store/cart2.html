@@ -245,7 +245,7 @@
                               {% comment %} <input type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" value="Proceed To Checkout" disabled="disabled"> {% endcomment %}
                               <a href="{% url 'orders_checkout' %}" id="cartCheckout" class="btn btn--small-wide checkout" style="display: block; text-align: center;">
                                   Proceed To Checkout</a>
-                              <div class="paymnet-img"><img src="{% static 'images/payment-img.jpg' %}" alt="Payment"></div>
+                              {% comment %} <div class="paymnet-img"><img src="{% static 'images/payment-img.jpg' %}" alt="Payment"></div> {% endcomment %}
                             </div>
         
                         </div>

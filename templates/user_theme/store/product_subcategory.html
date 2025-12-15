@@ -6,11 +6,22 @@
 
 {% block content %}
 <!--Body Content-->
-    <div id="page-content">
+    <div id="page-content" class="py-5">
     	<!--Collection Banner-->
     	<div class="collection-header">
 			<div class="collection-hero">
-        		<div class="collection-hero__image"><img class="blur-up lazyload" data-src="{% static 'images/cat-women.jpg' %}" src="{% static 'images/cat-women.jpg' %}" alt="Women" title="Women" /></div>
+        		<div class="collection-hero__image">
+{% if subcategory.cat_image %}
+        <img class="blur-up lazyload"
+             src="{{ subcategory.cat_image.url }}"
+             alt="{{ subcategory.category_name }}"
+             title="{{ subcategory.category_name }}">
+    {% else %}
+        <img class="blur-up lazyload"
+             src="{% static 'images/no-image.png' %}"
+             alt="No Image">
+    {% endif %}
+                </div>
         		<div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">{{category.category_name}}</h1></div>
             </div>
 		</div>
