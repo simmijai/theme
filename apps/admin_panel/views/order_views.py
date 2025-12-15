@@ -1,7 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView
 from apps.orders.models import Order
 from django.views.decorators.http import require_POST
 
+class AdminRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return True  # Temporarily allow all users for testing
+
+class AdminOrderListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = Order
+    template_name = 'admin_theme/orders/order_list.html'
+    context_object_name = 'orders'
+    paginate_by = 5
+    
+    def get_queryset(self):
+        return Order.objects.select_related('user').prefetch_related('items__product').order_by('-created_at')
+
+# Keep FBV for backward compatibility
 def admin_order_list(request):
     orders = Order.objects.select_related('user').prefetch_related('items__product').order_by('-created_at')
     return render(request, 'admin_theme/orders/order_list.html', {'orders': orders})

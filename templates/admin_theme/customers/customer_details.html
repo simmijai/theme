@@ -5,30 +5,187 @@
 <main class="nxl-container">
     <div class="nxl-content">
         <div class="main-content">
+            
+            <!-- Header with Back Button -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4><i class="bi bi-person-circle"></i> {{ customer.first_name }} {{ customer.last_name }}</h4>
+                        <div>
+                            <button class="btn btn-warning me-2" onclick="alert('Customer edit functionality coming soon!')">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </button>
+                            <a href="{% url 'customer_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="row">
-                <!-- Customer Info Card -->
+                
+                <!-- Customer Info Cards -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h5><i class="bi bi-info-circle"></i> Customer Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Full Name</label>
+                                        <div class="fw-bold">{{ customer.first_name }} {{ customer.last_name }}</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Email</label>
+                                        <div><a href="mailto:{{ customer.email }}">{{ customer.email }}</a></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Phone</label>
+                                        <div>
+                                            {% if customer.latest_order.shipping_phone %}
+                                                <a href="tel:{{ customer.latest_order.shipping_phone }}">{{ customer.latest_order.shipping_phone }}</a>
+                                                <small class="text-muted">(from latest order)</small>
+                                            {% elif customer.addresses.first.phone %}
+                                                <a href="tel:{{ customer.addresses.first.phone }}">{{ customer.addresses.first.phone }}</a>
+                                                <small class="text-muted">(from saved address)</small>
+                                            {% else %}
+                                                <span class="text-muted">Not provided</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Role</label>
+                                        <div><span class="badge bg-info">{{ customer.get_role_display }}</span></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Member Since</label>
+                                        <div class="fw-bold">{{ customer.date_joined|date:"d M Y" }}</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Total Orders</label>
+                                        <div class="fw-bold text-primary fs-5">{{ customer.total_orders }}</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Last Order</label>
+                                        <div>
+                                            {% if customer.last_order_date %}
+                                                {{ customer.last_order_date|date:"d M Y" }}
+                                            {% else %}
+                                                <span class="text-muted">No orders yet</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Location</label>
+                                        <div>
+                                            {% if customer.latest_order.shipping_city %}
+                                                {{ customer.latest_order.shipping_city }}, {{ customer.latest_order.shipping_state }}
+                                                <small class="text-muted">(from latest order)</small>
+                                            {% elif customer.addresses.first.city %}
+                                                {{ customer.addresses.first.city }}, {{ customer.addresses.first.state }}
+                                                <small class="text-muted">(from saved address)</small>
+                                            {% else %}
+                                                <span class="text-muted">Not provided</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h5><i class="bi bi-graph-up"></i> Quick Stats</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <div class="mb-3">
+                                    <div class="display-6 text-primary">{{ customer.total_orders }}</div>
+                                    <small class="text-muted">Total Orders</small>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="h4 text-success">
+                                        {% if customer_orders %}
+                                            ${% widthratio customer_orders|length 1 customer.total_orders %}{{ customer_orders.0.total_price|floatformat:0 }}
+                                        {% else %}
+                                            $0
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">Avg Order Value</small>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="h5">
+                                        {% if customer.date_joined %}
+                                            {{ customer.date_joined|timesince }} ago
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">Customer Since</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Address Info -->
                 <div class="col-lg-12 mb-4">
                     <div class="card stretch stretch-full">
                         <div class="card-body">
-                            <h5>Customer Information</h5>
+                            <h5>Address Information</h5>
                             <div class="row">
-                                <div class="col-md-4">
-                                    <p><strong>Name:</strong> {{ customer.first_name }} {{ customer.last_name }}</p>
-                                    <p><strong>Email:</strong> {{ customer.email }}</p>
+                                
+                                <!-- Latest Order Shipping Address -->
+                                {% if customer.latest_order and customer.latest_order.shipping_address_line1 %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="border p-3 rounded bg-light">
+                                        <h6>{{ customer.latest_order.shipping_first_name }} {{ customer.latest_order.shipping_last_name }} 
+                                            <span class="badge bg-success">Latest Order Address</span>
+                                        </h6>
+                                        <p><strong>Phone:</strong> {{ customer.latest_order.shipping_phone }}</p>
+                                        <p><strong>Address:</strong><br>
+                                            {{ customer.latest_order.shipping_address_line1 }}<br>
+                                            {% if customer.latest_order.shipping_landmark %}Near: {{ customer.latest_order.shipping_landmark }}<br>{% endif %}
+                                            {{ customer.latest_order.shipping_city }}, {{ customer.latest_order.shipping_state }}<br>
+                                            {{ customer.latest_order.shipping_country }} - {{ customer.latest_order.shipping_postal_code }}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <p><strong>Total Orders:</strong> {{ customer.total_orders }}</p>
-                                    <p><strong>Last Order Date:</strong> 
-                                        {% if customer.last_order_date %}
-                                            {{ customer.last_order_date|date:"d-m-Y" }}
-                                        {% else %}
-                                            -
-                                        {% endif %}
-                                    </p>
+                                {% endif %}
+                                
+                                <!-- Saved Addresses -->
+                                {% for address in customer.addresses.all %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="border p-3 rounded">
+                                        <h6>{{ address.first_name }} {{ address.last_name }} 
+                                            {% if address.is_default %}<span class="badge bg-primary">Default</span>{% endif %}
+                                            <span class="badge bg-info">Saved Address</span>
+                                        </h6>
+                                        <p><strong>Phone:</strong> {{ address.phone }}</p>
+                                        <p><strong>Address:</strong><br>
+                                            {{ address.address_line1 }}<br>
+                                            {% if address.address_line2 %}{{ address.address_line2 }}<br>{% endif %}
+                                            {% if address.near_by_landmark %}Near: {{ address.near_by_landmark }}<br>{% endif %}
+                                            {{ address.city }}, {{ address.state }}<br>
+                                            {{ address.country }} - {{ address.postal_code }}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="col-md-4 text-end">
-                                    <a href="#" class="btn btn-primary">Edit Customer</a>
+                                {% endfor %}
+                                
+                                {% if not customer.latest_order.shipping_address_line1 and not customer.addresses.all %}
+                                <div class="col-12">
+                                    <p class="text-muted">No address information available.</p>
                                 </div>
+                                {% endif %}
+                                
                             </div>
                         </div>
                     </div>
@@ -37,35 +194,60 @@
                 <!-- Customer Orders Table -->
                 <div class="col-lg-12">
                     <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h5><i class="bi bi-bag-check"></i> Order History ({{ customer_orders.count }} orders)</h5>
+                        </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <h5 class="p-3">Orders Details</h5>
-                                <table class="table table-hover" id="customerOrders">
-                                    <thead>
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
                                         <tr>
-                                            <th>Order ID</th>
-                                            <th>Products Count</th>
-                                            <th>Total Amount</th>
-                                            <th>Order Date</th>
+                                            <th>Order #</th>
+                                            <th>Items</th>
+                                            <th>Amount</th>
+                                            <th>Date</th>
                                             <th>Status</th>
+                                            <th>Payment</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for order in customer_orders %}
                                             <tr>
-                                                <td>{{ order.id }}</td>
-                                                <td>{{ order.products_count }}</td>
-                                                <td>${{ order.total_amount }}</td>
-                                                <td>{{ order.date|date:"d-m-Y H:i" }}</td>
-                                                <td>{{ order.status }}</td>
+                                                <td class="fw-bold">#{{ order.id }}</td>
+                                                <td><span class="badge bg-primary">{{ order.products_count }}</span></td>
+                                                <td class="fw-bold text-success">${{ order.total_amount }}</td>
+                                                <td>{{ order.date|date:"d M Y" }}<br><small class="text-muted">{{ order.date|date:"H:i" }}</small></td>
+                                                <td>
+                                                    {% if order.status == 'Pending' %}
+                                                        <span class="badge bg-warning">{{ order.status }}</span>
+                                                    {% elif order.status == 'Processing' %}
+                                                        <span class="badge bg-info">{{ order.status }}</span>
+                                                    {% elif order.status == 'Shipped' %}
+                                                        <span class="badge bg-primary">{{ order.status }}</span>
+                                                    {% elif order.status == 'Delivered' %}
+                                                        <span class="badge bg-success">{{ order.status }}</span>
+                                                    {% elif order.status == 'Cancelled' %}
+                                                        <span class="badge bg-danger">{{ order.status }}</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">{{ order.status }}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td><span class="badge bg-info">{{ order.payment_method }}</span></td>
                                                 <td class="text-end">
-                                                <a href="{% url 'order-detail' order.id %}" class="btn btn-sm btn-info">View</a>
+                                                    <a href="{% url 'order-detail' order.id %}" class="btn btn-sm btn-outline-primary" title="View Order Details">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         {% empty %}
                                             <tr>
-                                                <td colspan="6" class="text-center">No orders for this customer.</td>
+                                                <td colspan="7" class="text-center py-4">
+                                                    <div class="text-muted">
+                                                        <i class="bi bi-bag-x fs-1"></i>
+                                                        <div class="mt-2">No orders found for this customer.</div>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>

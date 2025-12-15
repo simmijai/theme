@@ -14,36 +14,22 @@
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table table-hover" id="customerList">
-                                        <thead>
+                                        <thead class="table-light">
                                             <tr>
-                                                <th class="wd-30">
-                                                    <div class="btn-group mb-1">
-                                                        <div class="custom-control custom-checkbox ms-1">
-                                                            <input type="checkbox" class="custom-control-input" id="checkAllCustomer">
-                                                            <label class="custom-control-label" for="checkAllCustomer"></label>
-                                                        </div>
-                                                    </div>
-                                                </th>
+                                                <th>S.No.</th>
                                                 <th>Customer</th>
                                                 <th>Email</th>
                                                 <th>Phone</th>
-                                                <th>Total Orders</th>
-                                                <th>Last Order Date</th>
-                                                <th>EDIT</th>
-                                                <th class="text-end">FULL INFO</th>
+                                                <th>Orders</th>
+                                                <th>Last Order</th>
+                                                <th>Joined</th>
+                                                <th class="text-end">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for customer in customers %}
                                             <tr class="single-item">
-                                                <td>
-                                                    <div class="item-checkbox ms-1">
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input checkbox" id="checkBox_1">
-                                                            <label class="custom-control-label" for="checkBox_1"></label>
-                                                        </div>
-                                                    </div>
-                                                </td>
+                                                <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
                                                 <td>
                                                     <a href="customers-view.html" class="hstack gap-3">
                                                         {% comment %} <div class="avatar-image avatar-md">
@@ -55,44 +41,32 @@
                                                     </a>
                                                 </td>
                                                 <td><a href="apps-email.html">{{ customer.email }}</a></td>
-                                                <td><a href="tel:">{{ customer.phone|default:"-" }}</a></td>
-                                                <td>{{ customer.total_orders }}</td>
                                                 <td>
-                                                    {% if customer.last_order_date %}
-                                                        {{ customer.last_order_date|date:"d-m-Y" }}
+                                                    {% if customer.latest_order.shipping_phone %}
+                                                        <a href="tel:{{ customer.latest_order.shipping_phone }}">{{ customer.latest_order.shipping_phone }}</a>
+                                                    {% elif customer.addresses.first.phone %}
+                                                        <a href="tel:{{ customer.addresses.first.phone }}">{{ customer.addresses.first.phone }}</a>
                                                     {% else %}
                                                         -
                                                     {% endif %}
                                                 </td>
-
-                                                <td><div class="col-md-4 text-end">
-                                    <a href="#" class="btn btn-primary">Edit</a>
-                                </div></td>
+                                                <td><span class="badge bg-primary">{{ customer.total_orders }}</span></td>
                                                 <td>
-                                                    <div class="hstack gap-2 justify-content-end">
-                                                        <a href="{% url 'customer_details' customer.id %}" class="avatar-text avatar-md">
-                                                            <i class="feather feather-eye"></i>
+                                                    {% if customer.last_order_date %}
+                                                        {{ customer.last_order_date|date:"d M Y" }}
+                                                    {% else %}
+                                                        <span class="text-muted">No orders</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ customer.date_joined|date:"d M Y" }}</td>
+                                                <td class="text-end">
+                                                    <div class="btn-group" role="group">
+                                                        <a href="{% url 'customer_details' customer.id %}" class="btn btn-sm btn-outline-primary" title="View Details">
+                                                            <i class="bi bi-eye"></i>
                                                         </a>
-                                                        {% comment %} <div class="dropdown">
-                                                            <a href="javascript:void(0)" class="avatar-text avatar-md" data-bs-toggle="dropdown" data-bs-offset="0,21">
-                                                                <i class="feather feather-more-horizontal"></i>
-                                                            </a>
-                                                            <ul class="dropdown-menu">
-                                                                <li>
-                                                                    <a class="dropdown-item" href="javascript:void(0)">
-                                                                        <i class="feather feather-edit-3 me-3"></i>
-                                                                        <span>Edit</span>
-                                                                    </a>
-                                                                </li>
-                                                                <li class="dropdown-divider"></li>
-                                                                <li>
-                                                                    <a class="dropdown-item" href="javascript:void(0)">
-                                                                        <i class="feather feather-trash-2 me-3"></i>
-                                                                        <span>Delete</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div> {% endcomment %}
+                                                        <button class="btn btn-sm btn-outline-warning" title="Edit Customer" onclick="alert('Customer edit functionality coming soon!')">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -100,6 +74,52 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                
+                                <!-- Pagination -->
+                                {% if is_paginated %}
+                                <div class="card-footer">
+                                    <nav aria-label="Customer pagination">
+                                        <ul class="pagination justify-content-center mb-0">
+                                            {% if page_obj.has_previous %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page=1">First</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                                </li>
+                                            {% endif %}
+                                            
+                                            {% for num in page_obj.paginator.page_range %}
+                                                {% if page_obj.number == num %}
+                                                    <li class="page-item active">
+                                                        <span class="page-link">{{ num }}</span>
+                                                    </li>
+                                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            
+                                            {% if page_obj.has_next %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                    
+                                    <div class="text-center mt-2">
+                                        <small class="text-muted">
+                                            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} customers
+                                        </small>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
                             </div>
                         </div>
                     </div>

@@ -5,51 +5,100 @@
 <main class="nxl-container">
     <div class="nxl-content">
         <div class="main-content">
+            
+            <!-- Header with Back Button -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4><i class="bi bi-receipt"></i> Order #{{ order.id }} Details</h4>
+                        <a href="{% url 'admin_order_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
             <div class="row">
                 
-                <!-- Order Info Card -->
-                <div class="col-lg-12 mb-4">
+                <!-- Order Summary Card -->
+                <div class="col-lg-8 mb-4">
                     <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h5><i class="bi bi-info-circle"></i> Order Information</h5>
+                        </div>
                         <div class="card-body">
-                            <h5>Order Information</h5>
                             <div class="row">
-                                <div class="col-md-4">
-                                    <p><strong>Order ID:</strong> {{ order.id }}</p>
-                                    <p><strong>Customer:</strong> {{ order.user.first_name }} {{ order.user.last_name }}</p>
-                                    <p><strong>Email:</strong> {{ order.user.email }}</p>
-                                    <p><strong>Phone:</strong> {{ order.shipping_phone }}</p>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Order ID</label>
+                                        <div class="fw-bold">#{{ order.id }}</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Customer</label>
+                                        <div class="fw-bold">
+                                            <a href="{% url 'customer_details' order.user.id %}" class="text-decoration-none">
+                                                {{ order.user.first_name }} {{ order.user.last_name }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Email</label>
+                                        <div><a href="mailto:{{ order.user.email }}">{{ order.user.email }}</a></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Phone</label>
+                                        <div><a href="tel:{{ order.shipping_phone }}">{{ order.shipping_phone }}</a></div>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-<p><strong>Shipping Address:</strong><br>
-  {{ order.shipping_first_name }} {{ order.shipping_last_name }}<br>
-
-  {{ order.shipping_address_line1 }}<br>
-
-  {% if order.shipping_address_line2 %}
-    {{ order.shipping_address_line2 }}<br>
-  {% endif %}
-
-  {{ order.shipping_city }}, {{ order.shipping_state }},{{ order.shipping_country }} - {{ order.shipping_postal_code }}<br>
-
-  {% if order.shipping_landmark %}
-    Landmark: {{ order.shipping_landmark }}
-  {% endif %}
-</p>
-                                    <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
-<p><strong>Status:</strong>
-    <form method="POST" action="{% url 'update_order_status' order.id %}" style="display:inline-block;">
-        {% csrf_token %}
-        <select name="status" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
-            {% for value, label in order.STATUS_CHOICES %}
-                <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
-        </select>
-    </form>
-</p>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Order Date</label>
+                                        <div class="fw-bold">{{ order.created_at|date:"d M Y, H:i" }}</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Payment Method</label>
+                                        <div><span class="badge bg-info">{{ order.payment_method }}</span></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Total Amount</label>
+                                        <div class="fw-bold text-success fs-5">${{ order.total_price }}</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Status</label>
+                                        <div>
+                                            <form method="POST" action="{% url 'update_order_status' order.id %}" style="display:inline-block;">
+                                                {% csrf_token %}
+                                                <select name="status" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
+                                                    {% for value, label in order.STATUS_CHOICES %}
+                                                        <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-4 text-end">
-                                    <p><strong>Total Amount:</strong> ${{ order.total_price }}</p>
-                                    <p><strong>Order Date:</strong> {{ order.created_at|date:"d-m-Y H:i" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Shipping Address Card -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h5><i class="bi bi-geo-alt"></i> Shipping Address</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="border p-3 rounded bg-light">
+                                <div class="fw-bold mb-2">{{ order.shipping_first_name }} {{ order.shipping_last_name }}</div>
+                                <div class="mb-1">{{ order.shipping_address_line1 }}</div>
+                                {% if order.shipping_landmark %}
+                                    <div class="mb-1 text-muted">Near: {{ order.shipping_landmark }}</div>
+                                {% endif %}
+                                <div class="mb-1">{{ order.shipping_city }}, {{ order.shipping_state }}</div>
+                                <div class="mb-1">{{ order.shipping_country }} - {{ order.shipping_postal_code }}</div>
+                                <div class="mt-2">
+                                    <i class="bi bi-telephone"></i> {{ order.shipping_phone }}
                                 </div>
                             </div>
                         </div>
@@ -59,32 +108,54 @@
                 <!-- Order Items Table -->
                 <div class="col-lg-12">
                     <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h5><i class="bi bi-cart"></i> Order Items ({{ order.items.count }} items)</h5>
+                        </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <h5>Products in this Order</h5>
-                                <table class="table table-hover" id="orderItems">
-                                    <thead>
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
                                         <tr>
-                                            <th>Product Name</th>
+                                            <th>S.No.</th>
+                                            <th>Product</th>
+                                            <th>SKU</th>
                                             <th>Quantity</th>
-                                            <th>Price per Unit</th>
+                                            <th>Unit Price</th>
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for item in order.items.all %}
                                         <tr>
-                                            <td>{{ item.product.name }}</td>
-                                            <td>{{ item.quantity }}</td>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    {% if item.product.image %}
+                                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="40" height="40" class="rounded me-2">
+                                                    {% endif %}
+                                                    <div>
+                                                        <div class="fw-bold">{{ item.product.name }}</div>
+                                                        <small class="text-muted">{{ item.product.category.category_name }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ item.product.sku|default:"-" }}</td>
+                                            <td><span class="badge bg-primary">{{ item.quantity }}</span></td>
                                             <td>${{ item.price }}</td>
-                                            <td>${{ item.subtotal }}</td>
+                                            <td class="fw-bold">${{ item.subtotal }}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                            <td colspan="4" class="text-center">No products in this order.</td>
+                                            <td colspan="6" class="text-center py-4">No products in this order.</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
+                                    <tfoot class="table-light">
+                                        <tr>
+                                            <td colspan="5" class="text-end fw-bold">Total Amount:</td>
+                                            <td class="fw-bold text-success fs-5">${{ order.total_price }}</td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

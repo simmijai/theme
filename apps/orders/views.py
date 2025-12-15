@@ -38,7 +38,7 @@ def checkout(request):
         selected_address_id = request.POST.get('selected_address')
         request.session['selected_address_id'] = selected_address_id
         messages.success(request, 'Address selected successfully.')
-        return redirect('orders_checkout')
+        return redirect('payment_page')  # Redirect to payment page
     
     # --------------------------
     # ADD / EDIT ADDRESS  
@@ -165,10 +165,18 @@ def place_order(request):
             messages.error(request, 'Please add a delivery address before placing order.')
             return redirect('orders_checkout')
         
-        # ✅ create order with address
+        # ✅ create order with shipping address fields
         order = Order.objects.create(
             user=request.user,
-            address=address,
+            shipping_first_name=address.first_name,
+            shipping_last_name=address.last_name,
+            shipping_phone=address.phone,
+            shipping_address_line1=address.address_line1,
+            shipping_city=address.city,
+            shipping_state=address.state,
+            shipping_country=address.country,
+            shipping_postal_code=address.postal_code,
+            shipping_landmark=address.near_by_landmark,
             total_price=total_price + shipping_cost,
             payment_method=payment_method,
             status="Pending"
@@ -196,9 +204,17 @@ def place_order(request):
 
 
 
+from django.core.paginator import Paginator
+
 @login_required
 def my_orders(request):
     orders = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
+    
+    # Add pagination
+    paginator = Paginator(orders, 10)  # 10 orders per page
+    page = request.GET.get('page')
+    orders = paginator.get_page(page)
+    
     return render(request, 'user_theme/store/my_orders.html', {'orders': orders})
 
 

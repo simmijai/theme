@@ -38,9 +38,11 @@
                 <div id="address-list-container" class="mb-3" style="display:none;">
                     {% if addresses %}
                         {% for address in addresses %}
-                        <div class="border p-3 rounded mb-2 d-flex justify-content-between">
+                        <div class="border p-3 rounded mb-2 d-flex justify-content-between address-card" data-address-id="{{ address.id }}">
                             <div>
-                                <strong>{{ address.first_name }} {{ address.last_name }}</strong><br>
+                                <strong>{{ address.first_name }} {{ address.last_name }}</strong>
+                                {% if address.is_default %}<span class="badge bg-primary ms-2">Default</span>{% endif %}
+                                <br>
                                 {{ address.address_line1 }},
                                 {% if address.address_line2 %}{{ address.address_line2 }}, {% endif %}
                                 {% if address.near_by_landmark %}{{ address.near_by_landmark }}, {% endif %}
@@ -49,7 +51,7 @@
                             </div>
 
                             <div class="text-end">
-                                <input type="radio" name="selected_address" value="{{ address.id }}" class="form-check-input mt-2">
+                                <input type="radio" name="selected_address" value="{{ address.id }}" class="form-check-input mt-2" {% if address.is_default %}checked{% endif %}>
 
                                 <button type="button"
                                     class="btn btn-sm btn-outline-secondary mt-2"
@@ -210,7 +212,11 @@
                     </table>
 
                     <div class="mt-4 text-end">
-    <a href="{% url 'payment_page' %}" id="continue-btn" class="btn btn-primary px-4">Continue</a>
+                        <form method="POST" action="{% url 'orders_checkout' %}" id="address-selection-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="selected_address" id="selected_address_input">
+                            <button type="button" id="continue-btn" class="btn btn-primary px-4">Continue</button>
+                        </form>
                     </div>
 
                 </div>
@@ -254,13 +260,43 @@ function editAddress(id, first, last, a1, a2, near, city, state, postal, country
     // open form automatically
     document.getElementById("address-form-container").style.display = "block";
 }
-// Prevent Continue if no address selected
+// Handle Continue button click
 document.getElementById("continue-btn").addEventListener("click", function(event){
     const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
     
     if (!selectedAddress) {
-        event.preventDefault(); // block navigation
+        event.preventDefault();
         alert("Please select a delivery address before proceeding.");
+        return;
+    }
+    
+    // Set the selected address ID in hidden input
+    document.getElementById("selected_address_input").value = selectedAddress.value;
+    
+    // Submit the form to save selected address
+    document.getElementById("address-selection-form").submit();
+});
+
+// Highlight selected address
+document.addEventListener('change', function(e) {
+    if (e.target.name === 'selected_address') {
+        // Remove highlight from all cards
+        document.querySelectorAll('.address-card').forEach(card => {
+            card.classList.remove('border-primary', 'bg-light');
+        });
+        
+        // Highlight selected card
+        const selectedCard = e.target.closest('.address-card');
+        selectedCard.classList.add('border-primary', 'bg-light');
+    }
+});
+
+// Highlight default address on page load
+window.addEventListener('load', function() {
+    const defaultRadio = document.querySelector('input[name="selected_address"]:checked');
+    if (defaultRadio) {
+        const defaultCard = defaultRadio.closest('.address-card');
+        defaultCard.classList.add('border-primary', 'bg-light');
     }
 });
 </script>
