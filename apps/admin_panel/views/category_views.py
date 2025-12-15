@@ -11,11 +11,18 @@ def admin_dashboard(request):
 # ------------------------
 # SUBCATEGORY
 # ------------------------
+from django.core.paginator import Paginator
+
 def admin_subcategory_list(request, category_id):
     # fetch the parent category
     category = get_object_or_404(Category, id=category_id)
     # fetch subcategories
-    subcategories = category.subcategories.all()
+    subcategories = category.subcategories.all().order_by('-id')
+    
+    # Add pagination
+    paginator = Paginator(subcategories, 4)  # 8 subcategories per page
+    page = request.GET.get('page')
+    subcategories = paginator.get_page(page)
 
     return render(request, 'admin_theme/categories/subcategory.html', {
         'category': category,
@@ -30,12 +37,22 @@ from apps.products.models import Category
 
 
 # ------------------- LIST -------------------
-class CategoryListView(View):
-    template_name = 'admin_theme/categories/category.html'
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView
+from django.contrib import messages
 
-    def get(self, request):
-        categories = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
-        return render(request, self.template_name, {'categories': categories})
+class AdminRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
+
+class CategoryListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = Category
+    template_name = 'admin_theme/categories/category.html'
+    context_object_name = 'categories'
+    paginate_by = 3
+    
+    def get_queryset(self):
+        return Category.objects.filter(parent__isnull=True).prefetch_related('subcategories').order_by('-id')
 
 
 # ------------------- CREATE -------------------

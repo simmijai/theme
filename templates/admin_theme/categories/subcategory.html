@@ -14,14 +14,7 @@
                                 <table class="table table-hover" id="subcategoryList">
                                     <thead>
                                         <tr>
-                                            <th class="wd-30">
-                                                <div class="btn-group mb-1">
-                                                    <div class="custom-control custom-checkbox ms-1">
-                                                        <input type="checkbox" class="custom-control-input" id="checkAllSubcategory">
-                                                        <label class="custom-control-label" for="checkAllSubcategory"></label>
-                                                    </div>
-                                                </div>
-                                            </th>
+                                            <th>S.No.</th>
                                             <th>Subcategory Name</th>
                                             <th>Slug</th>
                                             <th>Description</th>
@@ -34,17 +27,14 @@
                                     <tbody>
                                         {% for sub in subcategories %}
                                         <tr class="single-item">
-                                            <td>
-                                                <div class="item-checkbox ms-1">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input checkbox" id="checkBox_{{ forloop.counter }}">
-                                                        <label class="custom-control-label" for="checkBox_{{ forloop.counter }}"></label>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                            <td>{% if subcategories.has_other_pages %}{{ forloop.counter0|add:subcategories.start_index }}{% else %}{{ forloop.counter }}{% endif %}</td>
                                             <td>{{ sub.category_name }}</td>
                                             <td>{{ sub.slug }}</td>
-                                            <td>{{ sub.description|default:"—" }}</td>
+                                            <td>
+                                                <div style="max-width: 200px; max-height: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ sub.description }}">
+                                                    {{ sub.description|default:"—" }}
+                                                </div>
+                                            </td>
                                             <td>
                                                 {% if sub.cat_image %}
                                                     <img src="{{ sub.cat_image.url }}" alt="{{ sub.category_name }}" width="50" height="50">
@@ -61,11 +51,14 @@
                                                 {% endif %}
                                             </td>
                                             <td class="text-end">
-                                                <a href="{% url 'admin_category_update' sub.id %}" class="btn btn-sm btn-primary">Edit</a>
-                                                <form method="POST" action="{% url 'admin_category_delete' sub.id %}" style="display:inline;" onsubmit="return confirmDelete('{{ sub.category_name }}');">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                                </form>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{% url 'admin_category_update' sub.id %}" class="btn btn-sm btn-outline-primary" title="Edit Subcategory">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Delete Subcategory" onclick="deleteSubcategory('{{ sub.id }}', '{{ sub.category_name }}')">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                         {% empty %}
@@ -76,6 +69,53 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            <!-- Pagination -->
+                            {% if subcategories.has_other_pages %}
+                            <div class="card-footer">
+                                <nav aria-label="Subcategory pagination">
+                                    <ul class="pagination justify-content-center mb-0">
+                                        {% if subcategories.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=1">First</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ subcategories.previous_page_number }}">Previous</a>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        <!-- Show page numbers -->
+                                        {% for num in subcategories.paginator.page_range %}
+                                            {% if subcategories.number == num %}
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ num }}</span>
+                                                </li>
+                                            {% elif num > subcategories.number|add:'-3' and num < subcategories.number|add:'3' %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        {% if subcategories.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ subcategories.next_page_number }}">Next</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ subcategories.paginator.num_pages }}">Last</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                                
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">
+                                        Showing {{ subcategories.start_index }} to {{ subcategories.end_index }} of {{ subcategories.paginator.count }} subcategories
+                                    </small>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
                         </div>
                     </div>
                 </div>
@@ -84,8 +124,23 @@
 </main>
 
 <script>
-function confirmDelete(name) {
-    return confirm("Are you sure you want to delete '" + name + "'?");
+function deleteSubcategory(subcategoryId, subcategoryName) {
+    if (confirm(`Are you sure you want to delete '${subcategoryName}'?\n\nThis will also delete all products in this subcategory.\n\nThis action cannot be undone.`)) {
+        // Create and submit form
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin_panel/category/delete/${subcategoryId}/`;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        
+        form.appendChild(csrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 </script>
 {% endblock %}
