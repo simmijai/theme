@@ -1,8 +1,9 @@
 # admin_panel/views/admin_views.py
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
 from django.db.models import Max, Count, Q
+from django.contrib import messages
 from apps.accounts.models import Account, Address
 from apps.orders.models import Order
 
@@ -10,7 +11,7 @@ from django.db.models import Subquery, OuterRef
 
 class AdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        return True  # Temporarily allow all users for testing
+        return self.request.user.is_authenticated and (self.request.user.is_staff or self.request.user.is_superuser or self.request.user.role == 'admin')
 
 
 

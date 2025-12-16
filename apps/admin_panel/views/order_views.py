@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
 from django.db.models import Q
+from django.contrib import messages
 from apps.orders.models import Order
 from django.views.decorators.http import require_POST
 
 class AdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        return True  # Temporarily allow all users for testing
+        return self.request.user.is_authenticated and (self.request.user.is_staff or self.request.user.is_superuser or self.request.user.role == 'admin')
 
 class AdminOrderListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
     model = Order
