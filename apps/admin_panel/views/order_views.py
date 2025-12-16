@@ -73,13 +73,20 @@ def update_order_status(request, order_id):
 
 
 def order_detail(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
+    try:
+        order = get_object_or_404(Order, id=order_id)
 
-    # Optional: annotate subtotal for template
-    for item in order.items.all():
-        item.subtotal = item.quantity * item.price
+        # Annotate subtotal for template with error handling
+        try:
+            for item in order.items.all():
+                item.subtotal = (item.quantity or 0) * (item.price or 0)
+        except Exception:
+            messages.warning(request, 'Error calculating item subtotals.')
 
-    context = {
-        'order': order
-    }
-    return render(request, 'admin_theme/orders/order_detail.html', context)
+        context = {
+            'order': order
+        }
+        return render(request, 'admin_theme/orders/order_detail.html', context)
+    except Exception as e:
+        messages.error(request, 'Error loading order details. Please try again.')
+        return redirect('admin_order_list')

@@ -57,77 +57,101 @@ class AdminProductListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
 
 
 def product_create(request):
-    if request.method == 'POST':
-        print("POST request received")
-        print("🧾 POST keys:", request.POST.keys())
-        print("📂 FILES keys:", request.FILES.keys())
+    try:
+        if request.method == 'POST':
+            form = ProductForm(request.POST, request.FILES)
+            image_form = ProductImageForm(request.POST, request.FILES)
 
-        form = ProductForm(request.POST, request.FILES)
-        image_form = ProductImageForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            product = form.save()  # save main product
-            print("✅ Product saved:", product.name)
-
-            # ✅ Handle multiple extra images
-            if 'images' in request.FILES:
-                images = request.FILES.getlist('images')
-                print(request.FILES)
-                print(request.FILES.getlist('images'))
-
-                
-                for img in images:
-                    ProductImage.objects.create(product=product, image=img)
-                print(f"✅ {len(images)} extra images saved.")
+            if form.is_valid():
+                try:
+                    product = form.save()
+                    
+                    # Handle multiple extra images with error handling
+                    if 'images' in request.FILES:
+                        images = request.FILES.getlist('images')
+                        for img in images:
+                            try:
+                                ProductImage.objects.create(product=product, image=img)
+                            except Exception as e:
+                                messages.warning(request, f'Error uploading image: {img.name}')
+                    
+                    messages.success(request, f'Product "{product.name}" created successfully!')
+                    return redirect('admin_product_list')
+                except Exception as e:
+                    messages.error(request, 'Error saving product. Please try again.')
             else:
-                print("⚠️ No extra images found in FILES")
-
-            return redirect('admin_product_list')
+                # Form has validation errors
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'{field.replace("_", " ").title()}: {error}')
         else:
-            print("❌ Form invalid")
-            print(form.errors)
-    else:
-        form = ProductForm()
-        image_form = ProductImageForm()
+            form = ProductForm()
+            image_form = ProductImageForm()
 
-    return render(request, 'admin_theme/products/product_create.html', {'form': form, 'image_form': image_form})
+        return render(request, 'admin_theme/products/product_create.html', {'form': form, 'image_form': image_form})
+    except Exception as e:
+        messages.error(request, 'Error loading product form. Please try again.')
+        return redirect('admin_product_list')
 
 def product_delete(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    product.delete()
-    messages.success(request, f'Product "{product.name}" deleted successfully!')
+    try:
+        product = get_object_or_404(Product, pk=pk)
+        product_name = product.name
+        product.delete()
+        messages.success(request, f'Product "{product_name}" deleted successfully!')
+    except Exception as e:
+        messages.error(request, 'Error deleting product. Please try again.')
     return redirect('admin_product_list')
 
 def product_edit(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
-        image_form = ProductImageForm(request.POST, request.FILES)
+    try:
+        product = get_object_or_404(Product, pk=pk)
+        if request.method == 'POST':
+            form = ProductForm(request.POST, request.FILES, instance=product)
+            image_form = ProductImageForm(request.POST, request.FILES)
 
-        if form.is_valid():
-            product = form.save()
-            
-            # Handle additional images
-            if 'images' in request.FILES:
-                for img in request.FILES.getlist('images'):
-                    ProductImage.objects.create(product=product, image=img)
+            if form.is_valid():
+                try:
+                    product = form.save()
+                    
+                    # Handle additional images with error handling
+                    if 'images' in request.FILES:
+                        for img in request.FILES.getlist('images'):
+                            try:
+                                ProductImage.objects.create(product=product, image=img)
+                            except Exception as e:
+                                messages.warning(request, f'Error uploading image: {img.name}')
 
-            messages.success(request, f'Product "{product.name}" updated successfully!')
-            return redirect('admin_product_list')
-    else:
-        form = ProductForm(instance=product)
-        image_form = ProductImageForm()
+                    messages.success(request, f'Product "{product.name}" updated successfully!')
+                    return redirect('admin_product_list')
+                except Exception as e:
+                    messages.error(request, 'Error updating product. Please try again.')
+            else:
+                # Form has validation errors
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'{field.replace("_", " ").title()}: {error}')
+        else:
+            form = ProductForm(instance=product)
+            image_form = ProductImageForm()
 
-    return render(request, 'admin_theme/products/product_create.html', {
-        'form': form,
-        'image_form': image_form,
-        'action': 'Edit',
-    })
+        return render(request, 'admin_theme/products/product_create.html', {
+            'form': form,
+            'image_form': image_form,
+            'action': 'Edit',
+        })
+    except Exception as e:
+        messages.error(request, 'Error loading product. Please try again.')
+        return redirect('admin_product_list')
 
 
 def product_image_delete(request, pk):
-    img = get_object_or_404(ProductImage, pk=pk)
-    product_id = img.product.id
-    img.delete()
-    messages.success(request, "Image deleted successfully!")
+    try:
+        img = get_object_or_404(ProductImage, pk=pk)
+        product_id = img.product.id
+        img.delete()
+        messages.success(request, "Image deleted successfully!")
+    except Exception as e:
+        messages.error(request, 'Error deleting image. Please try again.')
+        product_id = pk  # fallback
     return redirect('admin_product_edit', pk=product_id)

@@ -72,27 +72,45 @@ def customer_list(request):
 
 
 def customer_details(request, customer_id):
-    customer = get_object_or_404(Account, id=customer_id)
+    try:
+        customer = get_object_or_404(Account, id=customer_id)
 
-    # Fetch orders
-    orders = Order.objects.filter(user=customer).order_by('-created_at')
+        # Fetch orders with error handling
+        try:
+            orders = Order.objects.filter(user=customer).order_by('-created_at')
+        except Exception:
+            orders = Order.objects.none()
+            messages.warning(request, 'Error loading customer orders.')
 
-    # Get latest order for address info
-    customer.latest_order = orders.first() if orders.exists() else None
+        # Get latest order for address info with error handling
+        try:
+            customer.latest_order = orders.first() if orders.exists() else None
+        except Exception:
+            customer.latest_order = None
 
-    # Annotate extra info
-    for order in orders:
-        order.products_count = order.items.count()
-        order.total_amount = order.total_price
-        order.date = order.created_at
+        # Annotate extra info with error handling
+        try:
+            for order in orders:
+                order.products_count = order.items.count() if hasattr(order, 'items') else 0
+                order.total_amount = order.total_price or 0
+                order.date = order.created_at
+        except Exception:
+            messages.warning(request, 'Error loading order details.')
 
-    # Customer extra info
-    customer.total_orders = orders.count()
-    customer.last_order_date = orders.first().created_at if orders.exists() else None
+        # Customer extra info with error handling
+        try:
+            customer.total_orders = orders.count() if orders else 0
+            customer.last_order_date = orders.first().created_at if orders.exists() else None
+        except Exception:
+            customer.total_orders = 0
+            customer.last_order_date = None
 
-    context = {
-        'customer': customer,
-        'customer_orders': orders,
-    }
+        context = {
+            'customer': customer,
+            'customer_orders': orders,
+        }
 
-    return render(request, 'admin_theme/customers/customer_details.html', context)
+        return render(request, 'admin_theme/customers/customer_details.html', context)
+    except Exception as e:
+        messages.error(request, 'Error loading customer details. Please try again.')
+        return redirect('admin_customer_list')

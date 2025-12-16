@@ -27,38 +27,76 @@ from datetime import datetime, timedelta
 
 @admin_required
 def admin_dashboard(request):
-    # Get dashboard statistics
-    total_products = Product.objects.count()
-    total_customers = Account.objects.filter(role='customer').count()
-    total_orders = Order.objects.count()
-    total_revenue = Order.objects.filter(status='delivered').aggregate(Sum('total_price'))['total_price__sum'] or 0
-    
-    # Recent orders
-    recent_orders = Order.objects.select_related('user').order_by('-created_at')[:5]
-    
-    # Low stock products
-    low_stock_products = Product.objects.filter(stock__lte=10).order_by('stock')[:5]
-    
-    # Recent reviews
-    recent_reviews = Review.objects.select_related('product', 'user').order_by('-created_at')[:5]
-    
-    # Monthly stats (last 30 days)
-    last_30_days = datetime.now() - timedelta(days=30)
-    monthly_orders = Order.objects.filter(created_at__gte=last_30_days).count()
-    monthly_revenue = Order.objects.filter(created_at__gte=last_30_days, status='delivered').aggregate(Sum('total_price'))['total_price__sum'] or 0
-    
-    context = {
-        'total_products': total_products,
-        'total_customers': total_customers,
-        'total_orders': total_orders,
-        'total_revenue': total_revenue,
-        'recent_orders': recent_orders,
-        'low_stock_products': low_stock_products,
-        'recent_reviews': recent_reviews,
-        'monthly_orders': monthly_orders,
-        'monthly_revenue': monthly_revenue,
-    }
-    return render(request, 'admin_theme/dashboard.html', context)
+    try:
+        # Get dashboard statistics with error handling
+        total_products = Product.objects.count() or 0
+        total_customers = Account.objects.filter(role='customer').count() or 0
+        total_orders = Order.objects.count() or 0
+        
+        # Safe revenue calculation
+        try:
+            revenue_data = Order.objects.filter(status='delivered').aggregate(Sum('total_price'))
+            total_revenue = revenue_data['total_price__sum'] or 0
+        except Exception:
+            total_revenue = 0
+        
+        # Recent orders with error handling
+        try:
+            recent_orders = Order.objects.select_related('user').order_by('-created_at')[:5]
+        except Exception:
+            recent_orders = []
+        
+        # Low stock products with error handling
+        try:
+            low_stock_products = Product.objects.filter(stock__lte=10).order_by('stock')[:5]
+        except Exception:
+            low_stock_products = []
+        
+        # Recent reviews with error handling
+        try:
+            recent_reviews = Review.objects.select_related('product', 'user').order_by('-created_at')[:5]
+        except Exception:
+            recent_reviews = []
+        
+        # Monthly stats with error handling
+        try:
+            last_30_days = datetime.now() - timedelta(days=30)
+            monthly_orders = Order.objects.filter(created_at__gte=last_30_days).count() or 0
+            monthly_revenue_data = Order.objects.filter(created_at__gte=last_30_days, status='delivered').aggregate(Sum('total_price'))
+            monthly_revenue = monthly_revenue_data['total_price__sum'] or 0
+        except Exception:
+            monthly_orders = 0
+            monthly_revenue = 0
+        
+        context = {
+            'total_products': total_products,
+            'total_customers': total_customers,
+            'total_orders': total_orders,
+            'total_revenue': total_revenue,
+            'recent_orders': recent_orders,
+            'low_stock_products': low_stock_products,
+            'recent_reviews': recent_reviews,
+            'monthly_orders': monthly_orders,
+            'monthly_revenue': monthly_revenue,
+        }
+        return render(request, 'admin_theme/dashboard.html', context)
+        
+    except Exception as e:
+        # Log the error and show user-friendly message
+        messages.error(request, 'Error loading dashboard data. Please try again.')
+        # Return minimal context to prevent template errors
+        context = {
+            'total_products': 0,
+            'total_customers': 0,
+            'total_orders': 0,
+            'total_revenue': 0,
+            'recent_orders': [],
+            'low_stock_products': [],
+            'recent_reviews': [],
+            'monthly_orders': 0,
+            'monthly_revenue': 0,
+        }
+        return render(request, 'admin_theme/dashboard.html', context)
 
 
 from django.shortcuts import render, redirect

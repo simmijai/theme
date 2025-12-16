@@ -134,6 +134,11 @@ class CategoryUpdateView(View):
 # ------------------- DELETE -------------------
 class CategoryDeleteView(View):
     def post(self, request, pk):
-        category = get_object_or_404(Category, pk=pk)
-        category.delete()
+        try:
+            category = get_object_or_404(Category, pk=pk)
+            category_name = category.category_name
+            category.delete()
+            messages.success(request, f'Category "{category_name}" deleted successfully!')
+        except Exception as e:
+            messages.error(request, 'Error deleting category. Please try again.')
         return redirect('admin_category_list')

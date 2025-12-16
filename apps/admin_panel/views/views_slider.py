@@ -19,39 +19,58 @@ def slider_list(request):
     })
 
 def slider_create(request):
-    if request.method == 'POST':
-        form = HomeSliderForm(request.POST, request.FILES)
-        if form.is_valid():
-            slider = form.save()
-            messages.success(request, f'Slider "{slider.title}" created successfully!')
-            return redirect('admin_slider_list')
+    try:
+        if request.method == 'POST':
+            form = HomeSliderForm(request.POST, request.FILES)
+            if form.is_valid():
+                try:
+                    slider = form.save()
+                    messages.success(request, f'Slider "{slider.title}" created successfully!')
+                    return redirect('admin_slider_list')
+                except Exception as e:
+                    messages.error(request, 'Error saving slider. Please try again.')
+            else:
+                # Form has validation errors
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'{field.replace("_", " ").title()}: {error}')
         else:
-            # Form has validation errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f'{field.replace("_", " ").title()}: {error}')
-    else:
-        form = HomeSliderForm()
-    return render(request, 'admin_theme/sliders/form.html', {'form': form, 'title': 'Create Slider'})
+            form = HomeSliderForm()
+        return render(request, 'admin_theme/sliders/form.html', {'form': form, 'title': 'Create Slider'})
+    except Exception as e:
+        messages.error(request, 'Error loading slider form. Please try again.')
+        return redirect('admin_slider_list')
 
 def slider_edit(request, slider_id):
-    slider = get_object_or_404(HomeSlider, id=slider_id)
-    if request.method == 'POST':
-        form = HomeSliderForm(request.POST, request.FILES, instance=slider)
-        if form.is_valid():
-            updated_slider = form.save()
-            messages.success(request, f'Slider "{updated_slider.title}" updated successfully!')
-            return redirect('admin_slider_list')
+    try:
+        slider = get_object_or_404(HomeSlider, id=slider_id)
+        if request.method == 'POST':
+            form = HomeSliderForm(request.POST, request.FILES, instance=slider)
+            if form.is_valid():
+                try:
+                    updated_slider = form.save()
+                    messages.success(request, f'Slider "{updated_slider.title}" updated successfully!')
+                    return redirect('admin_slider_list')
+                except Exception as e:
+                    messages.error(request, 'Error updating slider. Please try again.')
+            else:
+                # Form has validation errors
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'{field.replace("_", " ").title()}: {error}')
         else:
-            # Form has validation errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f'{field.replace("_", " ").title()}: {error}')
-    else:
-        form = HomeSliderForm(instance=slider)
-    return render(request, 'admin_theme/sliders/form.html', {'form': form, 'title': 'Edit Slider'})
+            form = HomeSliderForm(instance=slider)
+        return render(request, 'admin_theme/sliders/form.html', {'form': form, 'title': 'Edit Slider'})
+    except Exception as e:
+        messages.error(request, 'Error loading slider. Please try again.')
+        return redirect('admin_slider_list')
 
 def slider_delete(request, slider_id):
-    slider = get_object_or_404(HomeSlider, id=slider_id)
-    slider.delete()
+    try:
+        slider = get_object_or_404(HomeSlider, id=slider_id)
+        slider_title = slider.title
+        slider.delete()
+        messages.success(request, f'Slider "{slider_title}" deleted successfully!')
+    except Exception as e:
+        messages.error(request, 'Error deleting slider. Please try again.')
     return redirect('admin_slider_list')

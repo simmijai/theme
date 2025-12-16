@@ -27,7 +27,14 @@ class ProductForm(forms.ModelForm):
         name = self.cleaned_data.get('name')
         if not name or len(name.strip()) < 3:
             raise forms.ValidationError('Product name must be at least 3 characters long.')
-        return name.strip()
+        # Sanitize input
+        name = name.strip()
+        import re
+        name = re.sub(r'\s+', ' ', name)
+        # Check for valid characters
+        if not re.match(r'^[a-zA-Z0-9\s\-_&.,()]+$', name):
+            raise forms.ValidationError('Product name contains invalid characters.')
+        return name
     
     def clean_price(self):
         price = self.cleaned_data.get('price')
@@ -74,12 +81,24 @@ class CategoryForm(forms.ModelForm):
         name = self.cleaned_data.get('category_name')
         if not name or len(name.strip()) < 2:
             raise forms.ValidationError('Category name must be at least 2 characters long.')
-        return name.strip()
+        # Sanitize input
+        name = name.strip()
+        # Remove multiple spaces
+        import re
+        name = re.sub(r'\s+', ' ', name)
+        # Check for valid characters (letters, numbers, spaces, hyphens)
+        if not re.match(r'^[a-zA-Z0-9\s\-_&]+$', name):
+            raise forms.ValidationError('Category name contains invalid characters.')
+        return name
     
     def clean_slug(self):
         slug = self.cleaned_data.get('slug')
         if slug:
-            slug = slug.strip().lower().replace(' ', '-')
+            # Sanitize slug
+            import re
+            slug = slug.strip().lower()
+            slug = re.sub(r'[^a-z0-9\-_]', '-', slug)
+            slug = re.sub(r'-+', '-', slug).strip('-')
             # Check for duplicate slug
             if Category.objects.filter(slug=slug).exclude(pk=self.instance.pk if self.instance else None).exists():
                 raise forms.ValidationError('This slug already exists. Please choose a different one.')
@@ -132,7 +151,14 @@ class HomeSliderForm(forms.ModelForm):
         title = self.cleaned_data.get('title')
         if not title or len(title.strip()) < 3:
             raise forms.ValidationError('Title must be at least 3 characters long.')
-        return title.strip()
+        # Sanitize input
+        title = title.strip()
+        import re
+        title = re.sub(r'\s+', ' ', title)
+        # Check for valid characters
+        if not re.match(r'^[a-zA-Z0-9\s\-_&.,()!]+$', title):
+            raise forms.ValidationError('Title contains invalid characters.')
+        return title
     
     def clean_order(self):
         order = self.cleaned_data.get('order')
