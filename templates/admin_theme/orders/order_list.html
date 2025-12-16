@@ -62,7 +62,7 @@
                                             <td class="fw-bold">#{{ order.id }}</td>
                                             <td>
                                                 <div>
-                                                    <a href="{% url 'customer_details' order.user.id %}" class="text-decoration-none fw-bold">
+                                                    <a href="{% url 'admin_customer_details' order.user.id %}" class="text-decoration-none fw-bold">
                                                         {{ order.user.first_name }} {{ order.user.last_name }}
                                                     </a>
                                                     <br><small class="text-muted">{{ order.user.email }}</small>
@@ -71,7 +71,7 @@
                                             <td><span class="badge bg-primary">{{ order.get_total_items }}</span></td>
                                             <td class="fw-bold text-success">${{ order.total_price }}</td>
                                             <td>
-                                                <form method="POST" action="{% url 'update_order_status' order.id %}" style="display:inline;">
+                                                <form method="POST" action="{% url 'admin_update_order_status' order.id %}" style="display:inline;">
                                                     {% csrf_token %}
                                                     <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
                                                         {% for value, label in order.STATUS_CHOICES %}
@@ -85,7 +85,7 @@
                                                 <small class="text-muted">{{ order.created_at|date:"H:i" }}</small>
                                             </td>
                                             <td>
-                                                <a href="{% url 'order-detail' order.id %}" class="btn btn-sm btn-outline-primary" title="View Details">
+                                                <a href="{% url 'admin_order_detail' order.id %}" class="btn btn-sm btn-outline-primary" title="View Details">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                             </td>

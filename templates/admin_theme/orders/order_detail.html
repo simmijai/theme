@@ -36,7 +36,7 @@
                                     <div class="mb-3">
                                         <label class="form-label text-muted">Customer</label>
                                         <div class="fw-bold">
-                                            <a href="{% url 'customer_details' order.user.id %}" class="text-decoration-none">
+                                            <a href="{% url 'admin_customer_details' order.user.id %}" class="text-decoration-none">
                                                 {{ order.user.first_name }} {{ order.user.last_name }}
                                             </a>
                                         </div>
@@ -66,7 +66,7 @@
                                     <div class="mb-3">
                                         <label class="form-label text-muted">Status</label>
                                         <div>
-                                            <form method="POST" action="{% url 'update_order_status' order.id %}" style="display:inline-block;">
+                                            <form method="POST" action="{% url 'admin_update_order_status' order.id %}" style="display:inline-block;">
                                                 {% csrf_token %}
                                                 <select name="status" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
                                                     {% for value, label in order.STATUS_CHOICES %}

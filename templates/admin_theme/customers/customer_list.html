@@ -81,7 +81,7 @@
                                                 <td>{{ customer.date_joined|date:"d M Y" }}</td>
                                                 <td class="text-end">
                                                     <div class="btn-group" role="group">
-                                                        <a href="{% url 'customer_details' customer.id %}" class="btn btn-sm btn-outline-primary" title="View Details">
+                                                        <a href="{% url 'admin_customer_details' customer.id %}" class="btn btn-sm btn-outline-primary" title="View Details">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
                                                         <button class="btn btn-sm btn-outline-warning" title="Edit Customer" onclick="alert('Customer edit functionality coming soon!')">

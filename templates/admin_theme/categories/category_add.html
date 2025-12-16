@@ -36,7 +36,7 @@
                                             <label class="form-label">parent</label>
                                             <select class="form-control" name="parent">
                                                 <option value="">None</option>
-                                                {% for cat in top_categories %}
+                                                {% for cat in categories %}
                                                     <option value="{{ cat.id }}" {% if category.parent.id == cat.id %}selected{% endif %}>{{ cat.category_name }}</option>
                                                 {% endfor %}
                                             </select>
