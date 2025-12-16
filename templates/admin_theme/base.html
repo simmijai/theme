@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{% static 'admin_theme/css/theme.min.css' %}">
 </head>
 <body>
+{% csrf_token %}
 
 {% include 'admin_theme/components/sidebar.html' %}
 {% include 'admin_theme/components/header.html' %}

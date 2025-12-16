@@ -26,7 +26,7 @@ urlpatterns = [
     path('products/delete/<int:pk>/', product_views.product_delete, name='admin_product_delete'),
     path('products/image/delete/<int:pk>/', product_views.product_image_delete, name='admin_product_image_delete'),
 
-    path('customer/list/', customer_views.AdminCustomerListView.as_view(), name='customer_list'),
+    path('customer/list/', customer_views.AdminCustomerListView.as_view(), name='admin_customer_list'),
     path('customer/<int:customer_id>/', customer_views.customer_details, name='customer_details'),
 
     
