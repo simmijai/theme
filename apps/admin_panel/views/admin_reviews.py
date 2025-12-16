@@ -1,14 +1,47 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import user_passes_test
+from django.core.paginator import Paginator
+from django.db.models import Q
 from apps.store.models import Review
 
 def is_admin(user):
     return user.is_staff or user.is_superuser
 
-# @user_passes_test(is_admin)
+@user_passes_test(is_admin)
 def admin_review_list(request):
     reviews = Review.objects.select_related('product', 'user', 'order').order_by('-created_at')
-    return render(request, 'admin_theme/reviews/review_list.html', {'reviews': reviews})
+    
+    # Filter by approval status
+    status = request.GET.get('status')
+    if status == 'approved':
+        reviews = reviews.filter(is_approved=True)
+    elif status == 'pending':
+        reviews = reviews.filter(is_approved=False)
+    
+    # Filter by rating
+    rating = request.GET.get('rating')
+    if rating:
+        reviews = reviews.filter(rating=rating)
+    
+    # Search by product name or user
+    search = request.GET.get('search')
+    if search:
+        reviews = reviews.filter(
+            Q(product__name__icontains=search) | 
+            Q(user__first_name__icontains=search) |
+            Q(user__email__icontains=search)
+        )
+    
+    # Pagination
+    paginator = Paginator(reviews, 10)
+    page = paginator.get_page(request.GET.get('page'))
+    
+    return render(request, 'admin_theme/reviews/review_list.html', {
+        'reviews': page,
+        'status': status,
+        'rating': rating,
+        'search': search
+    })
 
 
 def admin_review_edit(request, review_id):
