@@ -102,9 +102,14 @@ def admin_dashboard(request):
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_http_methods
 from apps.accounts.models import Account
 from apps.admin_panel.forms import AdminLoginForm
 
+@csrf_protect
+@require_http_methods(["GET", "POST"])
 def admin_login(request):
     if request.method == "POST":
         form = AdminLoginForm(request.POST)
