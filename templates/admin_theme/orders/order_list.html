@@ -11,6 +11,35 @@
                         <div class="card-header">
                             <h5><i class="bi bi-bag-check"></i> All Orders</h5>
                         </div>
+                        
+                        <!-- Filters -->
+                        <div class="card-body border-bottom">
+                            <form method="GET" class="row g-3">
+                                <div class="col-md-3">
+                                    <input type="text" name="search" class="form-control" placeholder="Search customers..." value="{{ search }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="status" class="form-select">
+                                        <option value="">All Status</option>
+                                        {% for value, label in status_choices %}
+                                            <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="payment" class="form-select">
+                                        <option value="">All Payments</option>
+                                        <option value="cod" {% if payment == 'cod' %}selected{% endif %}>Cash on Delivery</option>
+                                        <option value="paypal" {% if payment == 'paypal' %}selected{% endif %}>PayPal</option>
+                                        <option value="razorpay" {% if payment == 'razorpay' %}selected{% endif %}>Razorpay</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                    <a href="?" class="btn btn-outline-secondary">Clear</a>
+                                </div>
+                            </form>
+                        </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-hover mb-0">
@@ -82,10 +111,10 @@
                                     <ul class="pagination justify-content-center mb-0">
                                         {% if page_obj.has_previous %}
                                             <li class="page-item">
-                                                <a class="page-link" href="?page=1">First</a>
+                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if payment %}payment={{ payment }}&{% endif %}page=1">First</a>
                                             </li>
                                             <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if payment %}payment={{ payment }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
                                             </li>
                                         {% endif %}
                                         
@@ -96,17 +125,17 @@
                                                 </li>
                                             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                                                 <li class="page-item">
-                                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                    <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if payment %}payment={{ payment }}&{% endif %}page={{ num }}">{{ num }}</a>
                                                 </li>
                                             {% endif %}
                                         {% endfor %}
                                         
                                         {% if page_obj.has_next %}
                                             <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if payment %}payment={{ payment }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
                                             </li>
                                             <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if payment %}payment={{ payment }}&{% endif %}page={{ page_obj.paginator.num_pages }}">Last</a>
                                             </li>
                                         {% endif %}
                                     </ul>

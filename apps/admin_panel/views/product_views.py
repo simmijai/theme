@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
-from apps.products.models import Product, ProductImage
+from django.db.models import Q
+from apps.products.models import Product, ProductImage, Category
 from apps.admin_panel.forms import ProductForm, ProductImageForm
 from django.contrib import messages
 
@@ -16,7 +17,38 @@ class AdminProductListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
     paginate_by = 5
     
     def get_queryset(self):
-        return Product.objects.prefetch_related('images', 'category').all().order_by('-created_at')
+        queryset = Product.objects.prefetch_related('images', 'category').all()
+        
+        # Search by name or SKU
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(name__icontains=search) | Q(sku__icontains=search)
+            )
+        
+        # Filter by category
+        category = self.request.GET.get('category')
+        if category:
+            queryset = queryset.filter(category_id=category)
+        
+        # Filter by availability
+        availability = self.request.GET.get('availability')
+        if availability == 'available':
+            queryset = queryset.filter(is_available=True, stock__gt=0)
+        elif availability == 'out_of_stock':
+            queryset = queryset.filter(stock=0)
+        elif availability == 'unavailable':
+            queryset = queryset.filter(is_available=False)
+        
+        return queryset.order_by('-created_at')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['search'] = self.request.GET.get('search', '')
+        context['category'] = self.request.GET.get('category', '')
+        context['availability'] = self.request.GET.get('availability', '')
+        return context
 
 # Keep FBV for backward compatibility (can be removed later)
 # def product_list(request):

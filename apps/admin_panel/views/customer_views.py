@@ -2,9 +2,9 @@
 from django.shortcuts import render,get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
+from django.db.models import Max, Count, Q
 from apps.accounts.models import Account, Address
 from apps.orders.models import Order
-from django.db.models import Max, Count
 
 from django.db.models import Subquery, OuterRef
 
@@ -21,16 +21,40 @@ class AdminCustomerListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
     paginate_by = 25
     
     def get_queryset(self):
-        customers = Account.objects.filter(role='customer').prefetch_related('addresses', 'order_set').annotate(
+        queryset = Account.objects.filter(role='customer').prefetch_related('addresses', 'order_set').annotate(
             total_orders=Count('order'),
             last_order_date=Max('order__created_at')
-        ).order_by('-date_joined')
+        )
+        
+        # Search by name or email
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(email__icontains=search)
+            )
+        
+        # Filter by order count
+        orders = self.request.GET.get('orders')
+        if orders == 'with_orders':
+            queryset = queryset.filter(order__isnull=False).distinct()
+        elif orders == 'no_orders':
+            queryset = queryset.filter(order__isnull=True)
+        
+        customers = queryset.order_by('-date_joined')
         
         # Add latest order to each customer
         for customer in customers:
             customer.latest_order = customer.order_set.first() if customer.order_set.exists() else None
         
         return customers
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('search', '')
+        context['orders'] = self.request.GET.get('orders', '')
+        return context
 
 # Keep FBV for backward compatibility
 def customer_list(request):

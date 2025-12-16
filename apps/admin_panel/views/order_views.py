@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
+from django.db.models import Q
 from apps.orders.models import Order
 from django.views.decorators.http import require_POST
 
@@ -15,7 +16,36 @@ class AdminOrderListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
     paginate_by = 5
     
     def get_queryset(self):
-        return Order.objects.select_related('user').prefetch_related('items__product').order_by('-created_at')
+        queryset = Order.objects.select_related('user').prefetch_related('items__product')
+        
+        # Filter by status
+        status = self.request.GET.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+        
+        # Search by customer name or email
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(user__first_name__icontains=search) |
+                Q(user__last_name__icontains=search) |
+                Q(user__email__icontains=search)
+            )
+        
+        # Filter by payment method
+        payment = self.request.GET.get('payment')
+        if payment:
+            queryset = queryset.filter(payment_method=payment)
+        
+        return queryset.order_by('-created_at')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_choices'] = Order.STATUS_CHOICES
+        context['search'] = self.request.GET.get('search', '')
+        context['status'] = self.request.GET.get('status', '')
+        context['payment'] = self.request.GET.get('payment', '')
+        return context
 
 # Keep FBV for backward compatibility
 def admin_order_list(request):

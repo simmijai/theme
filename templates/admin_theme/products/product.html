@@ -8,6 +8,46 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h5 class="card-title">Products Management</h5>
+                            <div class="card-header-action">
+                                <a href="{% url 'admin_product_create' %}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-plus-circle"></i> Add Product
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Filters -->
+                        <div class="card-body border-bottom">
+                            <form method="GET" class="row g-3">
+                                <div class="col-md-3">
+                                    <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="category" class="form-select">
+                                        <option value="">All Categories</option>
+                                        {% for cat in categories %}
+                                            <option value="{{ cat.id }}" {% if category == cat.id|stringformat:'s' %}selected{% endif %}>
+                                                {{ cat.category_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="availability" class="form-select">
+                                        <option value="">All Status</option>
+                                        <option value="available" {% if availability == 'available' %}selected{% endif %}>Available</option>
+                                        <option value="out_of_stock" {% if availability == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+                                        <option value="unavailable" {% if availability == 'unavailable' %}selected{% endif %}>Unavailable</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                    <a href="?" class="btn btn-outline-secondary">Clear</a>
+                                </div>
+                            </form>
+                        </div>
+                        
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-hover" id="productList">
@@ -28,27 +68,19 @@
                                         {% for product in products %}
                                         <tr>
                                             <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
-                                            {% comment %} <td>
-                                                {% if product.image %}
-                                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50" height="50">
-                                                {% else %}
-                                                    —
-                                                {% endif %}
-                                            </td> {% endcomment %}
                                             <td>
-    <div style="display:flex; gap:5px; align-items:center;">
-        {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50" height="50" style="border-radius:6px;">
-        {% endif %}
-        {% for img in product.images.all %}
-            <img src="{{ img.image.url }}" alt="{{ product.name }}" width="50" height="50" style="border-radius:6px;">
-        {% endfor %}
-        {% if not product.image and not product.images.all %}
-            —
-        {% endif %}
-    </div>
-</td>
-
+                                                <div style="display:flex; gap:5px; align-items:center;">
+                                                    {% if product.image %}
+                                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50" height="50" style="border-radius:6px;">
+                                                    {% endif %}
+                                                    {% for img in product.images.all %}
+                                                        <img src="{{ img.image.url }}" alt="{{ product.name }}" width="50" height="50" style="border-radius:6px;">
+                                                    {% endfor %}
+                                                    {% if not product.image and not product.images.all %}
+                                                        —
+                                                    {% endif %}
+                                                </div>
+                                            </td>
                                             <td>{{ product.name }}</td>
                                             <td>{{ product.category.category_name }}</td>
                                             <td>{{ product.sku|default:"—" }}</td>
@@ -84,14 +116,13 @@
                                     <ul class="pagination justify-content-center mb-0">
                                         {% if page_obj.has_previous %}
                                             <li class="page-item">
-                                                <a class="page-link" href="?page=1">First</a>
+                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page=1">First</a>
                                             </li>
                                             <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
                                             </li>
                                         {% endif %}
                                         
-                                        <!-- Show page numbers -->
                                         {% for num in page_obj.paginator.page_range %}
                                             {% if page_obj.number == num %}
                                                 <li class="page-item active">
@@ -99,17 +130,17 @@
                                                 </li>
                                             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                                                 <li class="page-item">
-                                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                    <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page={{ num }}">{{ num }}</a>
                                                 </li>
                                             {% endif %}
                                         {% endfor %}
                                         
                                         {% if page_obj.has_next %}
                                             <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
                                             </li>
                                             <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page={{ page_obj.paginator.num_pages }}">Last</a>
                                             </li>
                                         {% endif %}
                                     </ul>
@@ -128,12 +159,12 @@
                 </div>
             </div>
         </div>
+    </div>
 </main>
 
 <script>
 function deleteProduct(productId, productName) {
     if (confirm(`Are you sure you want to delete '${productName}'?\n\nThis action cannot be undone.`)) {
-        // Create and submit form
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = `/admin_panel/products/delete/${productId}/`;

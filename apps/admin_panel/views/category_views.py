@@ -33,6 +33,7 @@ def admin_subcategory_list(request, category_id):
 # admin_panel/views/category_views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from django.db.models import Q
 from apps.products.models import Category
 
 
@@ -52,7 +53,27 @@ class CategoryListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
     paginate_by = 3
     
     def get_queryset(self):
-        return Category.objects.filter(parent__isnull=True).prefetch_related('subcategories').order_by('-id')
+        queryset = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
+        
+        # Search by category name
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(category_name__icontains=search)
+        
+        # Filter by active status
+        status = self.request.GET.get('status')
+        if status == 'active':
+            queryset = queryset.filter(is_active=True)
+        elif status == 'inactive':
+            queryset = queryset.filter(is_active=False)
+        
+        return queryset.order_by('-id')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('search', '')
+        context['status'] = self.request.GET.get('status', '')
+        return context
 
 
 # ------------------- CREATE -------------------

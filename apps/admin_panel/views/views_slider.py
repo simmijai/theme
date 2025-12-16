@@ -1,10 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
 from apps.store.models import HomeSlider
 from apps.admin_panel.forms import HomeSliderForm
 
 def slider_list(request):
-    sliders = HomeSlider.objects.all()
-    return render(request, 'admin_theme/sliders/list.html', {'sliders': sliders})
+    sliders = HomeSlider.objects.all().order_by('-id')
+    
+    # Pagination
+    paginator = Paginator(sliders, 10)
+    page = request.GET.get('page')
+    sliders = paginator.get_page(page)
+    
+    return render(request, 'admin_theme/sliders/list.html', {
+        'sliders': sliders, 
+        'is_paginated': sliders.has_other_pages, 
+        'page_obj': sliders
+    })
 
 def slider_create(request):
     if request.method == 'POST':
