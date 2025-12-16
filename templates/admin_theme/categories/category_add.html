@@ -12,34 +12,74 @@
                             <div class="card-body">
                               <form method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
+                                        
                                         <div class="mb-4">
-                                            <label class="form-label">category_name <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="category_name" value="{{ category.category_name|default:'' }}">
+                                            <label class="form-label">{{ form.category_name.label }} <span class="text-danger">*</span></label>
+                                            {{ form.category_name }}
+                                            {% if form.category_name.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.category_name.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
                                         </div>
 
                                         <div class="mb-4">
-                                            <label class="form-label">slug<span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="slug" value="{{ category.slug|default:'' }}">
+                                            <label class="form-label">{{ form.slug.label }}</label>
+                                            {{ form.slug }}
+                                            {% if form.slug.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.slug.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
                                         </div>
 
                                         <div class="mb-4">
-                                            <label class="form-label">description</label>
-                                            <input type="text" class="form-control" name="description" value="{{ category.description|default:'' }}">
+                                            <label class="form-label">{{ form.description.label }}</label>
+                                            {{ form.description }}
+                                            {% if form.description.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.description.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
                                         </div>
 
                                         <div class="mb-4">
-                                            <label class="form-label">cat_image</label>
-                                            <input type="file" class="form-control" name="cat_image">
+                                            <label class="form-label">{{ form.cat_image.label }}</label>
+                                            {{ form.cat_image }}
+                                            {% if form.cat_image.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.cat_image.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
                                         </div>
 
                                         <div class="mb-4">
-                                            <label class="form-label">parent</label>
-                                            <select class="form-control" name="parent">
-                                                <option value="">None</option>
-                                                {% for cat in categories %}
-                                                    <option value="{{ cat.id }}" {% if category.parent.id == cat.id %}selected{% endif %}>{{ cat.category_name }}</option>
-                                                {% endfor %}
-                                            </select>
+                                            <label class="form-label">{{ form.parent.label }}</label>
+                                            {{ form.parent }}
+                                            {% if form.parent.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.parent.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <div class="form-check">
+                                                {{ form.is_active }}
+                                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                                    {{ form.is_active.label }}
+                                                </label>
+                                            </div>
                                         </div>
 
                                         <button type="submit" class="btn btn-primary">Save Category</button>

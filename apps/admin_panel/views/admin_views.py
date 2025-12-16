@@ -65,25 +65,34 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from apps.accounts.models import Account
+from apps.admin_panel.forms import AdminLoginForm
 
 def admin_login(request):
     if request.method == "POST":
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        # Authenticate user
-        user = authenticate(request, email=email, password=password)
-
-        if user is not None:
-            if user.role == 'admin':
-                login(request, user)
-                return redirect('admin_dashboard')  # replace with your admin dashboard url
+        form = AdminLoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            
+            # Authenticate user
+            user = authenticate(request, email=email, password=password)
+            
+            if user is not None:
+                if user.role == 'admin':
+                    login(request, user)
+                    messages.success(request, f'Welcome back, {user.first_name}!')
+                    return redirect('admin_dashboard')
+                else:
+                    form.add_error(None, 'You are not authorized as admin.')
             else:
-                return render(request, 'admin_theme/admin_login.html', {'error': 'You are not authorized as admin.'})
-        else:
-            return render(request, 'admin_theme/admin_login.html', {'error': 'Invalid credentials.'})
-
-    return render(request, 'admin_theme/admin_login.html', {'error': 'Invalid credentials.'})
+                form.add_error(None, 'Invalid email or password.')
+        
+        # Form has errors
+        return render(request, 'admin_theme/admin_login.html', {'form': form})
+    else:
+        form = AdminLoginForm()
+    
+    return render(request, 'admin_theme/admin_login.html', {'form': form})
 
 
 from django.contrib.auth import logout

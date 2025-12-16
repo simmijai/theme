@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
+from django.contrib import messages
 from apps.store.models import HomeSlider
 from apps.admin_panel.forms import HomeSliderForm
 
@@ -21,8 +22,14 @@ def slider_create(request):
     if request.method == 'POST':
         form = HomeSliderForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            slider = form.save()
+            messages.success(request, f'Slider "{slider.title}" created successfully!')
             return redirect('admin_slider_list')
+        else:
+            # Form has validation errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field.replace("_", " ").title()}: {error}')
     else:
         form = HomeSliderForm()
     return render(request, 'admin_theme/sliders/form.html', {'form': form, 'title': 'Create Slider'})
@@ -32,8 +39,14 @@ def slider_edit(request, slider_id):
     if request.method == 'POST':
         form = HomeSliderForm(request.POST, request.FILES, instance=slider)
         if form.is_valid():
-            form.save()
+            updated_slider = form.save()
+            messages.success(request, f'Slider "{updated_slider.title}" updated successfully!')
             return redirect('admin_slider_list')
+        else:
+            # Form has validation errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field.replace("_", " ").title()}: {error}')
     else:
         form = HomeSliderForm(instance=slider)
     return render(request, 'admin_theme/sliders/form.html', {'form': form, 'title': 'Edit Slider'})

@@ -35,6 +35,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.db.models import Q
 from apps.products.models import Category
+from apps.admin_panel.forms import CategoryForm
 
 
 # ------------------- LIST -------------------
@@ -81,66 +82,53 @@ class CategoryCreateView(View):
     template_name = 'admin_theme/categories/category_add.html'
 
     def get(self, request):
+        form = CategoryForm()
         categories = Category.objects.filter(parent__isnull=True)
-        return render(request, self.template_name, {'categories': categories})
+        return render(request, self.template_name, {'form': form, 'categories': categories})
 
     def post(self, request):
-        name = request.POST.get('category_name', '').strip()
-        slug = request.POST.get('slug', '').strip()
-        description = request.POST.get('description', '').strip()
-        cat_image = request.FILES.get('cat_image')
-        parent_id = request.POST.get('parent')
+        form = CategoryForm(request.POST, request.FILES)
+        categories = Category.objects.filter(parent__isnull=True)
         
-        # Validate required fields
-        if not name:
-            messages.error(request, 'Category name is required.')
-            return redirect('admin_category_create')
+        if form.is_valid():
+            category = form.save()
+            messages.success(request, f'Category "{category.category_name}" created successfully!')
+            return redirect('admin_category_list')
+        else:
+            # Form has validation errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field.replace("_", " ").title()}: {error}')
         
-        parent = get_object_or_404(Category, id=parent_id) if parent_id else None
-        is_active = request.POST.get('is_active') == 'on'
-
-        Category.objects.create(
-            category_name=name,
-            slug=slug,
-            description=description,
-            cat_image=cat_image,
-            parent=parent,
-            is_active=is_active
-        )
-        messages.success(request, f'Category "{name}" created successfully!')
-        return redirect('admin_category_list')
+        return render(request, self.template_name, {'form': form, 'categories': categories})
 
 
 # ------------------- UPDATE -------------------
 class CategoryUpdateView(View):
-    template_name = 'admin_theme/categories/category_add.html'  # using same form for simplicity
+    template_name = 'admin_theme/categories/category_add.html'
 
     def get(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
+        form = CategoryForm(instance=category)
         categories = Category.objects.filter(parent__isnull=True)
-        return render(request, self.template_name, {'category': category, 'categories': categories})
+        return render(request, self.template_name, {'form': form, 'category': category, 'categories': categories})
 
     def post(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
-        name = request.POST.get('category_name', '').strip()
+        form = CategoryForm(request.POST, request.FILES, instance=category)
+        categories = Category.objects.filter(parent__isnull=True)
         
-        # Validate required fields
-        if not name:
-            messages.error(request, 'Category name is required.')
-            return redirect('admin_category_update', pk=pk)
+        if form.is_valid():
+            updated_category = form.save()
+            messages.success(request, f'Category "{updated_category.category_name}" updated successfully!')
+            return redirect('admin_category_list')
+        else:
+            # Form has validation errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field.replace("_", " ").title()}: {error}')
         
-        category.category_name = name
-        category.slug = request.POST.get('slug', '').strip()
-        category.description = request.POST.get('description', '').strip()
-        parent_id = request.POST.get('parent')
-        category.parent = get_object_or_404(Category, id=parent_id) if parent_id else None
-
-        if 'cat_image' in request.FILES:
-            category.cat_image = request.FILES['cat_image']
-
-        category.save()
-        messages.success(request, f'Category "{name}" updated successfully!')
-        return redirect('admin_category_list')
+        return render(request, self.template_name, {'form': form, 'category': category, 'categories': categories})
 
 
 # ------------------- DELETE -------------------

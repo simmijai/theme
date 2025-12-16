@@ -6,15 +6,43 @@
 </head>
 <body>
     <h2>Admin Login</h2>
+    
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
     <form method="POST">
         {% csrf_token %}
-        <label>Email:</label>
-        <input type="email" name="email" required><br><br>
+        
+        <div class="mb-3">
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}:</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="text-danger small">
+                    {% for error in form.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
 
-        <label>Password:</label>
-        <input type="password" name="password" required><br><br>
+        <div class="mb-3">
+            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}:</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <div class="text-danger small">
+                    {% for error in form.password.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
 
-        <button type="submit">Login</button>
+        <button type="submit" class="btn btn-primary">Login</button>
     </form>
 </body>
 </html>
