@@ -54,9 +54,9 @@
                                         </a>
                                     </td>
                                     <td class="product-thumbnail text-center">
-                                        <a href="#"><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="70"></a>
+                                        <a href="{% url 'product_detail' item.product.slug %}"><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="70"></a>
                                     </td>
-                                    <td class="product-name"><h4 class="no-margin"><a href="#">{{ item.product.name }}</a></h4></td>
+                                    <td class="product-name"><h4 class="no-margin"><a href="{% url 'product_detail' item.product.slug %}">{{ item.product.name }}</a></h4></td>
                                     <td class="product-price text-center"><span class="amount">${{ item.product.price }}</span></td>
                                     <td class="stock text-center">
                                         {% if item.product.stock > 0 %}
