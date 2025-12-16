@@ -17,7 +17,7 @@
         
         <div class="container">
         	<div class="row">
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
+                <div class="col-12 col-sm-12 col-md-8 col-lg-8 main-col">
                 	<div class="alert alert-success text-uppercase" role="alert">
 						<i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong> You've got free shipping!
 					</div>
@@ -119,135 +119,38 @@
                     </form>                   
                	</div>
                 
-                
-                <div class="container mt-4">
-                    <div class="row">
-                    	{% comment %} <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
-                        	<h5>Discount Codes</h5>
-                            <form action="#" method="post">
-                            	<div class="form-group">
-                                    <label for="address_zip">Enter your coupon code if you have one.</label>
-                                    <input type="text" name="coupon">
-                                </div>
-                                <div class="actionRow">
-                                    <div><input type="button" class="btn btn-secondary btn--small" value="Apply Coupon"></div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
-                        	<h5>Estimate Shipping and Tax</h5>
-							<form action="#" method="post">
-                                <div class="form-group">
-                                    <label for="address_country">Country</label>
-                                    <select id="address_country" name="address[country]" data-default="United States"><option value="Belgium" data-provinces="[]">Belgium</option>
-                                        <option value="---" data-provinces="[]">---</option>
-                                        <option value="Afghanistan" data-provinces="[]">Afghanistan</option>
-                                        
-                                        
-                                        <option value="Czech Republic" data-provinces="[]">Czech Republic</option>
-                                        <option value="Côte d'Ivoire" data-provinces="[]">Côte d'Ivoire</option>
-                                        <option value="Denmark" data-provinces="[]">Denmark</option>
-                                        
-                                        <option value="Jordan" data-provinces="[]">Jordan</option>
-                                        <option value="Kazakhstan" data-provinces="[]">Kazakhstan</option>
-                                        
-                                        
-                                        <option value="Senegal" data-provinces="[]">Senegal</option>
-                                        <option value="Serbia" data-provinces="[]">Serbia</option>
-                                        <option value="Seychelles" data-provinces="[]">Seychelles</option>
-                                        n>
-                                        <option value="Svalbard And Jan Mayen" data-provinces="[]">Svalbard &amp; Jan Mayen</option>
-                                        <option value="Swaziland" data-provinces="[]">Swaziland</option>
-                                        <option value="Sweden" data-provinces="[]">Sweden</option>
-                                        <option value="Switzerland" data-provinces="[]">Switzerland</option>
-                                        <option value="Syria" data-provinces="[]">Syria</option>
-                                        <option value="Taiwan" data-provinces="[]">Taiwan</option>
-                                        <option value="Tajikistan" data-provinces="[]">Tajikistan</option>
-                                        <option value="Timor Leste" data-provinces="[]">Timor-Leste</option>
-                                        <option value="Togo" data-provinces="[]">Togo</option>
-                                        <option value="Tokelau" data-provinces="[]">Tokelau</option>
-                                        <option value="Tonga" data-provinces="[]">Tonga</option>
-                                        <option value="Trinidad and Tobago" data-provinces="[]">Trinidad &amp; Tobago</option>
-                                        <option value="Tunisia" data-provinces="[]">Tunisia</option>
-                                        <option value="Turkey" data-provinces="[]">Turkey</option>
-                                        <option value="Turkmenistan" data-provinces="[]">Turkmenistan</option>
-                                        <option value="Turks and Caicos Islands" data-provinces="[]">Turks &amp; Caicos Islands</option>
-                                        <option value="Tuvalu" data-provinces="[]">Tuvalu</option>
-                                        <option value="United States Minor Outlying Islands" data-provinces="[]">U.S. Outlying Islands</option>
-                                        <option value="Uganda" data-provinces="[]">Uganda</option>
-                                        <option value="Ukraine" data-provinces="[]">Ukraine</option>
-                                        <option value="United Arab Emirates" >United Arab Emirates</option>
-                                        <option value="United Kingdom" data-provinces="[]">United Kingdom</option>
-                                        <option value="United States">United States</option>
-                                        <option value="Uruguay" data-provinces="[]">Uruguay</option>
-                                        <option value="Uzbekistan" data-provinces="[]">Uzbekistan</option>
-                                        <option value="Vanuatu" data-provinces="[]">Vanuatu</option>
-                                        <option value="Holy See (Vatican City State)" data-provinces="[]">Vatican City</option>
-                                        <option value="Venezuela" data-provinces="[]">Venezuela</option>
-                                        <option value="Vietnam" data-provinces="[]">Vietnam</option>
-                                        <option value="Wallis And Futuna" data-provinces="[]">Wallis &amp; Futuna</option>
-                                        <option value="Western Sahara" data-provinces="[]">Western Sahara</option>
-                                        <option value="Yemen" data-provinces="[]">Yemen</option>
-                                        <option value="Zambia" data-provinces="[]">Zambia</option>
-                                        <option value="Zimbabwe" data-provinces="[]">Zimbabwe</option></select>
-                                </div>
-    
-                                <div class="form-group">
-                                    <label>State</label>
-                                    <select id="address_province" name="address[province]" data-default="">
-                                      <option value="Alabama">Alabama</option>
-                                      <option value="Alaska">Alaska</option>
-                                      <option value="American Samoa">American Samoa</option>
-                                      <option value="Arizona">Arizona</option>
-                                      <option value="Arkansas">Arkansas</option>
-                                      <option value="California">California</option>    
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="address_zip">Postal/Zip Code</label>
-                                    <input type="text" id="address_zip" name="address[zip]">
-                                </div>
-    
-                                <div class="actionRow">
-                                    <div><input type="button" class="btn btn-secondary btn--small" value="Calculate shipping"></div>
-                                </div>
-                            </form>
-                        </div> {% endcomment %}
-                        
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
-                            <div class="solid-border">	
-                                                            <div class="row border-bottom pb-2">
-                                                                <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                                                                <span class="col-12 col-sm-6 text-right"><span class="money" id="cart-subtotal">${{ total_price }}</span></span>
-                                                            </div>
-                              <div class="row border-bottom pb-2 pt-2">
-                                {% comment %} <span class="col-12 col-sm-6 cart__subtotal-title">Tax</span>
-                                <span class="col-12 col-sm-6 text-right">$50.00</span> {% endcomment %}
-                              </div>
-                              {% comment %} <div class="row border-bottom pb-2 pt-2">
-                                <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
-                                <span class="col-12 col-sm-6 text-right">Free shipping</span>
-                              </div> {% endcomment %}
-                              <div class="row border-bottom pb-2 pt-2">
-                                <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
-                                <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right">
-                                    <span class="money" id="cart-grand-total">${{ grand_total }}</span>
+                <!-- Cart Summary -->
+                <div class="col-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="cart__footer sticky-top">
+                        <div class="solid-border p-4 bg-light rounded shadow-sm">
+                            <h5 class="mb-3">Order Summary</h5>
+                            
+                            <div class="row border-bottom pb-2 mb-2">
+                                <span class="col-6 cart__subtotal-title">Subtotal</span>
+                                <span class="col-6 text-right"><span class="money" id="cart-subtotal">${{ total_price }}</span></span>
+                            </div>
+                            
+                            <div class="row border-bottom pb-2 mb-2">
+                                <span class="col-6 cart__subtotal-title">Shipping</span>
+                                <span class="col-6 text-right text-success">Free</span>
+                            </div>
+                            
+                            <div class="row border-bottom pb-2 mb-3">
+                                <span class="col-6 cart__subtotal-title"><strong>Total</strong></span>
+                                <span class="col-6 text-right">
+                                    <strong><span class="money" id="cart-grand-total">${{ grand_total }}</span></strong>
                                 </span>
                             </div>
 
-                              {% comment %} <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div> {% endcomment %}
-                              {% comment %} <p class="cart_tearm">
-                                <label>
-                                  <input type="checkbox" name="tearm" class="checkbox" value="tearm" required="">
-                                  I agree with the terms and conditions
-								</label>
-                              </p> {% endcomment %}
-                              {% comment %} <input type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" value="Proceed To Checkout" disabled="disabled"> {% endcomment %}
-                              <a href="{% url 'orders_checkout' %}" id="cartCheckout" class="btn btn--small-wide checkout" style="display: block; text-align: center;">
-                                  Proceed To Checkout</a>
-                              {% comment %} <div class="paymnet-img"><img src="{% static 'images/payment-img.jpg' %}" alt="Payment"></div> {% endcomment %}
+                            <a href="{% url 'orders_checkout' %}" id="cartCheckout" class="btn btn-primary w-100 py-2 mb-3">
+                                Proceed To Checkout
+                            </a>
+                            
+                            <div class="text-center">
+                                <small class="text-muted">
+                                    <i class="icon anm anm-shield"></i> Secure Checkout
+                                </small>
                             </div>
-        
                         </div>
                     </div>
                 </div>

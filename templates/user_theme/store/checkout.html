@@ -4,6 +4,21 @@
 {% block title %}Checkout{% endblock %}
 
 {% block content %}
+<style>
+.address-scroll-container {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    background: #f9f9f9;
+}
+.address-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+.address-scroll-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+</style>
 <div id="page-content" style="padding-top:60px;">
     <div class="page section-header text-center">
         <div class="page-title">
@@ -21,24 +36,33 @@
 
                 <!-- Buttons -->
                 <div class="row mb-4 gx-3">
+                    {% if addresses %}
                     <div class="col-md-6">
-                        <button id="show-address-btn" class="btn btn-primary w-100 shadow-sm" type="button">
-                            Select Delivery Address
+                        <button id="show-address-btn" class="btn btn-outline-primary w-100 shadow-sm" type="button">
+                            {% if addresses %}Hide Addresses{% else %}Show Addresses{% endif %}
                         </button>
                     </div>
-
                     <div class="col-md-6">
-                        <button id="add-address-btn" class="btn btn-outline-secondary w-100 shadow-sm" type="button">
-                            + Add / Edit Address
+                        <button id="add-address-btn" class="btn btn-primary w-100 shadow-sm" type="button">
+                            + Add New Address
                         </button>
                     </div>
+                    {% else %}
+                    <div class="col-12">
+                        <button id="add-address-btn" class="btn btn-primary w-100 shadow-sm" type="button">
+                            + Add Delivery Address
+                        </button>
+                    </div>
+                    {% endif %}
                 </div>
 
-                <!-- Address List (HIDDEN BY DEFAULT) -->
-                <div id="address-list-container" class="mb-3" style="display:none;">
+                <!-- Address List (SHOW BY DEFAULT IF ADDRESSES EXIST) -->
+                <div id="address-list-container" class="mb-3" {% if not addresses %}style="display:none;"{% endif %}>
                     {% if addresses %}
+                        <h5 class="mb-3">Select Delivery Address</h5>
+                        <div class="address-scroll-container" style="max-height: 400px; overflow-y: auto;">
                         {% for address in addresses %}
-                        <div class="border p-3 rounded mb-2 d-flex justify-content-between address-card" data-address-id="{{ address.id }}">
+                        <div class="border p-3 rounded mb-2 d-flex justify-content-between address-card {% if address.is_default %}border-primary bg-light{% endif %}" data-address-id="{{ address.id }}">
                             <div>
                                 <strong>{{ address.first_name }} {{ address.last_name }}</strong>
                                 {% if address.is_default %}<span class="badge bg-primary ms-2">Default</span>{% endif %}
@@ -70,16 +94,17 @@
                                     Edit
                                 </button>
 
-                                <button><a href="?delete={{ address.id }}"
-                                   class="btn btn-sm btn-outline-secondary mt-2">
+                                <a href="?delete={{ address.id }}" class="btn btn-sm btn-outline-danger mt-2" onclick="return confirm('Are you sure you want to delete this address?')">
                                     Delete
                                 </a>
-                                </button>
                             </div>
                         </div>
                         {% endfor %}
+                        </div>
                     {% else %}
-                    <p>No saved addresses.</p>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>No saved addresses. Please add a delivery address to continue.
+                        </div>
                     {% endif %}
                 </div>
 
@@ -215,7 +240,9 @@
                         <form method="POST" action="{% url 'orders_checkout' %}" id="address-selection-form">
                             {% csrf_token %}
                             <input type="hidden" name="selected_address" id="selected_address_input">
-                            <button type="button" id="continue-btn" class="btn btn-primary px-4">Continue</button>
+                            <button type="button" id="continue-btn" class="btn btn-primary px-4" {% if not addresses %}disabled title="Please add an address first"{% endif %}>
+                                {% if addresses %}Continue to Payment{% else %}Add Address First{% endif %}
+                            </button>
                         </form>
                     </div>
 
@@ -227,19 +254,28 @@
 </div>
 
 <script>
-// toggle
-document.getElementById("show-address-btn").onclick = function () {
-    toggle("address-list-container");
-};
+// toggle address list
+const showAddressBtn = document.getElementById("show-address-btn");
+if (showAddressBtn) {
+    showAddressBtn.onclick = function () {
+        const container = document.getElementById("address-list-container");
+        const isHidden = container.style.display === "none";
+        container.style.display = isHidden ? "block" : "none";
+        this.textContent = isHidden ? "Hide Addresses" : "Show Addresses";
+    };
+}
 
+// toggle address form
 document.getElementById("add-address-btn").onclick = function () {
-    toggle("address-form-container");
-};
-
-// simple toggle
-function toggle(id) {
-    const el = document.getElementById(id);
-    el.style.display = el.style.display === "none" ? "block" : "none";
+    const container = document.getElementById("address-form-container");
+    const isHidden = container.style.display === "none";
+    container.style.display = isHidden ? "block" : "none";
+    
+    if (isHidden) {
+        // Clear form when opening
+        document.getElementById("address_id").value = "";
+        document.querySelector("form").reset();
+    }
 }
 
 // prefill edit form

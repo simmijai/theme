@@ -1,64 +1,198 @@
 {% extends 'user_theme/base.html' %}
-
 {% load static %}
 
-{% block title %}Payment - Belle E-commerce{% endblock %}
+{% block title %}Payment{% endblock %}
 
 {% block content %}
+<style>
+.payment-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.payment-option:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+}
+.payment-option.selected {
+    border-color: #007bff;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+}
+.payment-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+}
+
+</style>
+
 <div id="page-content" style="padding-top:60px;">
-  <div class="page section-header text-center mb-4">
-    <div class="page-title">
-      <div class="wrapper">
-        <h1 class="page-width">Payment</h1>
-        <p class="text-muted mt-2">Select your payment method to complete the order</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-xl-6 col-lg-7 col-md-10">
-        <div class="card shadow-lg border-0 rounded-4 p-4">
-          <h3 class="mb-4 text-center">Choose Payment Method</h3>
-
-          <form method="POST" action="{% url 'place_order' %}">
-            {% csrf_token %}
-            
-            <!-- COD Option -->
-            <div class="form-check mb-3 border p-3 rounded">
-              <input class="form-check-input" type="radio" name="payment_method" id="cod" value="COD" checked>
-              <label class="form-check-label fw-bold" for="cod">💵 Cash on Delivery (COD)</label>
+    <div class="page section-header text-center mb-4">
+        <div class="page-title">
+            <div class="wrapper">
+                <h1 class="page-width">Payment</h1>
+                <p class="text-muted mt-2">Choose your preferred payment method</p>
             </div>
-
-            <!-- Summary -->
-            <div class="mt-4 border-top pt-3">
-              <div class="d-flex justify-content-between mb-2">
-                <span>Subtotal:</span>
-                <strong>${{ total_price }}</strong>
-              </div>
-              {% comment %} <div class="d-flex justify-content-between mb-2">
-                <span>Shipping:</span>
-                <strong>${{ shipping_cost }}</strong>
-              </div> {% endcomment %}
-              <div class="d-flex justify-content-between">
-                <span class="fw-bold fs-5">Total:</span>
-                <strong class="text-success fs-5">${{ grand_total }}</strong>
-              </div>
-            </div>
-
-            <!-- Button -->
-            <div class="text-center mt-4">
-              <button type="submit" class="btn btn-success px-5 py-2 rounded-pill">
-                Place Order
-              </button>
-              {% comment %} <div class="mt-2">
-                <a href="{% url 'orders_checkout' %}" class="text-muted small">&larr; Back to Checkout</a>
-              </div> {% endcomment %}
-            </div>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <!-- Payment Methods -->
+                        <div class="card shadow-sm border-0 rounded-3">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <h4 class="mb-0">Payment Methods</h4>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="{% url 'place_order' %}" id="payment-form">
+                                    {% csrf_token %}
+                                    
+                                    <!-- Cash on Delivery -->
+                                    <div class="payment-option selected" data-method="COD">
+                                        <div class="d-flex align-items-center">
+                                            <span class="payment-icon">💵</span>
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-1">Cash on Delivery</h5>
+                                                <p class="text-muted mb-0 small">Pay when your order arrives</p>
+                                            </div>
+                                            <input type="radio" name="payment_method" value="COD" checked class="form-check-input">
+                                        </div>
+                                    </div>
+
+                                    <!-- UPI Payment -->
+                                    <div class="payment-option" data-method="UPI">
+                                        <div class="d-flex align-items-center">
+                                            <span class="payment-icon">📱</span>
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-1">UPI Payment</h5>
+                                                <p class="text-muted mb-0 small">Pay using Google Pay, PhonePe, Paytm</p>
+                                            </div>
+                                            <input type="radio" name="payment_method" value="UPI" class="form-check-input">
+                                        </div>
+                                        <div class="mt-3" style="display: none;" id="upi-details">
+                                            <small class="text-info">⚠️ UPI payment will be available soon</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Credit/Debit Card -->
+                                    <div class="payment-option" data-method="CARD">
+                                        <div class="d-flex align-items-center">
+                                            <span class="payment-icon">💳</span>
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-1">Credit/Debit Card</h5>
+                                                <p class="text-muted mb-0 small">Visa, Mastercard, RuPay accepted</p>
+                                            </div>
+                                            <input type="radio" name="payment_method" value="CARD" class="form-check-input">
+                                        </div>
+                                        <div class="mt-3" style="display: none;" id="card-details">
+                                            <small class="text-info">⚠️ Card payment will be available soon</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Net Banking -->
+                                    <div class="payment-option" data-method="NETBANKING">
+                                        <div class="d-flex align-items-center">
+                                            <span class="payment-icon">🏦</span>
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-1">Net Banking</h5>
+                                                <p class="text-muted mb-0 small">All major banks supported</p>
+                                            </div>
+                                            <input type="radio" name="payment_method" value="NETBANKING" class="form-check-input">
+                                        </div>
+                                        <div class="mt-3" style="display: none;" id="netbanking-details">
+                                            <small class="text-info">⚠️ Net banking will be available soon</small>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- Place Order Button -->
+                            <div class="mt-4">
+                                <button type="submit" form="payment-form" class="btn btn-success w-100 py-3 rounded-3 fw-bold" id="place-order-btn">
+                                    <i class="bi bi-lock-fill me-2"></i>Place Order
+                                </button>
+                                
+                                <div class="text-center mt-3">
+                                    <a href="{% url 'orders_checkout' %}" class="text-muted small text-decoration-none">
+                                        <i class="bi bi-arrow-left me-1"></i>Back to Checkout
+                                    </a>
+                                </div>
+                                
+                                <!-- Security Info -->
+                                <div class="mt-3 p-2 bg-light rounded text-center">
+                                    <small class="text-muted">
+                                        <i class="bi bi-shield-check text-success me-1"></i>
+                                        Your payment information is secure
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+// Payment method selection
+document.querySelectorAll('.payment-option').forEach(option => {
+    option.addEventListener('click', function() {
+        // Remove selected class from all options
+        document.querySelectorAll('.payment-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked option
+        this.classList.add('selected');
+        
+        // Check the radio button
+        const radio = this.querySelector('input[type="radio"]');
+        radio.checked = true;
+        
+        // Show/hide additional details
+        const method = this.dataset.method;
+        document.querySelectorAll('[id$="-details"]').forEach(detail => {
+            detail.style.display = 'none';
+        });
+        
+        if (method !== 'COD') {
+            const details = document.getElementById(method.toLowerCase() + '-details');
+            if (details) details.style.display = 'block';
+        }
+        
+        // Update button text
+        const btn = document.getElementById('place-order-btn');
+        if (method === 'COD') {
+            btn.innerHTML = '<i class="bi bi-truck me-2"></i>Place Order (COD)';
+            btn.disabled = false;
+            btn.classList.add('btn-success');
+            btn.classList.remove('btn-secondary');
+        } else {
+            btn.innerHTML = '<i class="bi bi-credit-card me-2"></i>Proceed to Pay';
+            btn.disabled = true;
+            btn.classList.add('btn-secondary');
+            btn.classList.remove('btn-success');
+        }
+    });
+});
+
+// Form submission handling
+document.getElementById('payment-form').addEventListener('submit', function(e) {
+    const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    
+    if (selectedMethod !== 'COD') {
+        e.preventDefault();
+        alert('This payment method will be available soon. Please use Cash on Delivery for now.');
+        return false;
+    }
+    
+    // Show loading state
+    const btn = document.getElementById('place-order-btn');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+    btn.disabled = true;
+});
+</script>
 {% endblock %}
