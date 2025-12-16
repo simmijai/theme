@@ -47,9 +47,20 @@ def admin_review_list(request):
 def admin_review_edit(request, review_id):
     review = get_object_or_404(Review, id=review_id)
     if request.method == 'POST':
-        review.rating = request.POST.get('rating')
-        review.comment = request.POST.get('comment')
-        review.is_approved = 'is_approved' in request.POST  # THIS
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment', '').strip()
+        
+        # Validate rating
+        try:
+            rating = int(rating)
+            if rating < 1 or rating > 5:
+                raise ValueError
+        except (ValueError, TypeError):
+            rating = review.rating  # Keep original if invalid
+        
+        review.rating = rating
+        review.comment = comment
+        review.is_approved = 'is_approved' in request.POST
 
         if request.FILES.get('image'):
             review.image = request.FILES.get('image')

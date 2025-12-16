@@ -85,14 +85,19 @@ class CategoryCreateView(View):
         return render(request, self.template_name, {'categories': categories})
 
     def post(self, request):
-        name = request.POST.get('category_name')
-        slug = request.POST.get('slug')
-        description = request.POST.get('description')
+        name = request.POST.get('category_name', '').strip()
+        slug = request.POST.get('slug', '').strip()
+        description = request.POST.get('description', '').strip()
         cat_image = request.FILES.get('cat_image')
         parent_id = request.POST.get('parent')
-        parent = Category.objects.get(id=parent_id) if parent_id else None
+        
+        # Validate required fields
+        if not name:
+            messages.error(request, 'Category name is required.')
+            return redirect('admin_category_create')
+        
+        parent = get_object_or_404(Category, id=parent_id) if parent_id else None
         is_active = request.POST.get('is_active') == 'on'
-
 
         Category.objects.create(
             category_name=name,
@@ -101,8 +106,8 @@ class CategoryCreateView(View):
             cat_image=cat_image,
             parent=parent,
             is_active=is_active
-            
         )
+        messages.success(request, f'Category "{name}" created successfully!')
         return redirect('admin_category_list')
 
 
@@ -117,15 +122,24 @@ class CategoryUpdateView(View):
 
     def post(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
-        category.category_name = request.POST.get('category_name')
-        category.slug = request.POST.get('slug')
-        category.description = request.POST.get('description')
-        category.parent_id = request.POST.get('parent') or None
+        name = request.POST.get('category_name', '').strip()
+        
+        # Validate required fields
+        if not name:
+            messages.error(request, 'Category name is required.')
+            return redirect('admin_category_update', pk=pk)
+        
+        category.category_name = name
+        category.slug = request.POST.get('slug', '').strip()
+        category.description = request.POST.get('description', '').strip()
+        parent_id = request.POST.get('parent')
+        category.parent = get_object_or_404(Category, id=parent_id) if parent_id else None
 
         if 'cat_image' in request.FILES:
             category.cat_image = request.FILES['cat_image']
 
         category.save()
+        messages.success(request, f'Category "{name}" updated successfully!')
         return redirect('admin_category_list')
 
 

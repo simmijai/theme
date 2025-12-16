@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
 from django.db.models import Q
@@ -93,13 +93,13 @@ def product_create(request):
     return render(request, 'admin_theme/products/product_create.html', {'form': form, 'image_form': image_form})
 
 def product_delete(request, pk):
-    product = Product.objects.get(pk=pk)
+    product = get_object_or_404(Product, pk=pk)
     product.delete()
     messages.success(request, f'Product "{product.name}" deleted successfully!')
     return redirect('admin_product_list')
 
 def product_edit(request, pk):
-    product = Product.objects.get(pk=pk)
+    product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)
         image_form = ProductImageForm(request.POST, request.FILES)
@@ -126,7 +126,7 @@ def product_edit(request, pk):
 
 
 def product_image_delete(request, pk):
-    img = ProductImage.objects.get(pk=pk)
+    img = get_object_or_404(ProductImage, pk=pk)
     product_id = img.product.id
     img.delete()
     messages.success(request, "Image deleted successfully!")

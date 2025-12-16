@@ -57,13 +57,19 @@ from django.views.decorators.http import require_POST
 @require_POST
 def update_order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    new_status = request.POST.get('status')
-    if new_status in dict(Order.STATUS_CHOICES).keys():
+    new_status = request.POST.get('status', '').strip()
+    
+    # Validate status against allowed choices
+    valid_statuses = [choice[0] for choice in Order.STATUS_CHOICES]
+    if new_status in valid_statuses:
         order.status = new_status
         order.save()
-    # redirect back to the same page if coming from detail
-    next_url = request.META.get('HTTP_REFERER', 'admin_order_list')
-    return redirect(next_url)
+    
+    # Safely redirect back
+    next_url = request.META.get('HTTP_REFERER')
+    if next_url and next_url.startswith(request.build_absolute_uri('/')):
+        return redirect(next_url)
+    return redirect('admin_order_list')
 
 
 def order_detail(request, order_id):
