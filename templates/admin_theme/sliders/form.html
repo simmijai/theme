@@ -4,6 +4,20 @@
 {% block content %}
 <main class="nxl-container">
     <div class="nxl-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-left d-flex align-items-center">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">{{ title }}</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'admin_slider_list' %}">Sliders</a></li>
+                    <li class="breadcrumb-item">{% if 'Edit' in title %}Edit{% else %}Create{% endif %}</li>
+                </ul>
+            </div>
+        </div>
+
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-8 mx-auto">

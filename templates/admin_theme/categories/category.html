@@ -4,6 +4,28 @@
 {% block content %}
 <main class="nxl-container">
     <div class="nxl-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-left d-flex align-items-center">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Categories Management</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+                    <li class="breadcrumb-item">Categories</li>
+                </ul>
+            </div>
+            <div class="page-header-right ms-auto">
+                <div class="page-header-right-items">
+                    <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+                        <a href="{% url 'admin_category_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Add Category
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12">
@@ -22,15 +44,17 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <button type="submit" class="btn btn-primary">Filter</button>
-                                    <a href="?" class="btn btn-outline-secondary">Clear</a>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                        <a href="?" class="btn btn-outline-secondary">Clear</a>
+                                    </div>
                                 </div>
                             </form>
                         </div>
                         
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover" id="categoryList">
+                                <table class="table table-hover mb-0" id="categoryList">
                                     <thead>
                                         <tr>
                                             <th>S.No.</th>

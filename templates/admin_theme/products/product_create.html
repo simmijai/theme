@@ -4,12 +4,26 @@
 {% block content %}
 <main class="nxl-container">
     <div class="nxl-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-left d-flex align-items-center">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">{% if action %}{{ action }}{% else %}Add{% endif %} Product</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'admin_product_list' %}">Products</a></li>
+                    <li class="breadcrumb-item">{% if action %}{{ action }}{% else %}Add{% endif %}</li>
+                </ul>
+            </div>
+        </div>
+
         <div class="main-content">
             <div class="row justify-content-center">
                 <div class="col-xl-8">
                     <div class="card stretch stretch-full">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">{{ action }} Product</h5>
+                            <h5 class="card-title mb-0">{% if action %}{{ action }}{% else %}Add New{% endif %} Product</h5>
                         </div>
                         <div class="card-body">
                             <form method="POST" enctype="multipart/form-data">

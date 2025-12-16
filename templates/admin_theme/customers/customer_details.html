@@ -4,24 +4,33 @@
 {% block content %}
 <main class="nxl-container">
     <div class="nxl-content">
-        <div class="main-content">
-            
-            <!-- Header with Back Button -->
-            <div class="row mb-3">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4><i class="bi bi-person-circle"></i> {{ customer.first_name }} {{ customer.last_name }}</h4>
-                        <div>
-                            <button class="btn btn-warning me-2" onclick="alert('Customer edit functionality coming soon!')">
-                                <i class="bi bi-pencil-square"></i> Edit
-                            </button>
-                            <a href="{% url 'admin_customer_list' %}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Back to List
-                            </a>
-                        </div>
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-left d-flex align-items-center">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Customer Details</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'admin_customer_list' %}">Customers</a></li>
+                    <li class="breadcrumb-item">{{ customer.first_name }} {{ customer.last_name }}</li>
+                </ul>
+            </div>
+            <div class="page-header-right ms-auto">
+                <div class="page-header-right-items">
+                    <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+                        <button class="btn btn-warning" onclick="alert('Customer edit functionality coming soon!')">
+                            <i class="bi bi-pencil-square me-2"></i>Edit Customer
+                        </button>
+                        <a href="{% url 'admin_customer_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Back to List
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="main-content">
             
             <div class="row">
                 

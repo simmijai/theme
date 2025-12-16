@@ -4,6 +4,19 @@
 {% block content %}
 <main class="nxl-container">
     <div class="nxl-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-left d-flex align-items-center">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Orders Management</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+                    <li class="breadcrumb-item">Orders</li>
+                </ul>
+            </div>
+        </div>
+
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12">
@@ -35,8 +48,10 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <button type="submit" class="btn btn-primary">Filter</button>
-                                    <a href="?" class="btn btn-outline-secondary">Clear</a>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                        <a href="?" class="btn btn-outline-secondary">Clear</a>
+                                    </div>
                                 </div>
                             </form>
                         </div>

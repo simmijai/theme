@@ -1,0 +1,27 @@
+<!-- Page Header Component -->
+<div class="page-header">
+    <div class="page-header-left d-flex align-items-center">
+        <div class="page-header-title">
+            <h5 class="m-b-10">{{ page_title }}</h5>
+        </div>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+            {% for crumb in breadcrumbs %}
+                {% if crumb.url %}
+                    <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+                {% else %}
+                    <li class="breadcrumb-item">{{ crumb.name }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% if header_actions %}
+    <div class="page-header-right ms-auto">
+        <div class="page-header-right-items">
+            <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+                {{ header_actions|safe }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

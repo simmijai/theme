@@ -4,11 +4,28 @@
 {% block content %}
  <main class="nxl-container">
         <div class="nxl-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-left d-flex align-items-center">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">{% if category %}Edit Category{% else %}Add Category{% endif %}</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'admin_category_list' %}">Categories</a></li>
+                        <li class="breadcrumb-item">{% if category %}Edit{% else %}Add{% endif %}</li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- [ Main Content ] start -->
             <div class="main-content">
                 <div class="row">
-                    <div class="col-xl-6">
+                    <div class="col-xl-8">
                         <div class="card stretch stretch-full">
+                            <div class="card-header">
+                                <h5 class="card-title">{% if category %}Edit Category{% else %}Add New Category{% endif %}</h5>
+                            </div>
                             <div class="card-body">
                               <form method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}

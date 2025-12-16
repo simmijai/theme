@@ -115,7 +115,7 @@
                         {% comment %} <ul class="nxl-submenu">
                             <li class="nxl-item"><a class="nxl-link" href="{% url 'customer_details' %}">Customers Details</a></li>
                             </li>
-                        </ul>
+                        </ul> {% endcomment %}
                         
                     </li>
                     <li class="nxl-item nxl-hasmenu">
@@ -162,12 +162,23 @@
                     </li>
 
 
+
+                    <li class="nxl-item nxl-hasmenu">
+                    <a class="nxl-link" href="javascript:void(0);">
+                        <span class="nxl-micon"><i class="feather-briefcase"></i></span>
+                        <span class="nxl-mtext">Logout</span>
+                        <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                    </a>
+
                     <ul class="nxl-submenu">
                         <li class="nxl-item">
                             <a class="nxl-link" href="{% url 'admin_logout' %}">Logout</a>
                         </li>
                     </ul>
                     </li>
+
+
+        
 
 
                     {% comment %} <li class="nxl-item nxl-hasmenu">
