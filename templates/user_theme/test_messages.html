@@ -1,0 +1,134 @@
+{% extends 'user_theme/base.html' %}
+
+{% block title %}Test Messages - Belle E-commerce{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h2>Message System Test Page</h2>
+            <p>Click the buttons below to test different message types:</p>
+            
+            <!-- Test Buttons -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h4>SweetAlert Messages</h4>
+                    <button class="btn btn-success mb-2" onclick="testSuccessMessage()">Test Success Message</button><br>
+                    <button class="btn btn-danger mb-2" onclick="testErrorMessage()">Test Error Message</button><br>
+                    <button class="btn btn-warning mb-2" onclick="testWarningMessage()">Test Warning Message</button><br>
+                    <button class="btn btn-info mb-2" onclick="testInfoMessage()">Test Info Message</button><br>
+                    <button class="btn btn-secondary mb-2" onclick="testConfirmation()">Test Confirmation</button><br>
+                    <button class="btn btn-primary mb-2" onclick="testLoading()">Test Loading</button>
+                </div>
+                
+                <div class="col-md-6">
+                    <h4>Toast Notifications</h4>
+                    <button class="btn btn-success mb-2" onclick="testSuccessToast()">Test Success Toast</button><br>
+                    <button class="btn btn-danger mb-2" onclick="testErrorToast()">Test Error Toast</button><br>
+                    <button class="btn btn-warning mb-2" onclick="testWarningToast()">Test Warning Toast</button><br>
+                    <button class="btn btn-info mb-2" onclick="testInfoToast()">Test Info Toast</button><br>
+                </div>
+            </div>
+            
+            <!-- AJAX Test Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h4>AJAX Response Test</h4>
+                    <button class="btn btn-primary" onclick="testAjaxSuccess()">Test AJAX Success</button>
+                    <button class="btn btn-danger" onclick="testAjaxError()">Test AJAX Error</button>
+                </div>
+            </div>
+            
+            <!-- Wishlist Test -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h4>Wishlist Popup Test</h4>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="wishlist add-to-wishlist btn btn-outline-danger" data-id="1">
+                            <i class="icon anm anm-heart-l"></i> Add to Wishlist
+                        </a>
+                        <button class="btn btn-info" onclick="testPopupMessage(this)">Test Popup Message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Test Functions
+function testSuccessMessage() {
+    MessageSystem.showMessage('success', 'This is a success message!');
+}
+
+function testErrorMessage() {
+    MessageSystem.showMessage('error', 'This is an error message!');
+}
+
+function testWarningMessage() {
+    MessageSystem.showMessage('warning', 'This is a warning message!');
+}
+
+function testInfoMessage() {
+    MessageSystem.showMessage('info', 'This is an info message!');
+}
+
+function testConfirmation() {
+    MessageSystem.showConfirmation('Test Confirmation', 'Do you want to proceed?')
+        .then((result) => {
+            if (result.isConfirmed) {
+                MessageSystem.showMessage('success', 'You confirmed!');
+            } else {
+                MessageSystem.showMessage('info', 'You cancelled!');
+            }
+        });
+}
+
+function testLoading() {
+    MessageSystem.showLoading('Processing your request...');
+    setTimeout(() => {
+        Swal.close();
+        MessageSystem.showMessage('success', 'Loading complete!');
+    }, 3000);
+}
+
+function testSuccessToast() {
+    MessageSystem.showToast('success', 'Success toast notification!');
+}
+
+function testErrorToast() {
+    MessageSystem.showToast('error', 'Error toast notification!');
+}
+
+function testWarningToast() {
+    MessageSystem.showToast('warning', 'Warning toast notification!');
+}
+
+function testInfoToast() {
+    MessageSystem.showToast('info', 'Info toast notification!');
+}
+
+function testAjaxSuccess() {
+    const mockResponse = {
+        success: true,
+        message: 'AJAX request completed successfully!'
+    };
+    MessageSystem.handleAjaxResponse(mockResponse, { useToast: true });
+}
+
+function testAjaxError() {
+    const mockError = new Error('Network error occurred');
+    MessageSystem.handleAjaxError(mockError, 'Custom error message for testing');
+}
+
+function testPopupMessage(button) {
+    showAjaxMessage('success', 'This is a popup message!', button);
+}
+
+// Test console logging
+console.log('Message System Test Page Loaded');
+console.log('MessageSystem available:', typeof MessageSystem !== 'undefined');
+console.log('showMessage function available:', typeof showMessage !== 'undefined');
+console.log('showToast function available:', typeof showToast !== 'undefined');
+</script>
+{% endblock %}

@@ -27,8 +27,14 @@ def add_to_cart(request, product_id):
         
         # Check stock availability
         if quantity > product.stock:
-            messages.error(request, f'Only {product.stock} items available in stock.')
-            return redirect('cart_view')
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False, 
+                    'message': f'Only {product.stock} items available in stock.'
+                })
+            else:
+                messages.error(request, f'Only {product.stock} items available in stock.')
+                return redirect('cart_view')
         
         cart_item, created = CartItem.objects.get_or_create(
             user=request.user,
@@ -39,23 +45,42 @@ def add_to_cart(request, product_id):
         if not created:
             new_quantity = cart_item.quantity + quantity
             if new_quantity > product.stock:
-                messages.error(request, f'Cannot add more. Only {product.stock} items available.')
-                return redirect('cart_view')
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False, 
+                        'message': f'Cannot add more. Only {product.stock} items available.'
+                    })
+                else:
+                    messages.error(request, f'Cannot add more. Only {product.stock} items available.')
+                    return redirect('cart_view')
             cart_item.quantity = new_quantity
             cart_item.save()
             
         Wishlist.objects.filter(user=request.user, product=product).delete()
 
 
-        messages.success(request, f"'{product.name}' added to your cart.")
-        return redirect('cart_view')
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True, 
+                'message': f"'{product.name}' added to your cart.",
+                'cart_count': CartItem.objects.filter(user=request.user).count()
+            })
+        else:
+            messages.success(request, f"'{product.name}' added to your cart.")
+            return redirect('cart_view')
     
     except ValueError:
-        messages.error(request, 'Invalid quantity provided.')
-        return redirect('cart_view')
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'Invalid quantity provided.'})
+        else:
+            messages.error(request, 'Invalid quantity provided.')
+            return redirect('cart_view')
     except Exception as e:
-        messages.error(request, f'Error adding item to cart: {str(e)}')
-        return redirect('cart_view')
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': f'Error adding item to cart: {str(e)}'})
+        else:
+            messages.error(request, f'Error adding item to cart: {str(e)}')
+            return redirect('cart_view')
 
 
 @login_required

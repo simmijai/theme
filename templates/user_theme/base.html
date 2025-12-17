@@ -15,28 +15,8 @@
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-    <style>
-        /* Popup near-button messages for AJAX wishlist */
-        .ajax-popup {
-            position: absolute;
-            z-index: 2050;
-            background: #fff;
-            color: #212529;
-            border: 1px solid rgba(0,0,0,0.08);
-            padding: 6px 10px;
-            border-radius: 6px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            white-space: nowrap;
-            font-size: 13px;
-            opacity: 1;
-            transition: opacity 0.25s ease, transform 0.18s ease;
-            transform: translateY(0);
-        }
-        .ajax-popup.fade {
-            opacity: 0;
-            transform: translateY(-6px);
-        }
-    </style>
+  <link rel="stylesheet" href="{% static 'css/message-system.css' %}">
+
 </head>
 
 
@@ -54,8 +34,8 @@
                 {% endfor %}
             </div>
             {% endif %} {% endcomment %}
-            <!-- Container for AJAX-inserted messages (used by client-side handlers) -->
-            <div id="ajax-messages" class="container mt-3" aria-live="polite" aria-atomic="true"></div>
+            <!-- Enhanced Message Display -->
+            {% include 'user_theme/includes/message_display.html' %}
       {% block content %}{% endblock %}
       {% include 'user_theme/includes/footer.html' %}
   </div>
@@ -70,7 +50,8 @@
 
   <script src="{% static 'js/plugins.js' %}"></script>
   <script src="{% static 'js/main.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="{% static 'js/message-system.js' %}"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -131,94 +112,109 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 <script>
-// Global handler for wishlist clicks: perform AJAX add/remove so page doesn't reload or jump to top.
+// Enhanced wishlist handler with better error handling and UX
 document.addEventListener('click', function (e) {
     const btn = e.target.closest('.wishlist.add-to-wishlist');
     if (!btn) return;
     e.preventDefault();
 
-    // Determine URL to call
     const url = btn.getAttribute('href');
     if (!url) return;
 
-    // Send AJAX request and expect JSON (view respects X-Requested-With header)
-    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.success) {
-                showAjaxMessage('success', data.message || 'Added to wishlist', btn);
-                // Optionally toggle a visual state on the heart
-                btn.classList.add('active');
-            } else {
-                showAjaxMessage('info', data.message || 'Already in wishlist', btn);
-            }
-        })
-        .catch(err => {
-            console.error('Wishlist AJAX error', err);
-            showAjaxMessage('danger', 'Could not update wishlist.', btn);
-        });
+    // Show loading state
+    const originalIcon = btn.innerHTML;
+    btn.innerHTML = '<i class="loading-spinner"></i>';
+    btn.disabled = true;
+
+    fetch(url, { 
+        headers: { 
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+        } 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Restore button state
+        btn.innerHTML = originalIcon;
+        btn.disabled = false;
+
+        if (data && data.success) {
+            showAjaxMessage('success', data.message || 'Added to wishlist', btn);
+            btn.classList.add('active');
+            // Update wishlist count if element exists
+            updateWishlistCount(1);
+        } else {
+            showAjaxMessage('info', data.message || 'Already in wishlist', btn);
+        }
+    })
+    .catch(err => {
+        console.error('Wishlist AJAX error', err);
+        btn.innerHTML = originalIcon;
+        btn.disabled = false;
+        showMessage('error', 'Could not update wishlist. Please try again.');
+    });
 });
 
 function showAjaxMessage(level, text, anchorEl) {
-    // If an anchor element was provided, show a small popup near it.
+    // Enhanced popup with better positioning and styling
     if (anchorEl && anchorEl.getBoundingClientRect) {
         const rect = anchorEl.getBoundingClientRect();
         const popup = document.createElement('div');
-        popup.className = 'ajax-popup';
+        popup.className = `ajax-popup ${level} message-fade-in`;
         popup.textContent = text;
-
-        // Color by level
-        if (level === 'success') popup.style.borderColor = 'rgba(40,167,69,0.2)';
-        if (level === 'danger') popup.style.borderColor = 'rgba(220,53,69,0.2)';
+        popup.setAttribute('role', 'alert');
+        popup.setAttribute('aria-live', 'polite');
 
         document.body.appendChild(popup);
 
-        // Position: try top-right of anchor
-        const offset = 8; // px
-        // Measure after append so popup.offsetWidth/Height are available
+        // Enhanced positioning logic
+        const offset = 12;
         const pw = popup.offsetWidth;
         const ph = popup.offsetHeight;
-        let left = rect.right + window.scrollX - pw;
-        let top = rect.top + window.scrollY - ph - offset;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        
+        let left = rect.left + (rect.width / 2) - (pw / 2) + window.scrollX;
+        let top = rect.top - ph - offset + window.scrollY;
 
-        // If not enough space above, place below
-        if (top < window.scrollY + 8) {
-            top = rect.bottom + window.scrollY + offset;
+        // Adjust if popup goes off screen
+        if (left < 10) left = 10;
+        if (left + pw > vw - 10) left = vw - pw - 10;
+        if (top < window.scrollY + 10) {
+            top = rect.bottom + offset + window.scrollY;
         }
-
-        // If popup is going off left edge, align to left of anchor
-        if (left < 8) {
-            left = rect.left + window.scrollX;
-        }
-
-        // If popup goes beyond right edge, nudge left
-        const vw = document.documentElement.clientWidth;
-        if (left + pw > vw - 8) left = vw - pw - 8 + window.scrollX;
 
         popup.style.left = `${left}px`;
         popup.style.top = `${top}px`;
 
-        // Auto-dismiss
+        // Enhanced auto-dismiss with animation
         setTimeout(() => {
-            popup.classList.add('fade');
-            setTimeout(() => popup.remove(), 250);
-        }, 3500);
+            popup.classList.remove('message-fade-in');
+            popup.classList.add('message-fade-out');
+            setTimeout(() => {
+                if (popup.parentNode) popup.parentNode.removeChild(popup);
+            }, 300);
+        }, 4000);
 
         return;
     }
 
-    // Fallback: insert into ajax-messages container
-    const container = document.getElementById('ajax-messages') || document.body;
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${level}`;
-    alert.setAttribute('role', 'alert');
-    alert.textContent = text;
-    container.prepend(alert);
-    // Auto-dismiss after 3.5s
-    setTimeout(() => {
-        alert.classList.add('fade');
-        setTimeout(() => alert.remove(), 300);
-    }, 3500);
+    // Fallback to simple message
+    showMessage(level, text);
+}
+
+// Helper function to update wishlist count
+function updateWishlistCount(change) {
+    const countEl = document.querySelector('.wishlist-count, .cart-count');
+    if (countEl) {
+        const current = parseInt(countEl.textContent) || 0;
+        countEl.textContent = Math.max(0, current + change);
+    }
 }
 </script>
 
@@ -227,13 +223,7 @@ function showAjaxMessage(level, text, anchorEl) {
 document.addEventListener("DOMContentLoaded", function () {
     {% if messages %}
         {% for message in messages %}
-            Swal.fire({
-                icon: "{{ message.tags }}",
-                title: "{{ message }}",
-                timer: 2500,
-                showConfirmButton: false,
-                position: "center"
-            });
+            showMessage("{{ message.tags }}", "{{ message|escapejs }}");
         {% endfor %}
     {% endif %}
 });
