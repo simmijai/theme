@@ -15,7 +15,7 @@
                     </li>
                     <li class="nxl-item nxl-hasmenu">
                         <a href="{% url 'admin_dashboard' %}" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-airplay"></i></span>
+                            <span class="nxl-micon"><i class="feather-home"></i></span>
                             <span class="nxl-mtext">Dashboards</span>
                             {% comment %} <span class="nxl-arrow"><i
                                     class="feather-chevron-right"></i></span> {% endcomment %}
@@ -25,7 +25,7 @@
                             <li class="nxl-item"><a class="nxl-link" href="analytics.html">Analytics</a></li>
                         </ul> {% endcomment %}
                     </li>
-                    <li class="nxl-item nxl-hasmenu">
+                    {% comment %} <li class="nxl-item nxl-hasmenu">
                         <a href="javascript:void(0);" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-cast"></i></span>
                             <span class="nxl-mtext">Reports</span><span class="nxl-arrow"><i
@@ -36,7 +36,7 @@
                             <li class="nxl-item"><a class="nxl-link" href="reports-leads.html">Product Report</a></li>
                             <li class="nxl-item"><a class="nxl-link" href="reports-project.html">Customer Report</a></li>
                         </ul>
-                    </li>
+                    </li> {% endcomment %}
                     {% comment %} <li class="nxl-item nxl-hasmenu">
                         <a href="javascript:void(0);" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-send"></i></span>
@@ -54,7 +54,7 @@
                     </li> {% endcomment %}
                     <li class="nxl-item nxl-hasmenu">
                         <a href="javascript:void(0);" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-at-sign"></i></span>
+                            <span class="nxl-micon"><i class="feather-box"></i></span>
                             <span class="nxl-mtext">Products</span><span class="nxl-arrow"><i
                                     class="feather-chevron-right"></i></span>
                         </a>
@@ -67,7 +67,7 @@
 
                     <li class="nxl-item nxl-hasmenu">
                         <a href="javascript:void(0);" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-dollar-sign"></i></span>
+                            <span class="nxl-micon"><i class="feather-layers"></i></span>
                             <span class="nxl-mtext">Category</span><span class="nxl-arrow"><i
                                     class="feather-chevron-right"></i></span>
                         </a>
@@ -120,13 +120,13 @@
                     </li>
                     <li class="nxl-item nxl-hasmenu">
                         <a href="javascript:void(0);" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-briefcase"></i></span>
+                            <span class="nxl-micon"><i class="feather-shopping-cart"></i></span>
                             <span class="nxl-mtext">Orders</span><span class="nxl-arrow"><i
                                     class="feather-chevron-right"></i></span>
                         </a>
                         <ul class="nxl-submenu">
                             <li class="nxl-item"><a class="nxl-link" href="{% url 'admin_order_list' %}">Orders List</a></li>
-                            <li class="nxl-item"><a class="nxl-link" href="projects-view.html">Completed Orders</a></li>
+                            {% comment %} <li class="nxl-item"><a class="nxl-link" href="projects-view.html">Completed Orders</a></li> {% endcomment %}
                             {% comment %} <li class="nxl-item"><a class="nxl-link" href="projects-create.html">Projects Create</a>
                             </li> {% endcomment %}
                         </ul>
@@ -135,7 +135,7 @@
 
                     <li class="nxl-item nxl-hasmenu">
                         <a href="javascript:void(0);" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-briefcase"></i></span>
+                            <span class="nxl-micon"><i class="feather-image"></i></span>
                             <span class="nxl-mtext">Silders</span><span class="nxl-arrow"><i
                                     class="feather-chevron-right"></i></span>
                         </a>
@@ -149,7 +149,7 @@
 
                      <li class="nxl-item nxl-hasmenu">
                     <a class="nxl-link" href="javascript:void(0);">
-                        <span class="nxl-micon"><i class="feather-briefcase"></i></span>
+                        <span class="nxl-micon"><i class="feather-star"></i></span>
                         <span class="nxl-mtext">Reviews</span>
                         <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
                     </a>
@@ -163,19 +163,7 @@
 
 
 
-                    <li class="nxl-item nxl-hasmenu">
-                    <a class="nxl-link" href="javascript:void(0);">
-                        <span class="nxl-micon"><i class="feather-briefcase"></i></span>
-                        <span class="nxl-mtext">Logout</span>
-                        <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
-                    </a>
 
-                    <ul class="nxl-submenu">
-                        <li class="nxl-item">
-                            <a class="nxl-link" href="{% url 'admin_logout' %}">Logout</a>
-                        </li>
-                    </ul>
-                    </li>
 
 
         

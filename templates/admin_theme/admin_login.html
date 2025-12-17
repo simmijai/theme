@@ -1,48 +1,164 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Feather Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+        .login-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .login-body {
+            padding: 2.5rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+        .input-group-text {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+        }
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+    </style>
 </head>
 <body>
-    <h2>Admin Login</h2>
-    
-    {% if form.non_field_errors %}
-        <div class="alert alert-danger">
-            {% for error in form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
-        </div>
-    {% endif %}
-    
-    <form method="POST">
-        {% csrf_token %}
-        
-        <div class="mb-3">
-            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}:</label>
-            {{ form.email }}
-            {% if form.email.errors %}
-                <div class="text-danger small">
-                    {% for error in form.email.errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+    <div class="login-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="login-card">
+                        <div class="login-header">
+                            <div class="mb-3">
+                                <i data-feather="shield" class="" style="width: 48px; height: 48px;"></i>
+                            </div>
+                            <h3 class="mb-1">Admin Portal</h3>
+                            <p class="mb-0 opacity-75">Sign in to your dashboard</p>
+                        </div>
+                        
+                        <div class="login-body">
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger mb-4">
+                                    <i data-feather="alert-circle" class="me-2" style="width: 16px; height: 16px;"></i>
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            
+                            <form method="POST">
+                                {% csrf_token %}
+                                
+                                <div class="mb-4">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold text-dark">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i data-feather="mail" style="width: 16px; height: 16px;"></i>
+                                        </span>
+                                        <input type="email" class="form-control" id="{{ form.email.id_for_label }}" name="{{ form.email.name }}" placeholder="Enter your email" required>
+                                    </div>
+                                    {% if form.email.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.email.errors %}
+                                                <i data-feather="alert-triangle" style="width: 12px; height: 12px;"></i> {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
 
-        <div class="mb-3">
-            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}:</label>
-            {{ form.password }}
-            {% if form.password.errors %}
-                <div class="text-danger small">
-                    {% for error in form.password.errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+                                <div class="mb-4">
+                                    <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold text-dark">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i data-feather="lock" style="width: 16px; height: 16px;"></i>
+                                        </span>
+                                        <input type="password" class="form-control" id="{{ form.password.id_for_label }}" name="{{ form.password.name }}" placeholder="Enter your password" required>
+                                    </div>
+                                    {% if form.password.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.password.errors %}
+                                                <i data-feather="alert-triangle" style="width: 12px; height: 12px;"></i> {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
 
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-login">
+                                        <i data-feather="log-in" class="me-2" style="width: 16px; height: 16px;"></i>
+                                        Sign In
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
 </body>
 </html>
