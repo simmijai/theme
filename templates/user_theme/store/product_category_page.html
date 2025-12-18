@@ -10,7 +10,7 @@
     	<div class="collection-header">
 			<div class="collection-hero">
         		<div class="collection-hero__image">
-                    {% comment %} <img class="blur-up lazyload" data-src="{% static 'images/cat-women.jpg' %}" src="{% static 'images/cat-women.jpg' %}" alt="Women" title="Women" /> {% endcomment %}
+                    {% comment %} <img class="blur-up lazyload" data-src="{% static 'user_theme/images/cat-women.jpg' %}" src="{% static 'user_theme/images/cat-women.jpg' %}" alt="Women" title="Women" /> {% endcomment %}
                 {% if category.cat_image %}
         <img class="blur-up lazyload"
              src="{{ category.cat_image.url }}"
@@ -18,7 +18,7 @@
              title="{{ category.category_name }}">
     {% else %}
         <img class="blur-up lazyload"
-             src="{% static 'images/no-image.png' %}"
+             src="{% static 'user_theme/images/no-image.png' %}"
              alt="No Image">
     {% endif %}
                 </div>
@@ -61,7 +61,7 @@
                                 <img src="{{ subcat.cat_image.url }}" alt="{{ subcat.category_name }}"
                                      class="img-fluid w-100 h-100" style="object-fit:cover;">
                             {% else %}
-                                <img src="{% static 'images/no-image.png' %}" alt="No Image"
+                                <img src="{% static 'user_theme/images/no-image.png' %}" alt="No Image"
                                      class="img-fluid w-100 h-100" style="object-fit:cover;">
                             {% endif %}
                         </div>
