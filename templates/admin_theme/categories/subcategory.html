@@ -55,8 +55,11 @@
                                                     <a href="{% url 'admin_category_update' sub.id %}" class="btn btn-sm btn-outline-primary" title="Edit Subcategory">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Delete Subcategory" onclick="deleteSubcategory('{{ sub.id }}', '{{ sub.category_name }}')">
-                                                        <i class="bi bi-trash3"></i>
+                                                    <button type="button" 
+                                                    class="delete-subcategory-btn btn btn-sm btn-outline-danger"
+                                                    title="Delete Subcategory" 
+                                                    data-url="{% url 'admin_category_delete' sub.id %}"
+                                                    data-name="{{ sub.category_name }}">                                                        <i class="bi bi-trash3"></i>
                                                     </button>
                                                 </div>
                                             </td>
@@ -123,24 +126,9 @@
         </div>
 </main>
 
-<script>
-function deleteSubcategory(subcategoryId, subcategoryName) {
-    if (confirm(`Are you sure you want to delete '${subcategoryName}'?\n\nThis will also delete all products in this subcategory.\n\nThis action cannot be undone.`)) {
-        // Create and submit form
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/admin_panel/category/delete/${subcategoryId}/`;
-        
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = 'csrfmiddlewaretoken';
-        csrfInput.value = csrfToken;
-        
-        form.appendChild(csrfInput);
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-</script>
+
+{% block extra_scripts %}
+<script type="module" src="{% static 'js/admin_theme/subcategory.js' %}"></script>
+{% endblock %}
+
 {% endblock %}

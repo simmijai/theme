@@ -113,9 +113,13 @@
                                                         <a href="{% url 'admin_category_update' category.id %}" class="btn btn-sm btn-outline-primary" title="Edit Category">
                                                             <i class="bi bi-pencil-square"></i>
                                                         </a>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger" title="Delete Category" onclick="deleteCategory('{{ category.id }}', '{{ category.category_name }}')">
-                                                            <i class="bi bi-trash3"></i>
-                                                        </button>
+                                                        <button
+  class="btn btn-sm btn-outline-danger delete-category-btn"
+  data-url="{% url 'admin_category_delete' category.id %}"
+  data-name="{{ category.category_name }}"
+>
+  <i class="bi bi-trash3"></i>
+</button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -203,24 +207,6 @@
         </div>
 </main>
 
-<script>
-function deleteCategory(categoryId, categoryName) {
-    if (confirm(`Are you sure you want to delete '${categoryName}'?\n\nThis will also delete all subcategories and products in this category.\n\nThis action cannot be undone.`)) {
-        // Create and submit form
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/admin_panel/category/delete/${categoryId}/`;
-        
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = 'csrfmiddlewaretoken';
-        csrfInput.value = csrfToken;
-        
-        form.appendChild(csrfInput);
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-</script>
+<script type="module" src="{% static 'js/admin_theme/categories.js' %}"></script>
+
 {% endblock %}
