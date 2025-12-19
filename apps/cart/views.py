@@ -88,14 +88,12 @@ def cart_view(request):
     """Display all cart items of logged-in user"""
     cart_items = CartItem.objects.filter(user=request.user)
     total_price = sum(item.total_price() for item in cart_items)
-    shipping_cost = 50  # same as in payment_page
-    grand_total = total_price + shipping_cost
+    grand_total = total_price
     
 
     context = {
         'cart_items': cart_items,
         'total_price': total_price,
-        'shipping_cost': shipping_cost,
         'grand_total': grand_total,
     }
     return render(request, 'user_theme/store/cart2.html', context)

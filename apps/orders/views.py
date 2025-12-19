@@ -18,7 +18,6 @@ def checkout(request):
         return redirect('cart_view')
     
     total_price = sum(item.total_price() for item in cart_items)
-    shipping_cost = 50
 
     addresses = Address.objects.filter(user=user)
 
@@ -70,8 +69,7 @@ def checkout(request):
         "addresses": addresses,
         "form": form,
         "cart_items": cart_items,
-        "shipping_cost": shipping_cost,
-        "total_price": total_price + shipping_cost,
+        "total_price": total_price,
     })
 
 # @login_required
@@ -125,12 +123,10 @@ def payment_page(request):
         return redirect('cart_view')
     
     total_price = sum(item.total_price() for item in cart_items)
-    shipping_cost = 50
-    grand_total = total_price + shipping_cost
+    grand_total = total_price
     return render(request, 'user_theme/store/payment.html', {
         'cart_items': cart_items,
         'total_price': total_price,
-        'shipping_cost': shipping_cost,
         'grand_total': grand_total,
     })
 
@@ -147,7 +143,6 @@ def place_order(request):
             return redirect('cart_view')
         
         total_price = sum(item.total_price() for item in cart_items)
-        shipping_cost = 50
 
         # Get selected address from session or default
         selected_address_id = request.session.get('selected_address_id')
@@ -177,7 +172,7 @@ def place_order(request):
             shipping_country=address.country,
             shipping_postal_code=address.postal_code,
             shipping_landmark=address.near_by_landmark,
-            total_price=total_price + shipping_cost,
+            total_price=total_price,
             payment_method=payment_method,
             status="Pending"
         )
