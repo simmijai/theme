@@ -149,24 +149,4 @@
         </div>
     </div>
 </main>
-{% comment %} 
-<script>
-function deleteSlider(sliderId, sliderTitle) {
-    if (confirm(`Are you sure you want to delete '${sliderTitle}'?\n\nThis action cannot be undone.`)) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/admin_panel/sliders/delete/${sliderId}/`;
-        
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = 'csrfmiddlewaretoken';
-        csrfInput.value = csrfToken;
-        
-        form.appendChild(csrfInput);
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-</script> {% endcomment %}
 {% endblock %}

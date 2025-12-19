@@ -41,12 +41,17 @@ def add_to_wishlist(request, product_id):
 @login_required
 def remove_from_wishlist(request, product_id):
     """Remove a product from wishlist."""
-    Wishlist.objects.filter(user=request.user, product_id=product_id).delete()
+    wishlist_item = Wishlist.objects.filter(user=request.user, product_id=product_id)
+    deleted_count = wishlist_item.delete()[0]  # delete() returns tuple (count, dict)
 
     is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
     if is_ajax:
-        return JsonResponse({'success': True, 'message': 'Removed from wishlist'})
+        if deleted_count > 0:
+            return JsonResponse({'success': True, 'message': 'Removed from wishlist'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Item not found'})
     else:
         messages.success(request, 'Product removed from your wishlist.')
         redirect_to = request.META.get('HTTP_REFERER') or reverse('wishlist')
         return redirect(redirect_to)
+
