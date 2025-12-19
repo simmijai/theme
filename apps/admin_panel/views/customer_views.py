@@ -6,6 +6,7 @@ from django.db.models import Max, Count, Q
 from django.contrib import messages
 from apps.accounts.models import Account, Address
 from apps.orders.models import Order
+from apps.core.pagination import PaginationMixin
 
 from django.db.models import Subquery, OuterRef
 
@@ -15,11 +16,11 @@ class AdminRequiredMixin(UserPassesTestMixin):
 
 
 
-class AdminCustomerListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+class AdminCustomerListView(LoginRequiredMixin, AdminRequiredMixin, PaginationMixin, ListView):
     model = Account
     template_name = 'admin_theme/customers/customer_list.html'
     context_object_name = 'customers'
-    paginate_by = 25
+    paginate_by = 20
     
     def get_queryset(self):
         queryset = Account.objects.filter(role='customer').prefetch_related('addresses', 'order_set').annotate(

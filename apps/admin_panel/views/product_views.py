@@ -4,17 +4,18 @@ from django.views.generic import ListView
 from django.db.models import Q
 from apps.products.models import Product, ProductImage, Category
 from apps.admin_panel.forms import ProductForm, ProductImageForm
+from apps.core.pagination import PaginationMixin
 from django.contrib import messages
 
 class AdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff or self.request.user.is_superuser
 
-class AdminProductListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+class AdminProductListView(LoginRequiredMixin, AdminRequiredMixin, PaginationMixin, ListView):
     model = Product
     template_name = 'admin_theme/products/product.html'
     context_object_name = 'products'
-    paginate_by = 5
+    paginate_by = 10
     
     def get_queryset(self):
         queryset = Product.objects.prefetch_related('images', 'category').all()

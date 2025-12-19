@@ -42,16 +42,17 @@ from apps.admin_panel.forms import CategoryForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
 from django.contrib import messages
+from apps.core.pagination import PaginationMixin
 
 class AdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff or self.request.user.is_superuser
 
-class CategoryListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+class CategoryListView(LoginRequiredMixin, AdminRequiredMixin, PaginationMixin, ListView):
     model = Category
     template_name = 'admin_theme/categories/category.html'
     context_object_name = 'categories'
-    paginate_by = 3
+    paginate_by = 10
     
     def get_queryset(self):
         queryset = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')

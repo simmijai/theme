@@ -168,6 +168,11 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
 LOGOUT_REDIRECT_URL = 'home'
 
+# Pagination Settings
+DEFAULT_PAGE_SIZE = 10
+MAX_PAGE_SIZE = 100
+PAGINATE_ORPHANS = 3
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',  # ✅ CHANGE THIS

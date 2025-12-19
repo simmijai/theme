@@ -126,49 +126,7 @@
                             </div>
                             
                             <!-- Pagination -->
-                            {% if is_paginated %}
-                            <div class="card-footer">
-                                <nav aria-label="Product pagination">
-                                    <ul class="pagination justify-content-center mb-0">
-                                        {% if page_obj.has_previous %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page=1">First</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
-                                            </li>
-                                        {% endif %}
-                                        
-                                        {% for num in page_obj.paginator.page_range %}
-                                            {% if page_obj.number == num %}
-                                                <li class="page-item active">
-                                                    <span class="page-link">{{ num }}</span>
-                                                </li>
-                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                                <li class="page-item">
-                                                    <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page={{ num }}">{{ num }}</a>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                        
-                                        {% if page_obj.has_next %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if availability %}availability={{ availability }}&{% endif %}page={{ page_obj.paginator.num_pages }}">Last</a>
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                </nav>
-                                
-                                <div class="text-center mt-2">
-                                    <small class="text-muted">
-                                        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} products
-                                    </small>
-                                </div>
-                            </div>
-                            {% endif %}
+                            {% include 'admin_theme/components/pagination.html' %}
                             
                         </div>
                     </div>
@@ -178,23 +136,12 @@
     </div>
 </main>
 
-<script>
-function deleteProduct(productId, productName) {
-    if (confirm(`Are you sure you want to delete '${productName}'?\n\nThis action cannot be undone.`)) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/admin_panel/products/delete/${productId}/`;
-        
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = 'csrfmiddlewaretoken';
-        csrfInput.value = csrfToken;
-        
-        form.appendChild(csrfInput);
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
+
+<script type="module" src="{% static 'js/admin_theme/products.js' %}"></script>
+<script type="module">
+    import { deleteProduct } from '{% static "js/admin_theme/products.js" %}';
+
+    window.deleteProduct = deleteProduct;  // global function for onclick
 </script>
+
 {% endblock %}

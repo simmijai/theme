@@ -4,17 +4,18 @@ from django.views.generic import ListView
 from django.db.models import Q
 from django.contrib import messages
 from apps.orders.models import Order
+from apps.core.pagination import PaginationMixin
 from django.views.decorators.http import require_POST
 
 class AdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_authenticated and (self.request.user.is_staff or self.request.user.is_superuser or self.request.user.role == 'admin')
 
-class AdminOrderListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+class AdminOrderListView(LoginRequiredMixin, AdminRequiredMixin, PaginationMixin, ListView):
     model = Order
     template_name = 'admin_theme/orders/order_list.html'
     context_object_name = 'orders'
-    paginate_by = 5
+    paginate_by = 15
     
     def get_queryset(self):
         queryset = Order.objects.select_related('user').prefetch_related('items__product')
