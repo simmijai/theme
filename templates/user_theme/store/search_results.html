@@ -44,25 +44,7 @@
             </div>
 
             <!-- Pagination -->
-            {% if products.has_other_pages %}
-            <nav class="clearfix pagination-bottom">
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
-                        <div class="pagination">
-                            {% if products.has_previous %}
-                                <a href="?q={{ query }}&page={{ products.previous_page_number }}">&laquo; Previous</a>
-                            {% endif %}
-                            
-                            <span class="page-numbers current">{{ products.number }}</span>
-                            
-                            {% if products.has_next %}
-                                <a href="?q={{ query }}&page={{ products.next_page_number }}">Next &raquo;</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </nav>
-            {% endif %}
+            {% include 'user_theme/components/pagination.html' %}
         {% else %}
             <div class="text-center">
                 <h3>No products found</h3>

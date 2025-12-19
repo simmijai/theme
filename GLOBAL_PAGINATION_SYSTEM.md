@@ -72,12 +72,24 @@ def my_view(request):
 - **Customers** (`AdminCustomerListView`) - 20 items per page
 - **Orders** (`AdminOrderListView`) - 15 items per page
 
+### User Theme Views
+- **Product Categories** (`category_products`) - 12 items per page
+- **Product Subcategories** (`subcategory_products`) - 12 items per page
+- **Search Results** (`search_products_view`) - 12 items per page
+- **My Orders** (`my_orders`) - 10 items per page
+
 ### Template Updates
-All admin templates now use the global pagination component:
+**Admin Templates:**
 - `templates/admin_theme/products/product.html`
 - `templates/admin_theme/categories/category.html`
 - `templates/admin_theme/customers/customer_list.html`
 - `templates/admin_theme/orders/order_list.html`
+
+**User Templates:**
+- `templates/user_theme/store/product_category_page.html`
+- `templates/user_theme/store/product_subcategory.html`
+- `templates/user_theme/store/search_results.html`
+- `templates/user_theme/store/my_orders.html`
 
 ## Benefits
 

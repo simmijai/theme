@@ -204,18 +204,19 @@ def place_order(request):
 
 
 
-from django.core.paginator import Paginator
+from apps.core.pagination import GlobalPaginator
 
 @login_required
 def my_orders(request):
     orders = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
     
     # Add pagination
-    paginator = Paginator(orders, 10)  # 10 orders per page
-    page = request.GET.get('page')
-    orders = paginator.get_page(page)
+    pagination_data = GlobalPaginator.paginate(orders, request, 10)
     
-    return render(request, 'user_theme/store/my_orders.html', {'orders': orders})
+    return render(request, 'user_theme/store/my_orders.html', {
+        'orders': pagination_data['page_obj'].object_list,
+        **pagination_data
+    })
 
 
 

@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from .models import Category, Product
 from .search import search_products
+from apps.core.pagination import GlobalPaginator
 
 
 def category_products(request, slug):
@@ -20,12 +21,16 @@ def category_products(request, slug):
         products = Product.objects.filter(category__in=[category, *subcategories])
 
     categories = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
+    
+    # Add pagination
+    pagination_data = GlobalPaginator.paginate(products, request, 12)
 
     return render(request, 'user_theme/store/product_category_page.html', {
         'category': category,
         'categories': categories,
-        'products': products,
-        'selected_category': slug,  # use slug for active highlighting
+        'products': pagination_data['page_obj'].object_list,
+        'selected_category': slug,
+        **pagination_data
     })
 
 from django.shortcuts import render, get_object_or_404
@@ -57,12 +62,16 @@ def subcategory_products(request, slug):
         # products = products.annotate(sales_count=Sum('order_items__quantity')).order_by('-sales_count')
         pass  # replace with real logic if you have sales data
 
+    # Add pagination
+    pagination_data = GlobalPaginator.paginate(products, request, 12)
+
     context = {
         'subcategory': subcategory,
-        'products': products,
+        'products': pagination_data['page_obj'].object_list,
         'sort': sort,
         'product_count': products.count(),
-        'top_categories': Category.objects.filter(parent=None),  # for navbar/sidebar
+        'top_categories': Category.objects.filter(parent=None),
+        **pagination_data
     }
     
     return render(request, 'user_theme/store/product_subcategory.html', context)
@@ -168,12 +177,12 @@ def search_products_view(request):
     query = request.GET.get('q', '')
     products = search_products(query) if query else Product.objects.all()
     
-    # Pagination
-    paginator = Paginator(products, 12)
-    page = paginator.get_page(request.GET.get('page'))
+    # Add pagination
+    pagination_data = GlobalPaginator.paginate(products, request, 12)
     
     return render(request, 'user_theme/store/search_results.html', {
-        'products': page,
+        'products': pagination_data['page_obj'].object_list,
         'query': query,
-        'total_results': products.count()
+        'total_results': products.count(),
+        **pagination_data
     })

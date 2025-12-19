@@ -1,0 +1,28 @@
+{% if is_paginated %}
+<div class="infinitpaginOuter">
+    <nav class="clearfix pagination-bottom">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?{% if query_params %}{{ query_params }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo;</a>
+                    {% endif %}
+                    {% for num in page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="page-numbers current">{{ num }}</span>
+                        {% else %}
+                            <a href="?{% if query_params %}{{ query_params }}&{% endif %}page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <a href="?{% if query_params %}{{ query_params }}&{% endif %}page={{ page_obj.next_page_number }}">&raquo;</a>
+                    {% endif %}
+                </div>
+                <div class="mt-3">
+                    <small class="text-muted">{{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }}</small>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+{% endif %}
