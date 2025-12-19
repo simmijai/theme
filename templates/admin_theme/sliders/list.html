@@ -73,9 +73,17 @@
                                                     <a href="{% url 'admin_slider_edit' slider.id %}" class="btn btn-sm btn-outline-primary" title="Edit Slider">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Delete Slider" onclick="deleteSlider('{{ slider.id }}', '{{ slider.title }}')">
+                                                    {% comment %} <button type="button" class="btn btn-sm btn-outline-danger" title="Delete Slider" onclick="deleteSlider('{{ slider.id }}', '{{ slider.title }}')">
                                                         <i class="bi bi-trash3"></i>
-                                                    </button>
+                                                    </button> {% endcomment %}
+                                                    <button type="button"
+        class="btn btn-sm btn-outline-danger js-delete-slider"
+        data-url="{% url 'admin_slider_delete' slider.id %}"
+        data-title="{{ slider.title }}"
+        title="Delete Slider">
+    <i class="bi bi-trash3"></i>
+</button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -141,7 +149,7 @@
         </div>
     </div>
 </main>
-
+{% comment %} 
 <script>
 function deleteSlider(sliderId, sliderTitle) {
     if (confirm(`Are you sure you want to delete '${sliderTitle}'?\n\nThis action cannot be undone.`)) {
@@ -160,5 +168,5 @@ function deleteSlider(sliderId, sliderTitle) {
         form.submit();
     }
 }
-</script>
+</script> {% endcomment %}
 {% endblock %}
