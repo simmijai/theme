@@ -16,11 +16,11 @@ def add_to_cart(request, product_id):
         product = get_object_or_404(Product, id=product_id)
         
         # Handle both POST and GET requests
-        if request.method == 'POST':
-            quantity = int(request.POST.get('quantity', 1))
-        else:
-            quantity = int(request.GET.get('quantity', 1))
+        if request.method != 'POST':
+            return JsonResponse({'success': False, 'message': 'Invalid method'}, status=405)
         
+        quantity = int(request.POST.get('quantity', 1))
+
         # Validate quantity and stock
         if quantity < 1:
             quantity = 1
@@ -99,14 +99,30 @@ def cart_view(request):
     return render(request, 'user_theme/store/cart2.html', context)
 
 
+# @login_required
+# def remove_from_cart(request, product_id):
+#     if request.method == 'POST':
+#         cart_item = get_object_or_404(CartItem, user=request.user, product_id=product_id)
+#         cart_item.delete()
+#         return JsonResponse({'success': True, 'message': 'Item removed from cart'})
+#     else:
+#         return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+
 @login_required
 def remove_from_cart(request, product_id):
-    if request.method == 'POST':
-        cart_item = get_object_or_404(CartItem, user=request.user, product_id=product_id)
-        cart_item.delete()
-        return JsonResponse({'success': True, 'message': 'Item removed from cart'})
-    else:
-        return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+    if request.method != 'POST':
+        return JsonResponse({'success': False}, status=405)
+
+    CartItem.objects.filter(user=request.user, product_id=product_id).delete()
+    
+    # Calculate updated totals
+    cart_items = CartItem.objects.filter(user=request.user)
+    cart_total = sum(item.total_price() for item in cart_items)
+    
+    return JsonResponse({
+        'success': True,
+        'cart_total': cart_total
+    })
 
 
 @login_required
@@ -128,7 +144,9 @@ def update_quantity(request, product_id):
         # compute totals
         cart_items = CartItem.objects.filter(user=request.user)
         cart_total = sum(item.total_price() for item in cart_items)
-        return JsonResponse({'success': True, 'message': 'Item removed', 'cart_total': cart_total})
+        return JsonResponse({'success': True,
+                             'removed': True,
+                            'cart_total': cart_total})
 
     cart_item = CartItem.objects.filter(user=request.user, product_id=product_id).first()
     if not cart_item:

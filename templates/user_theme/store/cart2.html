@@ -95,8 +95,8 @@
         <td class="text-center small--hide">
         <a href="#" class="btn btn--secondary cart__remove" data-id="{{ item.product.id }}" title="Remove Item">
         <i class="icon anm anm-times-l"></i>
-    </a>
-</td>
+        </a>
+        </td>
 
     </tr>
     {% empty %}
@@ -109,10 +109,6 @@
                     		<tfoot>
                                 <tr>
                                     <td colspan="3" class="text-left"><a href="{% url 'home' %}" class="btn btn-secondary btn--small cart-continue">Continue shopping</a></td>
-                                    {% comment %} <td colspan="3" class="text-right">
-	                                    <button type="submit" name="clear" class="btn btn-secondary btn--small  small--hide">Clear Cart</button>
-                                    	<button type="submit" name="update" class="btn btn-secondary btn--small cart-continue ml-2">Update Cart</button>
-                                    </td> {% endcomment %}
                                 </tr>
                             </tfoot>
                     </table> 
@@ -159,8 +155,19 @@
         </div>
         
     </div>
+
+    <!-- Cart config (URL source for JS) -->
+<div id="cart-config"
+     data-remove-url="{% url 'remove_from_cart' 0 %}"
+     data-update-url="{% url 'update_cart' 0 %}">
+</div>
+
+{% block extra_js %}
+<script type="module" src="{% static 'js/pages/cart.js' %}"></script>
+{% endblock %}
+
     <!--End Body Content-->
-    <script>
+{% comment %} <script>
 // Helper to read cookie (for CSRF)
 function getCookie(name) {
     let cookieValue = null;
@@ -284,11 +291,9 @@ document.querySelectorAll('.cart-qty-input').forEach(input => {
     });
 });
 
+</script> {% endcomment %}
 
-
-</script>
-
-<script>
+{% comment %} <script>
 document.getElementById('cartCheckout').addEventListener('click', function(e){
     const subtotalEl = document.getElementById('cart-subtotal');
     // Extract number from $ string
@@ -299,7 +304,7 @@ document.getElementById('cartCheckout').addEventListener('click', function(e){
         alert('Your cart is empty! Add items before proceeding to checkout.');
     }
 });
-</script>
+</script> {% endcomment %}
 
 
 {% endblock %}
