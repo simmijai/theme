@@ -1,0 +1,87 @@
+{% extends 'user_theme/base.html' %}
+{% load static %}
+
+{% block title %}Terms & Conditions - Orana Furnitures{% endblock %}
+
+{% block content %}
+<div id="page-content" style="padding-top:60px;">
+    <div class="page section-header text-center">
+        <div class="page-title">
+            <div class="wrapper">
+                <h1 class="page-width">Terms & Conditions</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="rte-setting">
+                    <p><strong>Last updated:</strong> {{ "now"|date:"F d, Y" }}</p>
+                    
+                    <h2>1. Acceptance of Terms</h2>
+                    <p>By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                    
+                    <h2>2. Product Information</h2>
+                    <ul>
+                        <li>We strive to provide accurate product descriptions and images</li>
+                        <li>Colors may vary slightly due to monitor settings</li>
+                        <li>Dimensions are approximate and may vary slightly</li>
+                        <li>We reserve the right to modify product specifications without notice</li>
+                    </ul>
+                    
+                    <h2>3. Ordering and Payment</h2>
+                    <ul>
+                        <li>All orders are subject to availability and confirmation</li>
+                        <li>We reserve the right to refuse or cancel orders</li>
+                        <li>Prices are subject to change without notice</li>
+                        <li>Payment must be made in full before delivery (except COD)</li>
+                    </ul>
+                    
+                    <h2>4. Delivery</h2>
+                    <ul>
+                        <li>Delivery times are estimates and not guaranteed</li>
+                        <li>Risk of loss passes to customer upon delivery</li>
+                        <li>Customer must inspect items upon delivery</li>
+                        <li>Delivery charges may apply based on location</li>
+                    </ul>
+                    
+                    <h2>5. Returns and Exchanges</h2>
+                    <ul>
+                        <li>Items must be returned in original condition</li>
+                        <li>Return requests must be made within specified time frame</li>
+                        <li>Custom-made items are non-returnable</li>
+                        <li>Return shipping costs may apply</li>
+                    </ul>
+                    
+                    <h2>6. Warranty</h2>
+                    <ul>
+                        <li>Products come with manufacturer's warranty where applicable</li>
+                        <li>Warranty terms vary by product type</li>
+                        <li>Warranty does not cover normal wear and tear</li>
+                        <li>Misuse or damage voids warranty</li>
+                    </ul>
+                    
+                    <h2>7. Limitation of Liability</h2>
+                    <p>Orana Furnitures shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of our products or services.</p>
+                    
+                    <h2>8. Privacy</h2>
+                    <p>Your privacy is important to us. We collect and use personal information in accordance with our Privacy Policy.</p>
+                    
+                    <h2>9. Governing Law</h2>
+                    <p>These terms shall be governed by and construed in accordance with the laws of India.</p>
+                    
+                    <h2>10. Contact Information</h2>
+                    <p>For questions about these Terms & Conditions, please contact us at:</p>
+                    <address>
+                        <strong>Orana Furnitures Private Limited</strong><br>
+                        Pratap Nagar, Near Bairaw Circle<br>
+                        Jaipur - 23568<br>
+                        Phone: +91 9667006467
+                    </address>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

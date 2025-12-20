@@ -37,6 +37,7 @@ urlpatterns = [
     path('cart/', include('apps.cart.urls')),
     path('wishlist/', include('apps.wishlist.urls')),
     path('orders/', include('apps.orders.urls')),
+    path('pages/', include('apps.core.urls')),  # Footer pages
 # Custom admin login at project root
     path('admin-login/', admin_views.admin_login, name='admin_login'),
 

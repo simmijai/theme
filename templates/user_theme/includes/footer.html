@@ -39,25 +39,25 @@
                     	<div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Shop</h4>
                             <ul>
-                            	<li><a href="#">New Arrivals</a></li>
-                                <li><a href="#">Categories</a></li>
-                                <li><a href="#">Best Sellers</a></li>
+                            	<li><a href="{% url 'home' %}#new-arrivals">New Arrivals</a></li>
+                                <li><a href="{% url 'home' %}#categories">Categories</a></li>
+                                <li><a href="{% url 'home' %}#best-sellers">Best Sellers</a></li>
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Company</h4>
                             <ul>
-                            	<li><a href="#">About us</a></li>
-                                <li><a href="#">Payment policy</a></li>
-                                <li><a href="#">Terms &amp; condition</a></li>
+                            	<li><a href="{% url 'about_us' %}">About us</a></li>
+                                <li><a href="{% url 'payment_policy' %}">Payment policy</a></li>
+                                <li><a href="{% url 'terms_conditions' %}">Terms &amp; condition</a></li>
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Support </h4>
                             <ul>
-                                <li><a href="#">Return and Refund</a></li>
-                                <li><a href="#">Shipping Policy</a></li>
-                                <li><a href="#">Warranty</a></li>
+                                <li><a href="{% url 'return_refund' %}">Return and Refund</a></li>
+                                <li><a href="{% url 'shipping_policy' %}">Shipping Policy</a></li>
+                                <li><a href="{% url 'warranty' %}">Warranty</a></li>
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 contact-box">
