@@ -52,10 +52,7 @@ config/static/
 # but make sure to not ignore your actual static source folder
 # Example: staticfiles/ (Django collects here on deploy)
 staticfiles/
-<<<<<<< Updated upstream
 templates/admin/*
 static/admin/*
-=======
 templates/admin/
 tatus
->>>>>>> Stashed changes
