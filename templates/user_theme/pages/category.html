@@ -1,0 +1,154 @@
+{% extends 'user_theme/base.html' %}
+{% load static %}
+
+{% block title %}{% if category %}{{ category.name }}{% else %}All Products{% endif %} - Jewelry Store{% endblock %}
+
+{% block content %}
+<!--Collection Banner-->
+<div class="collection-header">
+    <div class="collection-hero">
+        <div class="collection-hero__image">
+            <img class="blur-up lazyload" src="{% static 'user_theme/images/cat-women3.jpg' %}" alt="Jewellery">
+        </div>
+        <div class="collection-hero__title-wrapper">
+            <h1 class="collection-hero__title page-width">Jewellery is the next best thing to Love!</h1>
+        </div>
+    </div>
+</div>
+<!--End Collection Banner-->
+
+<div class="container">
+    <div class="row">
+        <!--Sidebar-->
+        <div class="col-12 col-sm-12 col-md-3 col-lg-3 sidebar filterbar">
+            <div class="closeFilter d-block d-md-none d-lg-none"><i class="icon icon anm anm-times-l"></i></div>
+            <div class="sidebar_tags">
+                <!--Categories-->
+                <div class="sidebar_widget categories filter-widget">
+                    <div class="widget-title">
+                        <h2>Categories</h2>
+                    </div>
+                    <div class="widget-content">
+                        <ul class="sidebar_categories">
+                            {% for cat in categories %}
+                            <li class="lvl-1"><a href="{% url 'category' cat.slug %}" class="site-nav">{{ cat.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <!--End Categories-->
+                
+                <!--Price Filter-->
+                <div class="sidebar_widget filterBox filter-widget">
+                    <div class="widget-title">
+                        <h2>Price</h2>
+                    </div>
+                    <form action="#" method="post" class="price-filter">
+                        <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
+                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="no-margin"><input id="amount" type="text"></p>
+                            </div>
+                            <div class="col-6 text-right margin-25px-top">
+                                <button class="btn btn-secondary btn--small">filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--End Price Filter-->
+            </div>
+        </div>
+        <!--End Sidebar-->
+        
+        <!--Main Content-->
+        <div class="col-12 col-sm-12 col-md-9 col-lg-9 main-col">
+            {% if category %}
+            <div class="category-description">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description }}</p>
+            </div>
+            <hr>
+            {% endif %}
+            
+            <div class="productList product-load-more">
+                <!--Toolbar-->
+                <button type="button" class="btn btn-filter d-block d-md-none d-lg-none">Product Filters</button>
+                <div class="toolbar">
+                    <div class="filters-toolbar-wrapper">
+                        <div class="row">
+                            <div class="col-4 col-md-4 col-lg-4 filters-toolbar__item collection-view-as d-flex justify-content-start align-items-center">
+                                <a href="#" title="Grid View" class="change-view change-view--active">
+                                    <img src="{% static 'user_theme/images/grid.jpg' %}" alt="Grid">
+                                </a>
+                                <a href="#" title="List View" class="change-view">
+                                    <img src="{% static 'user_theme/images/list.jpg' %}" alt="List">
+                                </a>
+                            </div>
+                            <div class="col-4 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
+                                <span class="filters-toolbar__product-count">Showing: {{ products.count }}</span>
+                            </div>
+                            <div class="col-4 col-md-4 col-lg-4 text-right">
+                                <div class="filters-toolbar__item">
+                                    <label for="SortBy" class="hidden">Sort</label>
+                                    <select name="SortBy" id="SortBy" class="filters-toolbar__input filters-toolbar__input--sort">
+                                        <option value="title-ascending" selected="selected">Sort</option>
+                                        <option>Alphabetically, A-Z</option>
+                                        <option>Alphabetically, Z-A</option>
+                                        <option>Price, low to high</option>
+                                        <option>Price, high to low</option>
+                                        <option>Date, new to old</option>
+                                        <option>Date, old to new</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End Toolbar-->
+                
+                <div class="grid-products grid--view-items">
+                    <div class="row">
+                        {% for product in products %}
+                        <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                            <div class="product-image">
+                                <a href="{% url 'product_detail' product.slug %}">
+                                    <img class="primary blur-up lazyload" src="{{ product.image.url }}" alt="{{ product.name }}">
+                                </a>
+                                <form class="variants add" action="#" method="post">
+                                    <button class="btn btn-addto-cart" type="button">Select Options</button>
+                                </form>
+                                <div class="button-set">
+                                    <div class="wishlist-btn">
+                                        <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist">
+                                            <i class="icon anm anm-heart-l"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-details text-center">
+                                <div class="product-name">
+                                    <a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>
+                                </div>
+                                <div class="product-price">
+                                    {% if product.discount_price %}
+                                    <span class="old-price">${{ product.price }}</span>
+                                    <span class="price">${{ product.discount_price }}</span>
+                                    {% else %}
+                                    <span class="price">${{ product.price }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Main Content-->
+    </div>
+</div>
+{% endblock %}
