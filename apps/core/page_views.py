@@ -5,7 +5,7 @@ from apps.store.models import HomeSlider
 
 
 class HomeView(TemplateView):
-    template_name = 'user_theme/pages/home.html'
+    template_name = 'user_theme/store/home.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
