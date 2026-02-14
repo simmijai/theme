@@ -1,72 +1,78 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Belle - E-commerce{% endblock %}</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Belle - E-commerce{% endblock %}</title>
 
-  
-  <!-- Favicon -->
-  <link rel="shortcut icon" href="{% static 'user_theme/images/favicon.png' %}" />
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="{% static 'user_theme/css/plugins.css' %}">
-  <link rel="stylesheet" href="{% static 'user_theme/css/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'user_theme/css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'user_theme/css/responsive.css' %}">
-  <link rel="stylesheet" href="{% static 'user_theme/css/message-system.css' %}">
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      href="{% static 'user_theme/images/favicon.png' %}"
+    />
 
-</head>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'user_theme/css/plugins.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'user_theme/css/bootstrap.min.css' %}"
+    />
+    <link rel="stylesheet" href="{% static 'user_theme/css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'user_theme/css/responsive.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'user_theme/css/message-system.css' %}"
+    />
+  </head>
 
-
-<body class="template-index belle">
-  <div id="pre-loader">
+  <body
+    class="template-{% block body_class %}index{% endblock %} belle template-{% block body_class_suffix %}index{% endblock %}-belle"
+  >
+    <div id="pre-loader">
       <img src="{% static 'user_theme/images/loader.gif' %}" alt="Loading..." />
-  </div>
+    </div>
 
-  <div class="pageWrapper">
-      {% include 'user_theme/includes/navbar.html' %}
-            {% comment %} {% if messages and user.is_staff %}
-            <div class="container mt-3">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
-                {% endfor %}
-            </div>
-            {% endif %} {% endcomment %}
-            <!-- Enhanced Message Display -->
-            {% include 'user_theme/includes/message_display.html' %}
-      {% block content %}{% endblock %}
+    <div class="pageWrapper">
+      <div
+        class="header-wrapper {% block header_class %}classicHeader{% endblock %}"
+      >
+        {% include 'user_theme/includes/navbar.html' %}
+      </div>
+      {% include 'user_theme/includes/message_display.html' %}
+      <div id="page-content">{% block content %}{% endblock %}</div>
       {% include 'user_theme/includes/footer.html' %}
-  </div>
+    </div>
 
-  <!-- JS Files -->
+    <!-- JS Files -->
     <!-- JS Files -->
 
+    <script src="{% static 'user_theme/js/vendor/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'user_theme/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'user_theme/js/vendor/wow.min.js' %}"></script>
+    <!-- add this line -->
 
-  <script src="{% static 'user_theme/js/vendor/jquery-3.3.1.min.js' %}"></script>
-  <script src="{% static 'user_theme/js/bootstrap.min.js' %}"></script>
-  <script src="{% static 'user_theme/js/vendor/wow.min.js' %}"></script> <!-- add this line -->
+    <script src="{% static 'user_theme/js/plugins.js' %}"></script>
+    <script src="{% static 'user_theme/js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{% static 'user_theme/js/message-system.js' %}"></script>
 
-  <script src="{% static 'user_theme/js/plugins.js' %}"></script>
-  <script src="{% static 'user_theme/js/main.js' %}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="{% static 'user_theme/js/message-system.js' %}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function ajaxFilter(slug) {
+          const url = `/products/filter/${slug}/`;
+          window.history.pushState({ slug: slug }, "", url);
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    function ajaxFilter(slug) {
-        const url = `/products/filter/${slug}/`;
-        window.history.pushState({slug: slug}, "", url);
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const container = document.querySelector("#product-list");
-                container.innerHTML = "";
-                data.products.forEach(product => {
-                    container.innerHTML += `
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              const container = document.querySelector("#product-list");
+              container.innerHTML = "";
+              data.products.forEach((product) => {
+                container.innerHTML += `
                     <div class="col-6 col-sm-6 col-md-4 col-lg-3 item grid-view-item style2">
                         <div class="grid-view_image">
                             <a href="#" class="grid-view-item__link">
@@ -88,150 +94,159 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                     </div>`;
-                });
+              });
             })
-            .catch(err => console.error("AJAX Error:", err));
-    }
+            .catch((err) => console.error("AJAX Error:", err));
+        }
 
-    // Attach handler to both category and subcategory links
-    document.querySelectorAll(".category-link, .subcategory-link").forEach(link => {
-        link.addEventListener("click", function (e) {
-            e.preventDefault();
-            const slug = this.dataset.slug;
-            ajaxFilter(slug);
-        });
-    });
+        // Attach handler to both category and subcategory links
+        document
+          .querySelectorAll(".category-link, .subcategory-link")
+          .forEach((link) => {
+            link.addEventListener("click", function (e) {
+              e.preventDefault();
+              const slug = this.dataset.slug;
+              ajaxFilter(slug);
+            });
+          });
 
-    // Handle browser back/forward buttons
-    window.addEventListener("popstate", function (event) {
-        if (event.state && event.state.slug) {
+        // Handle browser back/forward buttons
+        window.addEventListener("popstate", function (event) {
+          if (event.state && event.state.slug) {
             ajaxFilter(event.state.slug);
-        }
-    });
+          }
+        });
+      });
+    </script>
+    <script>
+      // Enhanced wishlist handler with better error handling and UX
+      document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".wishlist.add-to-wishlist");
+        if (!btn) return;
+        e.preventDefault();
 
-});
-</script>
-<script>
-// Enhanced wishlist handler with better error handling and UX
-document.addEventListener('click', function (e) {
-    const btn = e.target.closest('.wishlist.add-to-wishlist');
-    if (!btn) return;
-    e.preventDefault();
+        const url = btn.getAttribute("href");
+        if (!url) return;
 
-    const url = btn.getAttribute('href');
-    if (!url) return;
+        // Show loading state
+        const originalIcon = btn.innerHTML;
+        btn.innerHTML = '<i class="loading-spinner"></i>';
+        btn.disabled = true;
 
-    // Show loading state
-    const originalIcon = btn.innerHTML;
-    btn.innerHTML = '<i class="loading-spinner"></i>';
-    btn.disabled = true;
+        fetch(url, {
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // Restore button state
+            btn.innerHTML = originalIcon;
+            btn.disabled = false;
 
-    fetch(url, { 
-        headers: { 
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json'
-        } 
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Restore button state
-        btn.innerHTML = originalIcon;
-        btn.disabled = false;
+            if (data && data.success) {
+              showAjaxMessage(
+                "success",
+                data.message || "Added to wishlist",
+                btn,
+              );
+              btn.classList.add("active");
+              // Update wishlist count if element exists
+              updateWishlistCount(1);
+            } else {
+              showAjaxMessage(
+                "info",
+                data.message || "Already in wishlist",
+                btn,
+              );
+            }
+          })
+          .catch((err) => {
+            console.error("Wishlist AJAX error", err);
+            btn.innerHTML = originalIcon;
+            btn.disabled = false;
+            showMessage(
+              "error",
+              "Could not update wishlist. Please try again.",
+            );
+          });
+      });
 
-        if (data && data.success) {
-            showAjaxMessage('success', data.message || 'Added to wishlist', btn);
-            btn.classList.add('active');
-            // Update wishlist count if element exists
-            updateWishlistCount(1);
-        } else {
-            showAjaxMessage('info', data.message || 'Already in wishlist', btn);
-        }
-    })
-    .catch(err => {
-        console.error('Wishlist AJAX error', err);
-        btn.innerHTML = originalIcon;
-        btn.disabled = false;
-        showMessage('error', 'Could not update wishlist. Please try again.');
-    });
-});
+      function showAjaxMessage(level, text, anchorEl) {
+        // Enhanced popup with better positioning and styling
+        if (anchorEl && anchorEl.getBoundingClientRect) {
+          const rect = anchorEl.getBoundingClientRect();
+          const popup = document.createElement("div");
+          popup.className = `ajax-popup ${level} message-fade-in`;
+          popup.textContent = text;
+          popup.setAttribute("role", "alert");
+          popup.setAttribute("aria-live", "polite");
 
-function showAjaxMessage(level, text, anchorEl) {
-    // Enhanced popup with better positioning and styling
-    if (anchorEl && anchorEl.getBoundingClientRect) {
-        const rect = anchorEl.getBoundingClientRect();
-        const popup = document.createElement('div');
-        popup.className = `ajax-popup ${level} message-fade-in`;
-        popup.textContent = text;
-        popup.setAttribute('role', 'alert');
-        popup.setAttribute('aria-live', 'polite');
+          document.body.appendChild(popup);
 
-        document.body.appendChild(popup);
+          // Enhanced positioning logic
+          const offset = 12;
+          const pw = popup.offsetWidth;
+          const ph = popup.offsetHeight;
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
 
-        // Enhanced positioning logic
-        const offset = 12;
-        const pw = popup.offsetWidth;
-        const ph = popup.offsetHeight;
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        
-        let left = rect.left + (rect.width / 2) - (pw / 2) + window.scrollX;
-        let top = rect.top - ph - offset + window.scrollY;
+          let left = rect.left + rect.width / 2 - pw / 2 + window.scrollX;
+          let top = rect.top - ph - offset + window.scrollY;
 
-        // Adjust if popup goes off screen
-        if (left < 10) left = 10;
-        if (left + pw > vw - 10) left = vw - pw - 10;
-        if (top < window.scrollY + 10) {
+          // Adjust if popup goes off screen
+          if (left < 10) left = 10;
+          if (left + pw > vw - 10) left = vw - pw - 10;
+          if (top < window.scrollY + 10) {
             top = rect.bottom + offset + window.scrollY;
+          }
+
+          popup.style.left = `${left}px`;
+          popup.style.top = `${top}px`;
+
+          // Enhanced auto-dismiss with animation
+          setTimeout(() => {
+            popup.classList.remove("message-fade-in");
+            popup.classList.add("message-fade-out");
+            setTimeout(() => {
+              if (popup.parentNode) popup.parentNode.removeChild(popup);
+            }, 300);
+          }, 4000);
+
+          return;
         }
 
-        popup.style.left = `${left}px`;
-        popup.style.top = `${top}px`;
+        // Fallback to simple message
+        showMessage(level, text);
+      }
 
-        // Enhanced auto-dismiss with animation
-        setTimeout(() => {
-            popup.classList.remove('message-fade-in');
-            popup.classList.add('message-fade-out');
-            setTimeout(() => {
-                if (popup.parentNode) popup.parentNode.removeChild(popup);
-            }, 300);
-        }, 4000);
+      // Helper function to update wishlist count
+      function updateWishlistCount(change) {
+        const countEl = document.querySelector(".wishlist-count, .cart-count");
+        if (countEl) {
+          const current = parseInt(countEl.textContent) || 0;
+          countEl.textContent = Math.max(0, current + change);
+        }
+      }
+    </script>
 
-        return;
-    }
-
-    // Fallback to simple message
-    showMessage(level, text);
-}
-
-// Helper function to update wishlist count
-function updateWishlistCount(change) {
-    const countEl = document.querySelector('.wishlist-count, .cart-count');
-    if (countEl) {
-        const current = parseInt(countEl.textContent) || 0;
-        countEl.textContent = Math.max(0, current + change);
-    }
-}
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    {% if messages %}
-        {% for message in messages %}
-            showMessage("{{ message.tags }}", "{{ message|escapejs }}");
-        {% endfor %}
-    {% endif %}
-});
-</script>
-<script src="{% static 'js/pages/wishlist.js' %}"></script>
-<script src="{% static 'js/pages/checkout.js' %}"></script>
-<script type="module" src="{% static 'js/pages/cart.js' %}"></script>
-
-
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          {% if messages %}
+              {% for message in messages %}
+                  showMessage("{{ message.tags }}", "{{ message|escapejs }}");
+              {% endfor %}
+          {% endif %}
+      });
+    </script>
+    <script src="{% static 'js/pages/wishlist.js' %}"></script>
+    <script src="{% static 'js/pages/checkout.js' %}"></script>
+    <script type="module" src="{% static 'js/pages/cart.js' %}"></script>
+  </body>
 </html>

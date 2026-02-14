@@ -1,7 +1,10 @@
 {% extends 'user_theme/base.html' %}
 {% load static %}
+{% block body_class %}product{% endblock %}
+{% block body_class_suffix %}product{% endblock %}
 
-{% block title %}{{ product.name }} - Jewelry Store{% endblock %}
+{% block header_class %}classicHeader{% endblock %}
+{% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
 <div id="MainContent" class="main-content" role="main">
