@@ -25,7 +25,7 @@ def category_products(request, slug):
     # Add pagination
     pagination_data = GlobalPaginator.paginate(products, request, 12)
 
-    return render(request, 'user_theme/store/product_category_page.html', {
+    return render(request, 'user_theme/store/categories.html', {
         'category': category,
         'categories': categories,
         'products': pagination_data['page_obj'].object_list,

@@ -37,6 +37,7 @@ urlpatterns = [
     path('pages/', include('apps.core.urls')),  # Footer pages
     # Custom admin login at project root
     path('admin-login/', admin_views.admin_login, name='admin_login'),
+    path('<slug:slug>/', include('apps.products.urls')),  # Category URLs at root
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
