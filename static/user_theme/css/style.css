@@ -240,7 +240,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder { opacity:1; -ms-fil
 .site-cart { float:right; position:relative; }
 .site-header__cart { color:#000; text-decoration:none; }
 .site-header__cart:hover { text-decoration:none; }
-.site-header__cart .icon { font-size:30px; text-decoration:none; }
+.site-header__cart .icon { font-size:22px; text-decoration:none; }
 .site-header__cart-count { font-size:11px; display:inline-block; color:#fff; background-color:#000; border-radius:50%; text-align:center; width:14px; height:14px; line-height:14px; position:absolute; right:-5px; bottom:0; }
 #header-cart { z-index:333; width:320px; margin-top:5px; display:none; background-color:#fff; border:1px solid #e8e9eb; position:absolute; top:100%; right:-5px; z-index:555; border-radius:0; }
 #header-cart hr { margin:20px 0 }
