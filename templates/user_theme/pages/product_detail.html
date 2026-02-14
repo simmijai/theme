@@ -9,7 +9,7 @@
     <div class="bredcrumbWrap">
         <div class="container breadcrumbs" role="navigation" aria-label="breadcrumbs">
             <a href="{% url 'home' %}" title="Back to the home page">Home</a><span aria-hidden="true">›</span>
-            <a href="{% url 'category' product.category.slug %}">{{ product.category.name }}</a><span aria-hidden="true">›</span>
+            <a href="{% url 'category' product.category.slug %}">{{ product.category.category_name }}</a><span aria-hidden="true">›</span>
             <span>{{ product.name }}</span>
         </div>
     </div>
@@ -57,7 +57,7 @@
                                 <span class="devider">|</span>&nbsp;
                                 <span>You Save</span>
                                 <span id="SaveAmount-product-template" class="product-single__save-amount">
-                                    <span class="money">${{ product.price|floatformat:2|add:"-"|add:product.discount_price|floatformat:2 }}</span>
+                                    <span class="money">${{ product.price|add:"-"|add:product.discount_price }}</span>
                                 </span>
                             </span>
                             {% else %}
@@ -116,8 +116,8 @@
                     </div>
                     
                     <div class="product-info">
-                        <p class="product-type"><span class="lbl">Product Type:</span> <a href="{% url 'category' product.category.slug %}" title="{{ product.category.name }}">{{ product.category.name }}</a></p>
-                        <p class="product-cat"><span class="lbl">Collections: </span><a href="{% url 'category' product.category.slug %}" title="">{{ product.category.name }}</a></p>
+                        <p class="product-type"><span class="lbl">Product Type:</span> <a href="{% url 'category' product.category.slug %}" title="{{ product.category.category_name }}">{{ product.category.category_name }}</a></p>
+                        <p class="product-cat"><span class="lbl">Collections: </span><a href="{% url 'category' product.category.slug %}" title="">{{ product.category.category_name }}</a></p>
                     </div>
                 </div>
             </div>

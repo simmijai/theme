@@ -31,7 +31,7 @@
                     <div class="widget-content">
                         <ul class="sidebar_categories">
                             {% for cat in categories %}
-                            <li class="lvl-1"><a href="{% url 'category' cat.slug %}" class="site-nav">{{ cat.name }}</a></li>
+                            <li class="lvl-1"><a href="{% url 'category' cat.slug %}" class="site-nav">{{ cat.category_name }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -68,7 +68,7 @@
         <div class="col-12 col-sm-12 col-md-9 col-lg-9 main-col">
             {% if category %}
             <div class="category-description">
-                <h3>{{ category.name }}</h3>
+                <h3>{{ category.category_name }}</h3>
                 <p>{{ category.description }}</p>
             </div>
             <hr>

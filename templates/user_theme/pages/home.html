@@ -79,10 +79,10 @@
             <div class="col-12 col-sm-6 col-md-2 col-lg-2 text-center">
                 <p>
                     <a href="{% url 'category' category.slug %}">
-                        <img class="blur-up lazyload" src="{{ category.image.url }}" alt="{{ category.name }}">
+                        <img class="blur-up lazyload" src="{{ category.cat_image.url }}" alt="{{ category.category_name }}">
                     </a>
                 </p>
-                <h3 class="h4"><a href="{% url 'category' category.slug %}">{{ category.name }}</a></h3>
+                <h3 class="h4"><a href="{% url 'category' category.slug %}">{{ category.category_name }}</a></h3>
             </div>
             {% endfor %}
         </div>
