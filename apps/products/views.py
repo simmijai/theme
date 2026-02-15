@@ -7,26 +7,25 @@ from apps.core.pagination import GlobalPaginator
 
 
 def category_products(request, slug):
-    # Try main category first
     category = Category.objects.filter(slug=slug, parent__isnull=True).first()
     subcategory = Category.objects.filter(slug=slug, parent__isnull=False).first()
 
     if subcategory:
-        # If slug is a subcategory, get its parent for sidebar
         products = Product.objects.filter(category=subcategory)
-        category = subcategory.parent
-    else:
-        # If main category, include subcategories
+        current_category = subcategory
+    elif category:
         subcategories = category.subcategories.all()
         products = Product.objects.filter(category__in=[category, *subcategories])
+        current_category = category
+    else:
+        products = Product.objects.none()
+        current_category = None
 
     categories = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
-    
-    # Add pagination
     pagination_data = GlobalPaginator.paginate(products, request, 12)
 
     return render(request, 'user_theme/store/categories.html', {
-        'category': category,
+        'category': current_category,
         'categories': categories,
         'products': pagination_data['page_obj'].object_list,
         'selected_category': slug,
