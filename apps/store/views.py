@@ -1,36 +1,14 @@
-from django.shortcuts import render
-from .models import HomeSlider  # import the new model
+from .models import HomeSlider
 from apps.products.models import Product,Category
-from django.db.models import Count
-from apps.cart.models import CartItem
+from django.views.generic import TemplateView
 
-
-def index(request):
+class HomeView(TemplateView):
+    template_name = 'user_theme/store/index.html'
     
-    sliders = HomeSlider.objects.filter(is_active=True).order_by('order')
-    category_slug = request.GET.get('category')
-    
-    # New Arrivals - Latest products
-    new_arrivals = Product.objects.filter(is_available=True).order_by('-created_at')[:8]
-    
-    # Best Sellers - Products with most cart additions (proxy for sales)
-    best_sellers = Product.objects.filter(
-        is_available=True
-    ).annotate(
-        cart_count=Count('cartitem')
-    ).order_by('-cart_count')[:8]
-    
-    # If no best sellers based on cart, fallback to random products
-    if not best_sellers:
-        best_sellers = Product.objects.filter(is_available=True).order_by('?')[:8]
-    
-    # Categories - Top level only
-    categories = Category.objects.filter(parent=None, is_active=True)[:6]
-    
-    return render(request, 'user_theme/store/index.html', {
-        'sliders': sliders,
-        'new_arrivals': new_arrivals,
-        'best_sellers': best_sellers,
-        'categories': categories,
-        'user': request.user
-    })
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sliders'] = HomeSlider.objects.filter(is_active=True)
+        context['categories'] = Category.objects.filter(is_active=True)[:6]
+        context['featured_products'] = Product.objects.filter(is_available=True)[:8]
+        context['best_selling_products'] = Product.objects.filter(is_available=True)[:8]
+        return context

@@ -12,7 +12,7 @@
     <div class="bredcrumbWrap">
         <div class="container breadcrumbs" role="navigation" aria-label="breadcrumbs">
             <a href="{% url 'home' %}" title="Back to the home page">Home</a><span aria-hidden="true">›</span>
-            <a href="{% url 'category' product.category.slug %}">{{ product.category.category_name }}</a><span aria-hidden="true">›</span>
+            <a href="{% url 'category_products' product.category.slug %}">{{ product.category.category_name }}</a><span aria-hidden="true">›</span>
             <span>{{ product.name }}</span>
         </div>
     </div>
@@ -119,8 +119,8 @@
                     </div>
                     
                     <div class="product-info">
-                        <p class="product-type"><span class="lbl">Product Type:</span> <a href="{% url 'category' product.category.slug %}" title="{{ product.category.category_name }}">{{ product.category.category_name }}</a></p>
-                        <p class="product-cat"><span class="lbl">Collections: </span><a href="{% url 'category' product.category.slug %}" title="">{{ product.category.category_name }}</a></p>
+                        <p class="product-type"><span class="lbl">Product Type:</span> <a href="{% url 'category_products' product.category.slug %}" title="{{ product.category.category_name }}">{{ product.category.category_name }}</a></p>
+                        <p class="product-cat"><span class="lbl">Collections: </span><a href="{% url 'category_products' product.category.slug %}" title="">{{ product.category.category_name }}</a></p>
                     </div>
                 </div>
             </div>

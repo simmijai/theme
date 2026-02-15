@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from apps.store.views import index
+from apps.store.views import HomeView
+# from apps.store.views import index
 from django.conf import settings
 from django.conf.urls.static import static
 from apps.admin_panel.views.category_views import admin_dashboard
@@ -26,18 +27,15 @@ from apps.admin_panel.views import admin_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index, name='home'),  # homepage
-    # path('', include('store.urls')),
-    path('products/', include('apps.products.urls')),
-    path('accounts/', include('apps.accounts.urls')),  # ❌ No namespace
-    path('admin_panel/', include('apps.admin_panel.urls')),  # include your admin_panel URLs
+    path('', HomeView.as_view(), name='home'),
+    path('accounts/', include('apps.accounts.urls')),
+    path('admin_panel/', include('apps.admin_panel.urls')),
     path('cart/', include('apps.cart.urls')),
     path('wishlist/', include('apps.wishlist.urls')),
     path('orders/', include('apps.orders.urls')),
-    path('pages/', include('apps.core.urls')),  # Footer pages
-    # Custom admin login at project root
+    path('pages/', include('apps.core.urls')),
     path('admin-login/', admin_views.admin_login, name='admin_login'),
-    path('<slug:slug>/', include('apps.products.urls')),  # Category URLs at root
+    path('', include('apps.products.urls')),  # Products at root
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
