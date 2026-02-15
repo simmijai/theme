@@ -54,6 +54,9 @@ class ProductDetailView(TemplateView):
 def about_us(request):
     return render(request, 'user_theme/pages/about.html')
 
+def contact_us(request):
+    return render(request, 'user_theme/pages/contact-us.html')
+
 def payment_policy(request):
     return render(request, 'user_theme/pages/payment_policy.html')
 
