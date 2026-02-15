@@ -17,11 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from apps.store.views import HomeView
-# from apps.store.views import index
 from django.conf import settings
 from django.conf.urls.static import static
-from apps.admin_panel.views.category_views import admin_dashboard
 from apps.admin_panel.views import admin_views
+from apps.core import page_views
 
 
 
@@ -33,9 +32,15 @@ urlpatterns = [
     path('cart/', include('apps.cart.urls')),
     path('wishlist/', include('apps.wishlist.urls')),
     path('orders/', include('apps.orders.urls')),
-    path('pages/', include('apps.core.urls')),
     path('admin-login/', admin_views.admin_login, name='admin_login'),
-    path('', include('apps.products.urls')),  # Products at root
+    path('about-us/', page_views.about_us, name='about_us'),
+    path('contact-us/', page_views.contact_us, name='contact'),
+    path('payment-policy/', page_views.payment_policy, name='payment_policy'),
+    path('terms-conditions/', page_views.terms_conditions, name='terms_conditions'),
+    path('return-refund/', page_views.return_refund, name='return_refund'),
+    path('shipping-policy/', page_views.shipping_policy, name='shipping_policy'),
+    path('warranty/', page_views.warranty, name='warranty'),
+    path('', include('apps.products.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
