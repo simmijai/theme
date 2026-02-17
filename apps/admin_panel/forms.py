@@ -140,7 +140,7 @@ class HomeSliderForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Slider title'}),
             'subtitle': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Slider subtitle'}),
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
             'button_text': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Button text'}),
             'button_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Button URL'}),
             'order': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
@@ -159,6 +159,23 @@ class HomeSliderForm(forms.ModelForm):
         if not re.match(r'^[a-zA-Z0-9\s\-_&.,()!]+$', title):
             raise forms.ValidationError('Title contains invalid characters.')
         return title
+    
+    def clean_image(self):
+        from PIL import Image
+        image = self.cleaned_data.get('image')
+        if image:
+            try:
+                img = Image.open(image)
+                width, height = img.size
+                if width != 1096 or height != 895:
+                    raise forms.ValidationError(f'Image must be exactly 1920x600 pixels. Uploaded: {width}x{height}px')
+                if image.size > 2 * 1024 * 1024:
+                    raise forms.ValidationError('Image file size must be less than 2MB')
+            except Exception as e:
+                if 'Image must be exactly' in str(e) or 'file size' in str(e):
+                    raise
+                raise forms.ValidationError('Invalid image file')
+        return image
     
     def clean_order(self):
         order = self.cleaned_data.get('order')
