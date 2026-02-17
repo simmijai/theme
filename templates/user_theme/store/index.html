@@ -116,12 +116,13 @@
                                         <a href="{% url 'product_detail' product.slug %}">
                                             <img class="primary blur-up lazyload" src="{{ product.image.url }}" alt="{{ product.name }}">
                                         </a>
-                                        <form class="variants add" action="#" method="post">
-                                            <button class="btn btn-addto-cart" type="button">Add To Cart</button>
+                                        <form class="variants add" action="{% url 'add_to_cart' product.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn btn-addto-cart" type="submit">Add To Cart</button>
                                         </form>
                                         <div class="button-set">
                                             <div class="wishlist-btn">
-                                                <a class="wishlist add-to-wishlist" href="#">
+                                                <a class="wishlist add-to-wishlist" href="{% url 'add_to_wishlist' product.id %}">
                                                     <i class="icon anm anm-heart-l"></i>
                                                 </a>
                                             </div>
@@ -197,12 +198,13 @@
                     <a href="{% url 'product_detail' product.slug %}" class="grid-view-item__link">
                         <img class="primary blur-up lazyload" src="{{ product.image.url }}" alt="{{ product.name }}">
                     </a>
-                    <form class="variants add" action="#" method="post">
-                        <button class="btn btn-addto-cart" type="button">Add To Cart</button>
+                    <form class="variants add" action="{% url 'add_to_cart' product.id %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-addto-cart" type="submit">Add To Cart</button>
                     </form>
                     <div class="button-set">
                         <div class="wishlist-btn">
-                            <a class="wishlist add-to-wishlist" href="#">
+                            <a class="wishlist add-to-wishlist" href="{% url 'add_to_wishlist' product.id %}">
                                 <i class="icon anm anm-heart-l"></i>
                             </a>
                         </div>
