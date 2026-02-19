@@ -3,9 +3,9 @@
 {% load static %}
 
 {% block title %}My Orders{% endblock %}
-
+{% block header_class %}header-inner{% endblock %}
 {% block content %}
-<div class="container my-5" style="padding-top:60px;">
+<div class="container my-5">
     <h2 class="text-center mb-4">My Orders</h2>
 
     {% if orders %}

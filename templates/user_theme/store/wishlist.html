@@ -2,11 +2,17 @@
 
 {% load static %}
 
-{% block title %}Home - Belle E-commerce{% endblock %}
+
+{% comment %} {% block content %} {% endcomment %}
+{% block title %} Wish List - Belle E-commerce{% endblock %}
+
+{% block header_class %}header-inner{% endblock %} 
+{% block body_class %}wishlist{% endblock %}
+{% block body_class_suffix %}wishlist{% endblock %}
 
 {% block content %}
 <!--Body Content-->
-    <div id="page-content" style="padding-top:60px;">
+    <div id="wishlist-page-content" style="padding-top: 30px;">
     	<!--Page Title-->
     	<div class="page section-header text-center">
 			<div class="page-title">
