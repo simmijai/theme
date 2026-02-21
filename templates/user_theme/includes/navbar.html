@@ -1,9 +1,6 @@
 
 {% load static %}
-
-<!-- INLINE CSS FOR PROFILE DROPDOWN (TEMPORARY) -->
-<style>
-    /* Profile Dropdown – Top Header */
+<style >
     .header-profile-menu {
         position: relative;
         display: inline-block;
@@ -23,7 +20,6 @@
         margin-right: 5px;
     }
 
-    /* Dropdown */
     .profile-dropdown {
         position: absolute;
         right: 0;
@@ -71,27 +67,22 @@
         background: #fafafa;
     }
 
-    /* Hover trigger */
     .header-profile-menu:hover .profile-dropdown {
         display: block;
     }
 
-    /* Greeting hidden (we replace it with icon+dropdown) */
     .customer-links .greeting {
         display: none !important;
     }
 
     .my-cart-style i {
-    font-size: 22px;   /* whatever size looked perfect */
+    font-size: 22px;  
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 </style>
-
-
 <div class="pageWrapper">
 	<!--Search Form Drawer-->
 	<div class="search">
@@ -176,8 +167,8 @@
     </div>
     <!--End Top Header-->
     <!--Header-->
-    <div class="header-wrap {% block header_class %}{% endblock %} animated d-flex">
-    	<div class="container-fluid">        
+    {% url 'home' as home_url %}
+    <div class="header-wrap {% if request.path == home_url %}classicHeader{% endif %} animated d-flex">    	<div class="container-fluid">        
             <div class="row align-items-center">
             	<!--Desktop Logo-->
                 <div class="logo col-md-2 col-lg-2 d-none d-lg-block">

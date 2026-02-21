@@ -35,19 +35,11 @@
     <div id="pre-loader">
       <img src="{% static 'user_theme/images/loader.gif' %}" alt="Loading..." />
     </div>
-
-    <div class="pageWrapper">
-      <div
-        class="header-wrapper {% block header_class %}classicHeader{% endblock %}"
-      >
-        {% include 'user_theme/includes/navbar.html' %}
-      </div>
+      {% include 'user_theme/includes/navbar.html' %}
       {% include 'user_theme/includes/message_display.html' %}
       <div id="page-content">{% block content %}{% endblock %}</div>
       {% include 'user_theme/includes/footer.html' %}
-    </div>
 
-    <!-- JS Files -->
     <!-- JS Files -->
 
     <script src="{% static 'user_theme/js/vendor/jquery-3.3.1.min.js' %}"></script>
