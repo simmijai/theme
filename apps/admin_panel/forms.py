@@ -103,6 +103,13 @@ class CategoryForm(forms.ModelForm):
             if Category.objects.filter(slug=slug).exclude(pk=self.instance.pk if self.instance else None).exists():
                 raise forms.ValidationError('This slug already exists. Please choose a different one.')
         return slug
+    
+    def clean_parent(self):
+        parent = self.cleaned_data.get('parent')
+        # Prevent category from being its own parent
+        if parent and self.instance and parent.id == self.instance.id:
+            raise forms.ValidationError('A category cannot be its own parent.')
+        return parent
 
 class AdminLoginForm(forms.Form):
     email = forms.EmailField(

@@ -73,17 +73,6 @@
                                                 <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
                                                 <td>
                                                     <strong>{{ category.category_name }}</strong>
-                                                    {% if category.subcategories.exists %}
-                                                        {% comment %} <button class="btn btn-sm btn-outline-secondary ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#subs_{{ category.id }}">
-                                                            Show Subcategories
-                                                        </button> {% endcomment %}
-                                                        {% if category.subcategories.exists %}
-                                                                <a href="{% url 'admin_subcategory_list' category.id %}" class="btn btn-sm btn-outline-secondary ms-2">
-                                                                    Show Subcategories
-                                                                </a>
-                                                        {% endif %}
-
-                                                    {% endif %}
                                                 </td>
                                                 <td>{{ category.slug }}</td>
                                                 <td>
@@ -110,16 +99,17 @@
                                                 </td>
                                                 <td class="text-end">
                                                     <div class="btn-group" role="group">
+                                                        {% if category.subcategories.exists %}
+                                                        <a href="{% url 'admin_subcategory_list' category.id %}" class="btn btn-sm btn-outline-info" title="View Subcategories">
+                                                            <i class="bi bi-list-ul"></i>
+                                                        </a>
+                                                        {% endif %}
                                                         <a href="{% url 'admin_category_update' category.id %}" class="btn btn-sm btn-outline-primary" title="Edit Category">
                                                             <i class="bi bi-pencil-square"></i>
                                                         </a>
-                                                        <button
-  class="btn btn-sm btn-outline-danger delete-category-btn"
-  data-url="{% url 'admin_category_delete' category.id %}"
-  data-name="{{ category.category_name }}"
->
-  <i class="bi bi-trash3"></i>
-</button>
+                                                        <button class="btn btn-sm btn-outline-danger delete-category-btn" data-url="{% url 'admin_category_delete' category.id %}" data-name="{{ category.category_name }}">
+                                                            <i class="bi bi-trash3"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>

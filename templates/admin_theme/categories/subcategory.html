@@ -4,14 +4,39 @@
 {% block content %}
 <main class="nxl-container">
     <div class="nxl-content">
-        <h3>Subcategories of "{{ category.category_name }}"</h3>
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-left d-flex align-items-center">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Subcategories of "{{ category.category_name }}"</h5>
+                </div>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'admin_category_list' %}">Categories</a></li>
+                    <li class="breadcrumb-item">{{ category.category_name }}</li>
+                </ul>
+            </div>
+            <div class="page-header-right ms-auto">
+                <div class="page-header-right-items">
+                    <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+                        <a href="{% url 'admin_category_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Categories
+                        </a>
+                        <a href="{% url 'admin_category_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Add Subcategory
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card stretch stretch-full">
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover" id="subcategoryList">
+                                <table class="table table-hover mb-0" id="subcategoryList">
                                     <thead>
                                         <tr>
                                             <th>S.No.</th>
@@ -19,7 +44,6 @@
                                             <th>Slug</th>
                                             <th>Description</th>
                                             <th>Image</th>
-                                            <th>Parent</th>
                                             <th>Status</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
@@ -28,21 +52,20 @@
                                         {% for sub in subcategories %}
                                         <tr class="single-item">
                                             <td>{% if subcategories.has_other_pages %}{{ forloop.counter0|add:subcategories.start_index }}{% else %}{{ forloop.counter }}{% endif %}</td>
-                                            <td>{{ sub.category_name }}</td>
-                                            <td>{{ sub.slug }}</td>
+                                            <td><strong>{{ sub.category_name }}</strong></td>
+                                            <td><code>{{ sub.slug }}</code></td>
                                             <td>
-                                                <div style="max-width: 200px; max-height: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ sub.description }}">
+                                                <div style="max-width: 250px; max-height: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ sub.description }}">
                                                     {{ sub.description|default:"—" }}
                                                 </div>
                                             </td>
                                             <td>
                                                 {% if sub.cat_image %}
-                                                    <img src="{{ sub.cat_image.url }}" alt="{{ sub.category_name }}" width="50" height="50">
+                                                    <img src="{{ sub.cat_image.url }}" alt="{{ sub.category_name }}" width="50" height="50" class="rounded">
                                                 {% else %}
-                                                    —
+                                                    <span class="text-muted">—</span>
                                                 {% endif %}
                                             </td>
-                                            <td>{{ sub.parent.category_name|default:"—" }}</td>
                                             <td>
                                                 {% if sub.is_active %}
                                                     <span class="badge bg-success">Active</span>
@@ -55,18 +78,23 @@
                                                     <a href="{% url 'admin_category_update' sub.id %}" class="btn btn-sm btn-outline-primary" title="Edit Subcategory">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
-                                                    <button type="button" 
-                                                    class="delete-subcategory-btn btn btn-sm btn-outline-danger"
-                                                    title="Delete Subcategory" 
-                                                    data-url="{% url 'admin_category_delete' sub.id %}"
-                                                    data-name="{{ sub.category_name }}">                                                        <i class="bi bi-trash3"></i>
+                                                    <button class="btn btn-sm btn-outline-danger delete-category-btn" data-url="{% url 'admin_category_delete' sub.id %}" data-name="{{ sub.category_name }}" title="Delete Subcategory">
+                                                        <i class="bi bi-trash3"></i>
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                            <td colspan="8">No subcategories found.</td>
+                                            <td colspan="7" class="text-center py-4">
+                                                <div class="text-muted">
+                                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                                    <p>No subcategories found for "{{ category.category_name }}"</p>
+                                                    <a href="{% url 'admin_category_create' %}" class="btn btn-sm btn-primary mt-2">
+                                                        <i class="bi bi-plus-circle me-1"></i>Add First Subcategory
+                                                    </a>
+                                                </div>
+                                            </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -74,61 +102,16 @@
                             </div>
                             
                             <!-- Pagination -->
-                            {% if subcategories.has_other_pages %}
-                            <div class="card-footer">
-                                <nav aria-label="Subcategory pagination">
-                                    <ul class="pagination justify-content-center mb-0">
-                                        {% if subcategories.has_previous %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page=1">First</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ subcategories.previous_page_number }}">Previous</a>
-                                            </li>
-                                        {% endif %}
-                                        
-                                        <!-- Show page numbers -->
-                                        {% for num in subcategories.paginator.page_range %}
-                                            {% if subcategories.number == num %}
-                                                <li class="page-item active">
-                                                    <span class="page-link">{{ num }}</span>
-                                                </li>
-                                            {% elif num > subcategories.number|add:'-3' and num < subcategories.number|add:'3' %}
-                                                <li class="page-item">
-                                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                        
-                                        {% if subcategories.has_next %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ subcategories.next_page_number }}">Next</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ subcategories.paginator.num_pages }}">Last</a>
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                </nav>
-                                
-                                <div class="text-center mt-2">
-                                    <small class="text-muted">
-                                        Showing {{ subcategories.start_index }} to {{ subcategories.end_index }} of {{ subcategories.paginator.count }} subcategories
-                                    </small>
-                                </div>
-                            </div>
-                            {% endif %}
+                            {% include 'admin_theme/components/pagination.html' %}
                             
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </main>
 
-
-{% block extra_scripts %}
-<script type="module" src="{% static 'js/admin_theme/subcategory.js' %}"></script>
-{% endblock %}
+<script type="module" src="{% static 'js/admin_theme/categories.js' %}"></script>
 
 {% endblock %}
