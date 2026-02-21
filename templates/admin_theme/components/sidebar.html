@@ -9,46 +9,46 @@
             </div>
             <div class="navbar-content">
                 <ul class="nxl-navbar">
-                    <li class="nxl-item nxl-hasmenu">
+                    <li class="nxl-item nxl-hasmenu {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
                         <a href="{% url 'admin_dashboard' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-home"></i></span>
-                            <span class="nxl-mtext">Dashboards</span>
+                            <span class="nxl-mtext">Dashboard</span>
                         </a>
                     </li>
-                    <li class="nxl-item nxl-hasmenu">
+                    <li class="nxl-item nxl-hasmenu {% if 'product' in request.resolver_match.url_name %}active{% endif %}">
                         <a href="{% url 'admin_product_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-box"></i></span>
                             <span class="nxl-mtext">Products</span><span class="nxl-arrow"></span>
                         </a>
                     </li>
 
-                    <li class="nxl-item nxl-hasmenu">
+                    <li class="nxl-item nxl-hasmenu {% if 'category' in request.resolver_match.url_name %}active{% endif %}">
                         <a href="{% url 'admin_category_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-layers"></i></span>
                             <span class="nxl-mtext">Category</span><span class="nxl-arrow"></span>
                         </a>
                     </li>
-                    <li class="nxl-item nxl-hasmenu">
+                    <li class="nxl-item nxl-hasmenu {% if 'customer' in request.resolver_match.url_name %}active{% endif %}">
                         <a href="{% url 'admin_customer_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-users"></i></span>
                             <span class="nxl-mtext">Customers</span><span class="nxl-arrow"></span>
                         </a>
                     </li>
-                    <li class="nxl-item nxl-hasmenu">
+                    <li class="nxl-item nxl-hasmenu {% if 'order' in request.resolver_match.url_name %}active{% endif %}">
                         <a href="{% url 'admin_order_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-shopping-cart"></i></span>
                             <span class="nxl-mtext">Orders</span><span class="nxl-arrow"></span>
                         </a>
                     </li>
 
-                    <li class="nxl-item nxl-hasmenu">
+                    <li class="nxl-item nxl-hasmenu {% if 'slider' in request.resolver_match.url_name %}active{% endif %}">
                         <a href="{% url 'admin_slider_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-image"></i></span>
-                            <span class="nxl-mtext">Silders</span><span class="nxl-arrow"></span>
+                            <span class="nxl-mtext">Sliders</span><span class="nxl-arrow"></span>
                         </a>
                     </li>
 
-                     <li class="nxl-item nxl-hasmenu">
+                     <li class="nxl-item nxl-hasmenu {% if 'review' in request.resolver_match.url_name %}active{% endif %}">
                     <a class="nxl-link" href="{% url 'admin_review_list' %}">
                         <span class="nxl-micon"><i class="feather-star"></i></span>
                         <span class="nxl-mtext">Reviews</span>
