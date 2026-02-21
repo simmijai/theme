@@ -2,9 +2,10 @@
 {% load static %}
 
 {% block body_class %}collection{% endblock %}
-{% block body_class_suffix %}collection{% endblock %}
 
-{% block title %}{% if category %}{{ category.name }}{% else %}All Products{% endif %} - Jewelry Store{% endblock %}
+{% block header_class %}classicHeader animated d-flex{% endblock %}
+
+{% block title %}{% if category %}{{ category.category_name }}{% else %}All Products{% endif %}{% endblock %}
 
 {% block content %}
 <!--Collection Banner-->
