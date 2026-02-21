@@ -21,7 +21,13 @@ def category_products(request, slug):
         products = Product.objects.none()
         current_category = None
 
-    categories = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
+    # Get all parent categories with their subcategories and products
+    categories = Category.objects.filter(parent__isnull=True).prefetch_related(
+        'subcategories',
+        'subcategories__products',
+        'products'
+    )
+    
     pagination_data = GlobalPaginator.paginate(products, request, 12)
 
     return render(request, 'user_theme/store/categories.html', {

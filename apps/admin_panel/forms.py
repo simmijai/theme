@@ -67,12 +67,14 @@ class ProductImageForm(forms.Form):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['category_name', 'slug', 'description', 'cat_image', 'parent', 'is_active']
+        fields = ['category_name', 'slug', 'description', 'cat_image', 'banner_image', 'banner_text', 'parent', 'is_active']
         widgets = {
             'category_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Category name'}),
             'slug': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'URL slug'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Category description'}),
             'cat_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'banner_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'banner_text': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Banner text for category page'}),
             'parent': forms.Select(attrs={'class': 'form-control'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

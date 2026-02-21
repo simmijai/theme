@@ -79,6 +79,32 @@
                                         </div>
 
                                         <div class="mb-4">
+                                            <label class="form-label">{{ form.banner_image.label }}</label>
+                                            {{ form.banner_image }}
+                                            <small class="form-text text-muted">Banner image for category page (recommended: 1920x400px)</small>
+                                            {% if form.banner_image.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.banner_image.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">{{ form.banner_text.label }}</label>
+                                            {{ form.banner_text }}
+                                            <small class="form-text text-muted">Text displayed on category page banner</small>
+                                            {% if form.banner_text.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.banner_text.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="mb-4">
                                             <label class="form-label">{{ form.parent.label }}</label>
                                             {{ form.parent }}
                                             {% if form.parent.errors %}
