@@ -3,7 +3,6 @@
         <div class="navbar-wrapper">
             <div class="m-header">
                 <a href="index.html" class="b-brand">
-                    <!-- ========   change your logo hear   ============ -->
                     <img src="{% static  'admin_theme/images/logo-full.png' %}" alt="" class="logo logo-lg" />
                     <img src="{% static  'admin_theme/images/logo-abbr.png' %}" alt="" class="logo logo-sm" />
                 </a>
@@ -13,80 +12,48 @@
                     <li class="nxl-item nxl-hasmenu">
                         <a href="{% url 'admin_dashboard' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-home"></i></span>
-                            <span class="nxl-mtext">Dashboards</span>]
+                            <span class="nxl-mtext">Dashboards</span>
                         </a>
                     </li>
                     <li class="nxl-item nxl-hasmenu">
-                        <a href="javascript:void(0);" class="nxl-link">
+                        <a href="{% url 'admin_product_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-box"></i></span>
-                            <span class="nxl-mtext">Products</span><span class="nxl-arrow"><i
-                                    class="feather-chevron-right"></i></span>
+                            <span class="nxl-mtext">Products</span><span class="nxl-arrow"></span>
                         </a>
-                        <ul class="nxl-submenu">
-                            <li class="nxl-item"><a class="nxl-link" href="{% url 'admin_product_list' %}">products</a></li>
-                            <li class="nxl-item"><a class="nxl-link" href="{% url 'admin_product_create' %}">Add Product</a>
-                            </li>
-                        </ul>
                     </li>
 
                     <li class="nxl-item nxl-hasmenu">
-                        <a href="javascript:void(0);" class="nxl-link">
+                        <a href="{% url 'admin_category_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-layers"></i></span>
-                            <span class="nxl-mtext">Category</span><span class="nxl-arrow"><i
-                                    class="feather-chevron-right"></i></span>
+                            <span class="nxl-mtext">Category</span><span class="nxl-arrow"></span>
                         </a>
-                        <ul class="nxl-submenu">
-                            <li class="nxl-item"><a class="nxl-link" href="{% url 'admin_category_list' %}"> Categories</a></li>
-                            <li><a class="nxl-link" href="{% url 'admin_category_create' %}">Add Category</a></li>
-                        </ul>
                     </li>
                     <li class="nxl-item nxl-hasmenu">
-                        <a href="javascript:void(0);" class="nxl-link">
+                        <a href="{% url 'admin_customer_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-users"></i></span>
-                            <span class="nxl-mtext">Customers</span><span class="nxl-arrow"><i
-                                    class="feather-chevron-right"></i></span>
+                            <span class="nxl-mtext">Customers</span><span class="nxl-arrow"></span>
                         </a>
-
-                        <ul class="nxl-submenu">
-                            <li class="nxl-item"><a class="nxl-link" href="{% url 'admin_customer_list' %}">Customers list</a></li>
-                            </li>
-                        </ul>
                     </li>
                     <li class="nxl-item nxl-hasmenu">
-                        <a href="javascript:void(0);" class="nxl-link">
+                        <a href="{% url 'admin_order_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-shopping-cart"></i></span>
-                            <span class="nxl-mtext">Orders</span><span class="nxl-arrow"><i
-                                    class="feather-chevron-right"></i></span>
+                            <span class="nxl-mtext">Orders</span><span class="nxl-arrow"></span>
                         </a>
-                        <ul class="nxl-submenu">
-                            <li class="nxl-item"><a class="nxl-link" href="{% url 'admin_order_list' %}">Orders List</a></li>
-                        </ul>
                     </li>
 
                     <li class="nxl-item nxl-hasmenu">
-                        <a href="javascript:void(0);" class="nxl-link">
+                        <a href="{% url 'admin_slider_list' %}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-image"></i></span>
-                            <span class="nxl-mtext">Silders</span><span class="nxl-arrow"><i
-                                    class="feather-chevron-right"></i></span>
+                            <span class="nxl-mtext">Silders</span><span class="nxl-arrow"></span>
                         </a>
-                        <ul class="nxl-submenu">
-                            <li class="nxl-item"><a class="nxl-link" href="{% url 'admin_slider_list' %}">List</a></li>
-                            <li class="nxl-item"><a class="nxl-link" href="{% url 'admin_slider_create' %}">Form</a></li>
-                        </ul>
                     </li>
 
                      <li class="nxl-item nxl-hasmenu">
-                    <a class="nxl-link" href="javascript:void(0);">
+                    <a class="nxl-link" href="{% url 'admin_review_list' %}">
                         <span class="nxl-micon"><i class="feather-star"></i></span>
                         <span class="nxl-mtext">Reviews</span>
-                        <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        <span class="nxl-arrow"></span>
                     </a>
-
-                    <ul class="nxl-submenu">
-                        <li class="nxl-item">
-                            <a class="nxl-link" href="{% url 'admin_review_list' %}">Reviews List</a>
-                        </li>
-                    </ul>
                     </li>
                 </ul>
             </div>
