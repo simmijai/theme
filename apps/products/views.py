@@ -21,6 +21,27 @@ def category_products(request, slug):
         products = Product.objects.none()
         current_category = None
 
+    # Price filter
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    if min_price and max_price:
+        products = products.filter(price__gte=min_price, price__lte=max_price)
+    
+    # Sorting
+    sort = request.GET.get('sort', '')
+    if sort == 'name_asc':
+        products = products.order_by('name')
+    elif sort == 'name_desc':
+        products = products.order_by('-name')
+    elif sort == 'price_asc':
+        products = products.order_by('price')
+    elif sort == 'price_desc':
+        products = products.order_by('-price')
+    elif sort == 'date_desc':
+        products = products.order_by('-created_at')
+    elif sort == 'date_asc':
+        products = products.order_by('created_at')
+
     # Get all parent categories with their subcategories and products
     categories = Category.objects.filter(parent__isnull=True).prefetch_related(
         'subcategories',

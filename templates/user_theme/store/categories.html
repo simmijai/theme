@@ -74,20 +74,18 @@
                     <div class="widget-title">
                         <h2>Price</h2>
                     </div>
-                    <form action="#" method="post" class="price-filter">
-                        <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
-                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                        </div>
-                        <div class="row">
+                    <form method="get" class="price-filter">
+                        <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"></div>
+                        <div class="row mt-3">
                             <div class="col-6">
-                                <p class="no-margin"><input id="amount" type="text"></p>
+                                <input id="amount" name="price_range" type="text" readonly style="border:0; font-weight:bold;">
                             </div>
-                            <div class="col-6 text-right margin-25px-top">
-                                <button class="btn btn-secondary btn--small">filter</button>
+                            <div class="col-6 text-right">
+                                <button type="submit" class="btn btn-secondary btn--small">Filter</button>
                             </div>
                         </div>
+                        <input type="hidden" name="min_price" id="min_price">
+                        <input type="hidden" name="max_price" id="max_price">
                     </form>
                 </div>
                 <!--End Price Filter-->
@@ -126,13 +124,13 @@
                                 <div class="filters-toolbar__item">
                                     <label for="SortBy" class="hidden">Sort</label>
                                     <select name="SortBy" id="SortBy" class="filters-toolbar__input filters-toolbar__input--sort">
-                                        <option value="title-ascending" selected="selected">Sort</option>
-                                        <option>Alphabetically, A-Z</option>
-                                        <option>Alphabetically, Z-A</option>
-                                        <option>Price, low to high</option>
-                                        <option>Price, high to low</option>
-                                        <option>Date, new to old</option>
-                                        <option>Date, old to new</option>
+                                        <option value="">Sort</option>
+                                        <option value="name_asc" {% if request.GET.sort == 'name_asc' %}selected{% endif %}>Alphabetically, A-Z</option>
+                                        <option value="name_desc" {% if request.GET.sort == 'name_desc' %}selected{% endif %}>Alphabetically, Z-A</option>
+                                        <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price, low to high</option>
+                                        <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price, high to low</option>
+                                        <option value="date_desc" {% if request.GET.sort == 'date_desc' %}selected{% endif %}>Date, new to old</option>
+                                        <option value="date_asc" {% if request.GET.sort == 'date_asc' %}selected{% endif %}>Date, old to new</option>
                                     </select>
                                 </div>
                             </div>
@@ -182,4 +180,53 @@
         <!--End Main Content-->
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Mobile filter toggle
+    $('.btn-filter').on('click', function() {
+        $('.filterbar').addClass('active');
+        $('body').addClass('filterbar-open');
+    });
+    
+    $('.closeFilter').on('click', function() {
+        $('.filterbar').removeClass('active');
+        $('body').removeClass('filterbar-open');
+    });
+    
+    // Price range slider - check if jQuery UI is loaded
+    if (typeof $.fn.slider !== 'undefined') {
+        var minPrice = parseInt('{{ request.GET.min_price|default:0 }}') || 0;
+        var maxPrice = parseInt('{{ request.GET.max_price|default:1000000 }}') || 1000000;
+        
+        $("#slider-range").slider({
+            range: true,
+            min: 0,
+            max: 1000000,
+            values: [minPrice, maxPrice],
+            slide: function(event, ui) {
+                $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+                $("#min_price").val(ui.values[0]);
+                $("#max_price").val(ui.values[1]);
+            }
+        });
+        
+        $("#amount").val("$" + $("#slider-range").slider("values", 0) + " - $" + $("#slider-range").slider("values", 1));
+        $("#min_price").val($("#slider-range").slider("values", 0));
+        $("#max_price").val($("#slider-range").slider("values", 1));
+    }
+    
+    // Sort dropdown
+    $('#SortBy').on('change', function() {
+        var sortValue = $(this).val();
+        if (sortValue) {
+            var url = new URL(window.location.href);
+            url.searchParams.set('sort', sortValue);
+            window.location.href = url.toString();
+        }
+    });
+});
+</script>
 {% endblock %}
